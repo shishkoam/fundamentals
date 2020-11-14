@@ -1,3 +1,8 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="test_secondary">12sp</dimen>
+    <dimen name="text_primary">18sp</dimen>
+    <dimen name="half_margin">7dp</dimen>
+
+
 </resources>
