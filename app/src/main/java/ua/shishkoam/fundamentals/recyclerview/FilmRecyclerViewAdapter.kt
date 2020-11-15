@@ -8,24 +8,43 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ua.shishkoam.fundamentals.R
-import ua.shishkoam.fundamentals.dummy.DummyContent
+import ua.shishkoam.fundamentals.data.Film
 
 
-class RecyclerViewAdapter(private var values: List<DummyContent.DummyItem>) :
-    RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder>() {
+class FilmRecyclerViewAdapter(private var values: List<Film>) :
+    RecyclerView.Adapter<FilmRecyclerViewAdapter.RecyclerViewHolder>() {
 
-    class RecyclerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    // Define listener member variable
+    var listener: OnItemClickListener? = null
+
+    // Define the listener interface
+    interface OnItemClickListener {
+        fun onItemClick(itemView: View?, position: Int)
+    }
+
+    // Define the method that allows the parent activity or fragment to define the listener
+    fun setOnItemClickListener(listener: OnItemClickListener?) {
+        this.listener = listener
+    }
+
+    class RecyclerViewHolder(view: View, listener: OnItemClickListener?) : RecyclerView.ViewHolder(view){
         val name: TextView = view.findViewById(R.id.name)
         val rating: TextView = view.findViewById(R.id.rating)
         val time: TextView = view.findViewById(R.id.time)
         val genre: TextView = view.findViewById(R.id.genre)
-
-        //        val like: ImageView = view.findViewById(R.id.li)
         val imageView: ImageView = view.findViewById(R.id.imageView)
-
+        init {
+            itemView.setOnClickListener { // Triggers click upwards to the adapter on click
+                    val position = absoluteAdapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener?.onItemClick(itemView, position)
+                }
+            }
+        }
         override fun toString(): String {
             return super.toString() + " '" + name.text + "'"
         }
+
     }
 
     // Create new views (invoked by the layout manager)
@@ -36,7 +55,7 @@ class RecyclerViewAdapter(private var values: List<DummyContent.DummyItem>) :
         // create a new view
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.movie_item, parent, false)
-        return RecyclerViewHolder(itemView)
+        return RecyclerViewHolder(itemView, listener)
     }
 
     // Replace the contents of a view (invoked by the layout manager)

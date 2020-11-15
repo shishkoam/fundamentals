@@ -2,27 +2,26 @@ package ua.shishkoam.fundamentals
 
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ua.shishkoam.fundamentals.dummy.DummyContent
+import ua.shishkoam.fundamentals.recyclerview.FilmRecyclerViewAdapter
 import ua.shishkoam.fundamentals.recyclerview.LandingAnimator
-import ua.shishkoam.fundamentals.recyclerview.RecyclerViewAdapter
+
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class RecyclerViewFragment : Fragment() {
+class RecyclerViewFragment : Fragment(R.layout.fragment_second) {
     private val handler = Handler()
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
 
     private var columnCount = 4
@@ -42,8 +41,12 @@ class RecyclerViewFragment : Fragment() {
 
 //        RecyclerView.ItemDecoration
 
-        viewAdapter = RecyclerViewAdapter(DummyContent.ITEMS)
-
+        var viewAdapter = FilmRecyclerViewAdapter(DummyContent.films)
+        viewAdapter.setOnItemClickListener(object : FilmRecyclerViewAdapter.OnItemClickListener {
+            override fun onItemClick(view: View?, position: Int) {
+                findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
+            }
+        })
         recyclerView = view.findViewById(R.id.list) as RecyclerView
 
         val swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout) as SwipeRefreshLayout
@@ -55,18 +58,10 @@ class RecyclerViewFragment : Fragment() {
             // use a linear layout manager
             layoutManager = viewManager
 
+
             // specify an viewAdapter (see also next example)
             adapter = viewAdapter
             itemAnimator = defaultItemAnimator
-
-            /*ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeDismissTouchCallback(ItemTouchHelper.RIGHT) {
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                DemoItem demoItem = (DemoItem) viewHolder.itemView.getTag(R.id.demo_item_key);
-                demoAdapter.removeItem(demoItem);
-            }
-        });
-        itemTouchHelper.attachToRecyclerView(recyclerView);*/
 
 
         }
@@ -84,27 +79,6 @@ class RecyclerViewFragment : Fragment() {
                 runnable, 3000.toLong()
             )
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_second, container, false)
-
-        // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = RecyclerViewAdapter(DummyContent.ITEMS)
-            }
-        }
-
-//        notifyDataSetChanged() or notifyItemInserted(…) or notifyItemRangeChanged(…)
-        return view
     }
 
     companion object {

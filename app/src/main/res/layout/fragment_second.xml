@@ -50,9 +50,11 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            app:layoutManager="LinearLayoutManager"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             tools:context=".ui.features.RecyclerViewFragment"
-            tools:listitem="@layout/movie_item" />
+            tools:listitem="@layout/movie_item"
+            tools:itemCount="4"
+            app:spanCount="4"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

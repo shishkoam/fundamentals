@@ -1,6 +1,8 @@
 package ua.shishkoam.fundamentals.dummy
 
 import ua.shishkoam.fundamentals.R
+import ua.shishkoam.fundamentals.data.Actor
+import ua.shishkoam.fundamentals.data.Film
 import java.util.*
 
 /**
@@ -10,12 +12,13 @@ import java.util.*
  */
 object DummyContent {
 
-    val ITEMS: MutableList<DummyItem> = ArrayList()
+    val films: MutableList<Film> = ArrayList()
+    val actors: MutableList<Actor> = ArrayList()
 
     init {
         // Add some sample items.
-        addItem(
-            DummyItem(
+        addFilm(
+            Film(
                 "Avengers: End Game",
                 137,
                 R.drawable.movie,
@@ -23,9 +26,9 @@ object DummyContent {
                 reviewNum = 125,
                 genres = "Action, Adventure, Drama"
             )
-        );
-        addItem(
-            DummyItem(
+        )
+        addFilm(
+            Film(
                 "Tenet",
                 97,
                 R.drawable.movie2,
@@ -35,9 +38,9 @@ object DummyContent {
                 98,
                 "Action, Sci-Fi, Thriller"
             )
-        );
-        addItem(
-            DummyItem(
+        )
+        addFilm(
+            Film(
                 "Black Widow",
                 102,
                 R.drawable.movie3,
@@ -45,9 +48,9 @@ object DummyContent {
                 reviewNum = 38,
                 genres = "Action, Adventure, Sci-Fi"
             )
-        );
-        addItem(
-            DummyItem(
+        )
+        addFilm(
+            Film(
                 "Wonder Woman 1984",
                 120,
                 R.drawable.movie4,
@@ -55,29 +58,40 @@ object DummyContent {
                 reviewNum = 74,
                 genres = "Action, Adventure, Fantasy"
             )
-        );
-
+        )
+        addActor(
+            Actor(
+                "Robert Downey Jr.",
+                R.drawable.actor1
+            )
+        )
+        addActor(
+            Actor(
+                "Chris Evans",
+                R.drawable.actor2
+            )
+        )
+        addActor(
+            Actor(
+                "Mark Ruffalo",
+                R.drawable.actor3
+            )
+        )
+        addActor(
+            Actor(
+                "Chris Hemsworth",
+                R.drawable.actor4
+            )
+        )
     }
 
 
-    private fun addItem(item: DummyItem) {
-        ITEMS.add(item)
+    private fun addFilm(item: Film) {
+        films.add(item)
     }
 
-    /**
-     * A dummy item representing a piece of content.
-     */
-    data class DummyItem(
-        val name: String,
-        val time: Int,
-        val image: Int,
-        var like: Boolean = false,
-        var age: Int = 13,
-        var rating: Double = 0.0,
-        var reviewNum: Int = 0,
-        val genres: String?
-    ) {
-        override fun toString(): String = name
+    private fun addActor(item: Actor) {
+        actors.add(item)
     }
 
 }

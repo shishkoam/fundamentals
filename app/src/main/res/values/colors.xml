@@ -9,7 +9,9 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="text_primary">#ECECEC</color>
-    <color name="text_secondary">#565665</color>
+
+    <color name="text_secondary">#6D6D80</color>
+    <color name="genre_color">#FF3466</color>
 
 
 </resources>

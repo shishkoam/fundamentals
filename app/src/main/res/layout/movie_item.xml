@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/half_margin"
-    card_view:cardBackgroundColor="@android:color/transparent"
+    android:background="@drawable/bg"
+    card_view:cardBackgroundColor="#1E1E2B"
     card_view:cardCornerRadius="16dp"
-    card_view:cardElevation="8dp">
+    card_view:cardElevation="8dp"
+    card_view:contentPadding="5dp">
 
     <!-- Main Content View -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg">
+        >
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
             android:src="@drawable/movie"
             card_view:layout_constraintBottom_toTopOf="@+id/name"
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintHorizontal_bias="0.5"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/imageViewMask"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
             android:src="@drawable/mask"
             card_view:layout_constraintBottom_toTopOf="@+id/name"
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintHorizontal_bias="0.5"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />
 
@@ -45,7 +47,7 @@
             android:layout_height="wrap_content"
             android:text="Мстители"
             android:textColor="@color/text_primary"
-            android:textSize="@dimen/text_primary"
+            android:textSize="@dimen/text_secondary"
             card_view:layout_constraintBottom_toTopOf="@+id/rating"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0"
@@ -57,7 +59,7 @@
             android:layout_height="wrap_content"
             android:text="12/12/12"
             android:textColor="@color/text_secondary"
-            android:textSize="@dimen/test_secondary"
+            android:textSize="@dimen/text_secondary"
             card_view:layout_constraintBottom_toTopOf="@+id/name"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent" />
@@ -66,7 +68,7 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Мстители"
+            android:text="Action"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_primary"
             card_view:layout_constraintBottom_toTopOf="@+id/time"
@@ -81,13 +83,33 @@
             android:layout_height="wrap_content"
             android:text="12/12/12"
             android:textColor="@color/text_secondary"
-            android:textSize="@dimen/test_secondary"
-            card_view:layout_constraintTop_toBottomOf="@+id/name"
+            android:textSize="@dimen/text_secondary"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintStart_toStartOf="parent" />
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/name" />
 
 
+        <TextView
+            android:background="@drawable/rectangle2"
+            android:layout_width="wrap_content"
+            android:textAppearance="@style/age_text_style"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/fab_margin"
+            android:layout_marginTop="@dimen/fab_margin"
+            android:text="13+"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_marginEnd="@dimen/fab_margin"
+            android:src="@drawable/like"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
+
