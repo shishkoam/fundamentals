@@ -1,10 +1,18 @@
 package ua.shishkoam.fundamentals.recyclerview
 
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ua.shishkoam.fundamentals.R
@@ -27,12 +35,16 @@ class FilmRecyclerViewAdapter(private var values: List<Film>) :
         this.listener = listener
     }
 
-    class RecyclerViewHolder(view: View, listener: OnItemClickListener?) : RecyclerView.ViewHolder(view){
+    class RecyclerViewHolder(view: View, listener: OnItemClickListener?) : RecyclerView.ViewHolder(
+        view
+    ){
         val name: TextView = view.findViewById(R.id.name)
-        val rating: TextView = view.findViewById(R.id.rating)
+        val reviews: TextView = view.findViewById(R.id.reviews)
         val time: TextView = view.findViewById(R.id.time)
         val genre: TextView = view.findViewById(R.id.genre)
         val imageView: ImageView = view.findViewById(R.id.imageView)
+        val ratingView: RatingBar = view.findViewById(R.id.rating)
+
         init {
             itemView.setOnClickListener { // Triggers click upwards to the adapter on click
                     val position = absoluteAdapterPosition
@@ -65,15 +77,17 @@ class FilmRecyclerViewAdapter(private var values: List<Film>) :
         val item = values[position]
         if (holder is RecyclerViewHolder) {
             holder.name.text = item.name
-            holder.rating.text = item.rating.toString()
+            holder.reviews.text = "${item.reviewNum} Reviews"
+            holder.ratingView.rating = item.rating.toFloat()
             holder.genre.text = item.genres
-            holder.time.text = item.time.toString()
+            holder.time.text = "${item.time} MIN"
             Glide.with(holder.imageView.context.applicationContext).load(item.image)
                 .error(R.mipmap.ic_launcher)
                 .into(holder.imageView)
 //             bind data to the views of MyViewHolder1
         }
     }
+
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = values.size

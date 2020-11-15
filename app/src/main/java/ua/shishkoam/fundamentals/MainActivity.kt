@@ -8,11 +8,17 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import androidx.cardview.widget.CardView
+import com.redmadrobot.e2e.decorator.EdgeToEdgeDecorator
 
 class MainActivity : AppCompatActivity() {
+    private val edgeToEdgeCompatibilityManager = EdgeToEdgeDecorator.updateConfig {
+        // default config
+        isEdgeToEdgeEnabled = true
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        edgeToEdgeCompatibilityManager.apply(this, window)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 

@@ -1,9 +1,9 @@
 package ua.shishkoam.fundamentals
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,13 +24,15 @@ class RecyclerViewFragment : Fragment(R.layout.fragment_second) {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewManager: RecyclerView.LayoutManager
 
-    private var columnCount = 4
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
+        val orientation = this.resources.configuration.orientation
+        val columnCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            3
+        } else {
+            2
         }
+
         viewManager = if (columnCount == 1) {
             LinearLayoutManager(requireContext())
         } else {
@@ -41,9 +43,9 @@ class RecyclerViewFragment : Fragment(R.layout.fragment_second) {
 
 //        RecyclerView.ItemDecoration
 
-        var viewAdapter = FilmRecyclerViewAdapter(DummyContent.films)
+        val viewAdapter = FilmRecyclerViewAdapter(DummyContent.films)
         viewAdapter.setOnItemClickListener(object : FilmRecyclerViewAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, position: Int) {
+            override fun onItemClick(itemView: View?, position: Int) {
                 findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
             }
         })
@@ -69,7 +71,7 @@ class RecyclerViewFragment : Fragment(R.layout.fragment_second) {
             // Initialize a new Runnable
             val runnable = Runnable {
                 // Update the text view text with a random number
-//                (viewAdapter as RecyclerViewAdapter).update(DummyContent.ITEMS_UPDATE)
+//                (viewAdapter as FilmRecyclerViewAdapter).update(DummyContent.ITEMS_UPDATE)
                 // Hide swipe to refresh icon animation
                 swipeRefreshLayout.isRefreshing = false
             }

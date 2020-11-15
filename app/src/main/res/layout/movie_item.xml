@@ -4,6 +4,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="@dimen/half_margin"
     android:background="@drawable/bg"
     card_view:cardBackgroundColor="#1E1E2B"
@@ -43,30 +44,47 @@
             android:id="@+id/genre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Мстители"
-            android:textColor="@color/text_primary"
+            android:text="Action"
+            android:textColor="@color/genre_color"
             android:textSize="@dimen/text_secondary"
             card_view:layout_constraintBottom_toTopOf="@+id/rating"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0"
             card_view:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
+        <RatingBar
             android:id="@+id/rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/ratingBarStyleSmall"
+            android:backgroundTint="#1E1E2B"
+            android:background="#1E1E2B"
+            android:progressTint="@color/genre_color"
+            android:numStars="5"
+            android:rating="4"
+            android:stepSize="0.1"
+            android:isIndicator="true"
+            card_view:layout_constraintBottom_toBottomOf="@+id/imageView"
+            card_view:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/reviews"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="12/12/12"
+            android:layout_marginStart="8dp"
             android:textColor="@color/text_secondary"
             android:textSize="@dimen/text_secondary"
-            card_view:layout_constraintBottom_toTopOf="@+id/name"
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintStart_toStartOf="parent" />
+            card_view:layout_constraintHorizontal_bias="0.0"
+            card_view:layout_constraintBottom_toBottomOf="@+id/imageView"
+            card_view:layout_constraintStart_toEndOf="@id/rating"
+            tools:text="12 Reviews" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Action"
+            tools:text="Avengers"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_primary"
             card_view:layout_constraintBottom_toTopOf="@+id/time"
@@ -79,10 +97,9 @@
             android:id="@+id/time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="12/12/12"
-            android:textColor="@color/text_secondary"
-            android:textSize="@dimen/text_secondary"
-            card_view:layout_constraintBottom_toBottomOf="parent"
+            tools:text="120 MIN"
+            android:textColor="@color/text_third"
+            android:textSize="11sp"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.0"
             card_view:layout_constraintStart_toStartOf="parent"
@@ -95,8 +112,8 @@
             android:textAppearance="@style/age_text_style"
             android:gravity="center"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/fab_margin"
-            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:text="13+"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />
@@ -104,8 +121,8 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fab_margin"
-            android:layout_marginEnd="@dimen/fab_margin"
+            android:layout_marginTop="13dp"
+            android:layout_marginEnd="13dp"
             android:src="@drawable/like"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />

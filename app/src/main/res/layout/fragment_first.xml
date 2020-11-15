@@ -93,22 +93,42 @@
             android:gravity="center_vertical"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
+        <RatingBar
             android:id="@+id/rating"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="125 Reviews"
-            android:textStyle="bold"
-            android:textColor="@color/text_secondary"
-            android:layout_marginStart="@dimen/fab_margin"
-            android:textSize="@dimen/text_secondary"
+            style="?android:attr/ratingBarStyleSmall"
+            android:backgroundTint="@android:color/transparent"
+            android:rating="4"
+            android:progressTint="@color/genre_color"
+            android:numStars="5"
+            android:stepSize="0.1"
+            android:isIndicator="true"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:lineSpacingExtra="4sp"
             android:gravity="center_vertical"
+            android:layout_marginStart="@dimen/fab_margin"
             app:layout_constraintTop_toBottomOf="@+id/genre"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/reviews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:lineSpacingExtra="4sp"
+            android:text="125 Reviews"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_secondary"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@id/rating"
+            app:layout_constraintTop_toBottomOf="@+id/genre" />
 
         <TextView
             android:layout_centerHorizontal="true"
