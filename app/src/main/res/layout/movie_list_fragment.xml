@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/main_margin"
         android:layout_marginTop="@dimen/big_top_margin_plus"
-        android:src="@drawable/combined_shape"
+        android:src="@drawable/ic_c_shape"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

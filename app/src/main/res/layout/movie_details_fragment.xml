@@ -199,7 +199,7 @@
             android:layout_marginStart="@dimen/main_margin"
             android:layout_marginTop="@dimen/main_margin"
             android:background="@android:color/transparent"
-            android:drawableLeft="@drawable/arrow_left"
+            android:drawableLeft="@drawable/ic_left_arrow"
             android:gravity="center_vertical"
             android:lineSpacingExtra="@dimen/line_spacing"
             android:text="@string/back"

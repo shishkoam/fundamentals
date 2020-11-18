@@ -125,7 +125,7 @@
             android:layout_marginTop="@dimen/margin_like"
             android:layout_marginEnd="@dimen/margin_like"
             android:contentDescription="@string/like"
-            android:src="@drawable/like"
+            android:src="@drawable/ic_favorite_white_18dp"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
