@@ -19,6 +19,84 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="circleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="background">@android:color/transparent</item>
+        <item name="cornerSize">15%</item>
+    </style>
+
+    <style name="age_text_style">
+
+        <item name="android:textSize">
+            12sp
+        </item>
+
+        <item name="android:textColor">
+            #FFFFFF
+        </item>
+
+    </style>
+
+    <style name="header_inside">
+
+        <item name="android:textSize">
+            14sp
+        </item>
+
+        <item name="android:textColor">
+            #ECECEC
+        </item>
+
+        <item name="android:shadowColor">
+            #80000000
+        </item>
+
+        <item name="android:shadowDx">
+            0
+        </item>
+
+        <item name="android:shadowDy">
+            6
+        </item>
+
+        <item name="android:shadowRadius">
+            12
+        </item>
+
+    </style>
+
+    <style name="huge_title">
+
+        <item name="android:textSize">
+            40sp
+        </item>
+
+        <item name="android:letterSpacing">
+            -0.01
+        </item>
+
+        <item name="android:textColor">
+            #ECECEC
+        </item>
+
+        <item name="android:shadowColor">
+            #80000000
+        </item>
+
+        <item name="android:shadowDx">
+            0
+        </item>
+
+        <item name="android:shadowDy">
+            6
+        </item>
+
+        <item name="android:shadowRadius">
+            12
+        </item>
+
+    </style>
+
     <style name="Theme.Fundamentals.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Fundamentals.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
