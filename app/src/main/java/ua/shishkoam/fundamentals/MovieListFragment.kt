@@ -1,12 +1,14 @@
 package ua.shishkoam.fundamentals
 
-import android.content.Context
 import android.content.res.Configuration
 import android.graphics.LinearGradient
+import android.graphics.Point
 import android.graphics.Shader
 import android.os.Bundle
 import android.os.Handler
+import android.view.Display
 import android.view.View
+import android.view.WindowMetrics
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -16,7 +18,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ua.shishkoam.fundamentals.dummy.DummyContent
 import ua.shishkoam.fundamentals.recyclerview.FilmRecyclerViewAdapter
+import ua.shishkoam.fundamentals.recyclerview.GridAutofitLayoutManager
 import ua.shishkoam.fundamentals.recyclerview.LandingAnimator
+import java.lang.Math.abs
 
 
 /**
@@ -28,16 +32,27 @@ class MovieListFragment : Fragment(R.layout.movie_list_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val orientation = this.resources.configuration.orientation
+        val width = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            val display: WindowMetrics = requireActivity().windowManager.currentWindowMetrics
+            kotlin.math.abs(display.bounds.right - display.bounds.left)
+        } else {
+            val display: Display = requireActivity().windowManager.defaultDisplay
+            val size = Point()
+            display.getSize(size)
+            size.x
+        }
+//        1600
+//        720
         val columnCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             3
         } else {
             2
         }
 
-        val viewManager = if (columnCount == 1) {
-            LinearLayoutManager(requireContext())
+        val viewManager = if (columnCount == 2) {
+            GridLayoutManager(requireContext(), 2)
         } else {
-            GridLayoutManager(requireContext(), columnCount)
+            GridAutofitLayoutManager(requireContext(), -1)
         }
         val defaultItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
 
