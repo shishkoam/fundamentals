@@ -1,13 +1,11 @@
 package ua.shishkoam.fundamentals
 
-import android.graphics.Color
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import androidx.cardview.widget.CardView
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.redmadrobot.e2e.decorator.EdgeToEdgeDecorator
 
 class MainActivity : AppCompatActivity() {
@@ -22,15 +20,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-
-        val card : CardView? = null
-        card?.setCardBackgroundColor(Color.parseColor("#E6E6E6"));
-        card?.maxCardElevation = 0.0F;
-        card?.radius = 5.0F;
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

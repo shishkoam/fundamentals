@@ -1,18 +1,11 @@
 package ua.shishkoam.fundamentals.recyclerview
 
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
-import androidx.annotation.ColorInt
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ua.shishkoam.fundamentals.R
@@ -23,7 +16,7 @@ class FilmRecyclerViewAdapter(private var values: List<Film>) :
     RecyclerView.Adapter<FilmRecyclerViewAdapter.RecyclerViewHolder>() {
 
     // Define listener member variable
-    var listener: OnItemClickListener? = null
+    private var listener: OnItemClickListener? = null
 
     // Define the listener interface
     interface OnItemClickListener {
@@ -37,7 +30,7 @@ class FilmRecyclerViewAdapter(private var values: List<Film>) :
 
     class RecyclerViewHolder(view: View, listener: OnItemClickListener?) : RecyclerView.ViewHolder(
         view
-    ){
+    ) {
         val name: TextView = view.findViewById(R.id.name)
         val reviews: TextView = view.findViewById(R.id.reviews)
         val time: TextView = view.findViewById(R.id.time)
@@ -47,12 +40,13 @@ class FilmRecyclerViewAdapter(private var values: List<Film>) :
 
         init {
             itemView.setOnClickListener { // Triggers click upwards to the adapter on click
-                    val position = absoluteAdapterPosition
-                    if (position != RecyclerView.NO_POSITION) {
-                        listener?.onItemClick(itemView, position)
+                val position = absoluteAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener?.onItemClick(itemView, position)
                 }
             }
         }
+
         override fun toString(): String {
             return super.toString() + " '" + name.text + "'"
         }
@@ -75,17 +69,14 @@ class FilmRecyclerViewAdapter(private var values: List<Film>) :
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         val item = values[position]
-        if (holder is RecyclerViewHolder) {
-            holder.name.text = item.name
-            holder.reviews.text = "${item.reviewNum} Reviews"
-            holder.ratingView.rating = item.rating.toFloat()
-            holder.genre.text = item.genres
-            holder.time.text = "${item.time} MIN"
-            Glide.with(holder.imageView.context.applicationContext).load(item.image)
-                .error(R.mipmap.ic_launcher)
-                .into(holder.imageView)
-//             bind data to the views of MyViewHolder1
-        }
+        holder.name.text = item.name
+        holder.reviews.text = holder.reviews.context?.getString(R.string.reviews_number, item.reviewNum)
+        holder.ratingView.rating = item.rating.toFloat()
+        holder.genre.text = item.genres
+        holder.time.text =holder.time.context?.getString(R.string.minutes_number, item.time)
+        Glide.with(holder.imageView.context.applicationContext).load(item.image)
+            .error(R.mipmap.ic_launcher)
+            .into(holder.imageView)
     }
 
 

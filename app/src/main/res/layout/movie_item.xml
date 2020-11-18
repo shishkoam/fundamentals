@@ -5,12 +5,12 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="@dimen/half_margin"
+    android:layout_margin="@dimen/half_margin_bad"
     android:background="@drawable/bg"
-    card_view:cardBackgroundColor="#1E1E2B"
-    card_view:cardCornerRadius="16dp"
-    card_view:cardElevation="8dp"
-    card_view:contentPadding="5dp">
+    card_view:cardBackgroundColor="@color/card_background"
+    card_view:cardCornerRadius="@dimen/card_radius"
+    card_view:cardElevation="@dimen/card_elevation"
+    card_view:contentPadding="@dimen/card_padding">
 
     <!-- Main Content View -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,7 +27,8 @@
             card_view:layout_constraintBottom_toTopOf="@+id/name"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent" />
+            card_view:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/movie_poster" />
 
         <ImageView
             android:id="@+id/imageViewMask"
@@ -38,13 +39,14 @@
             card_view:layout_constraintBottom_toTopOf="@+id/name"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent" />
+            card_view:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/genre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Action"
+            android:text="@string/test_genre"
             android:textColor="@color/genre_color"
             android:textSize="@dimen/text_secondary"
             card_view:layout_constraintBottom_toTopOf="@+id/rating"
@@ -57,8 +59,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="?android:attr/ratingBarStyleSmall"
-            android:backgroundTint="#1E1E2B"
-            android:background="#1E1E2B"
+            android:backgroundTint="@color/card_background"
+            android:background="@color/card_background"
             android:progressTint="@color/genre_color"
             android:numStars="5"
             android:rating="4"
@@ -71,7 +73,7 @@
             android:id="@+id/reviews"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="@dimen/half_margin_medium"
             android:textColor="@color/text_secondary"
             android:textSize="@dimen/text_secondary"
             card_view:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +101,7 @@
             android:layout_height="wrap_content"
             tools:text="120 MIN"
             android:textColor="@color/text_third"
-            android:textSize="11sp"
+            android:textSize="@dimen/text_secondary"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.0"
             card_view:layout_constraintStart_toStartOf="parent"
@@ -112,20 +114,21 @@
             android:textAppearance="@style/age_text_style"
             android:gravity="center"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="13+"
+            android:layout_marginStart="@dimen/half_margin_medium"
+            android:layout_marginTop="@dimen/half_margin_medium"
+            android:text="@string/_13"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="13dp"
-            android:layout_marginEnd="13dp"
+            android:layout_marginTop="@dimen/margin_like"
+            android:layout_marginEnd="@dimen/margin_like"
             android:src="@drawable/like"
             card_view:layout_constraintEnd_toEndOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent" />
+            card_view:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/like" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
 

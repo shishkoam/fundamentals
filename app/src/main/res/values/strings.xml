@@ -4,9 +4,19 @@
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="_13">13+</string>
+    <string name="test_name">Мстители:\nФинал</string>
+    <string name="movie_poster">movie poster</string>
+    <string name="test_genre">Action</string>
+    <string name="test_125_reviews">125 Reviews</string>
+    <string name="storyline_test">After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos\' actions and restore balance to the universe.</string>
+    <string name="movies_list">Movies list</string>
+    <string name="like">Like</string>
+    <string name="cast">Cast</string>
+    <string name="back">Back</string>
+    <string name="action_genre">Action</string>
+    <string name="storyline">Storyline</string>
+    <string name="reviews_number">"%d Reviews"</string>
+    <string name="minutes_number">"%d MIN"</string>
 </resources>

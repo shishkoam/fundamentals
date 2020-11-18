@@ -1,5 +1,6 @@
 package ua.shishkoam.fundamentals.recyclerview
 
+
 import android.view.animation.Interpolator
 import androidx.recyclerview.widget.RecyclerView
 
