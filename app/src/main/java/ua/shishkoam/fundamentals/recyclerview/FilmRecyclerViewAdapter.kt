@@ -1,11 +1,17 @@
 package ua.shishkoam.fundamentals.recyclerview
 
+import android.content.Context
+import android.graphics.Color
+import android.graphics.LinearGradient
+import android.graphics.Shader
+import android.graphics.Shader.TileMode
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ua.shishkoam.fundamentals.R
@@ -37,6 +43,7 @@ class FilmRecyclerViewAdapter(private var values: List<Film>) :
         val genre: TextView = view.findViewById(R.id.genre)
         val imageView: ImageView = view.findViewById(R.id.imageView)
         val ratingView: RatingBar = view.findViewById(R.id.rating)
+        val textShader: Shader?
 
         init {
             itemView.setOnClickListener { // Triggers click upwards to the adapter on click
@@ -45,6 +52,20 @@ class FilmRecyclerViewAdapter(private var values: List<Film>) :
                     listener?.onItemClick(itemView, position)
                 }
             }
+            val context: Context = name.context
+            val first = ContextCompat.getColor(context, R.color.text_color_gradient_1);
+            val second = ContextCompat.getColor(context, R.color.text_color_gradient_2);
+            val third = ContextCompat.getColor(context, R.color.text_color_gradient_3);
+            textShader = LinearGradient(
+                0f,
+                0f,
+                0f,
+                50f,
+                intArrayOf(first, second, third),
+                floatArrayOf(0f, 0.5f, 1f),
+                TileMode.CLAMP
+            )
+
         }
 
         override fun toString(): String {
@@ -70,11 +91,28 @@ class FilmRecyclerViewAdapter(private var values: List<Film>) :
         // - replace the contents of the view with that element
         val item = values[position]
         holder.name.text = item.name
-        holder.reviews.text = holder.reviews.context?.getString(R.string.reviews_number, item.reviewNum)
+        val context: Context = holder.name.context
+//        val first = ContextCompat.getColor(context, R.color.text_color_gradient_1);
+//        val second = ContextCompat.getColor(context, R.color.text_color_gradient_2);
+//        val third = ContextCompat.getColor(context, R.color.text_color_gradient_3);
+//        val textShader: Shader = LinearGradient(
+//            0f,
+//            0f,
+//            0f,
+//            50f,
+//            intArrayOf(first, second, third),
+//            floatArrayOf(0f, 1f),
+//            TileMode.CLAMP
+//        )
+        holder.name.paint.shader = holder.textShader
+        holder.reviews.text = context.getString(
+            R.string.reviews_number,
+            item.reviewNum
+        )
         holder.ratingView.rating = item.rating.toFloat()
         holder.genre.text = item.genres
-        holder.time.text =holder.time.context?.getString(R.string.minutes_number, item.time)
-        Glide.with(holder.imageView.context.applicationContext).load(item.image)
+        holder.time.text =context.getString(R.string.minutes_number, item.time)
+        Glide.with(context.applicationContext).load(item.image)
             .error(R.mipmap.ic_launcher)
             .into(holder.imageView)
     }

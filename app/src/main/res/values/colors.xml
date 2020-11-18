@@ -17,5 +17,9 @@
     <color name="list_background">#191926</color>
     <color name="text_color_actor">#D8D8D8</color>
 
+    <color name="text_color_gradient_1">#ECECEC</color>
+    <color name="text_color_gradient_2">#C4C4C4</color>
+    <color name="text_color_gradient_3">#FFFFFF</color>
+
 
 </resources>
