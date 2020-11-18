@@ -3,42 +3,42 @@
 <!-- Main Content View -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="@dimen/half_small_margin"
-    android:layout_height="wrap_content">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/half_small_margin">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        tools:shapeAppearanceOverlay="@style/circleImageView"
-        tools:srcCompat="@drawable/actor1"
         android:layout_margin="@dimen/half_small_margin"
+        android:adjustViewBounds="true"
         card_view:layout_constraintEnd_toEndOf="parent"
         card_view:layout_constraintStart_toStartOf="parent"
-        card_view:layout_constraintTop_toTopOf="parent" />
+        card_view:layout_constraintTop_toTopOf="parent"
+        card_view:shapeAppearanceOverlay="@style/circleImageView"
+        tools:srcCompat="@drawable/actor1" />
 
     <TextView
         android:id="@+id/name"
-        android:textStyle="bold"
         android:layout_width="match_parent"
-        android:layout_margin="@dimen/half_small_margin"
         android:layout_height="wrap_content"
-        tools:text="Robert Downey JR."
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/half_small_margin"
+        android:gravity="center_vertical"
+        android:lineSpacingExtra="@dimen/half_line_spacing"
         android:textColor="@color/text_color_actor"
         android:textSize="@dimen/text_secondary"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:lineSpacingExtra="@dimen/half_line_spacing"
-        android:gravity="center_vertical"
+        android:textStyle="bold"
         card_view:layout_constraintEnd_toEndOf="parent"
         card_view:layout_constraintHorizontal_bias="0.0"
         card_view:layout_constraintStart_toStartOf="parent"
-        card_view:layout_constraintTop_toBottomOf="@+id/imageView" />
+        card_view:layout_constraintTop_toBottomOf="@+id/imageView"
+        tools:text="Robert Downey JR." />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

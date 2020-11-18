@@ -14,20 +14,12 @@ import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Film
 
 
-class FilmRecyclerViewAdapter(private var values: List<Film>, private val nameShader: Shader? = null) :
+class FilmRecyclerViewAdapter(private var values: List<Film>, private val nameShader: Shader? = null, private val listener: OnItemClickListener? = null) :
     RecyclerView.Adapter<FilmRecyclerViewAdapter.RecyclerViewHolder>() {
-
-    // Define listener member variable
-    private var listener: OnItemClickListener? = null
 
     // Define the listener interface
     interface OnItemClickListener {
         fun onItemClick(itemView: View?, position: Int)
-    }
-
-    // Define the method that allows the parent activity or fragment to define the listener
-    fun setOnItemClickListener(listener: OnItemClickListener?) {
-        this.listener = listener
     }
 
     class RecyclerViewHolder(view: View, listener: OnItemClickListener?, nameShader: Shader? = null) : RecyclerView.ViewHolder(

@@ -52,8 +52,7 @@ class MovieListFragment : Fragment(R.layout.movie_list_fragment) {
             floatArrayOf(0f, 0.5f, 1f),
             Shader.TileMode.CLAMP
         )
-        val viewAdapter = FilmRecyclerViewAdapter(DummyContent.films, textShader)
-        viewAdapter.setOnItemClickListener(object : FilmRecyclerViewAdapter.OnItemClickListener {
+        val viewAdapter = FilmRecyclerViewAdapter(DummyContent.films, textShader, object : FilmRecyclerViewAdapter.OnItemClickListener {
             override fun onItemClick(itemView: View?, position: Int) {
                 findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
             }
@@ -61,7 +60,7 @@ class MovieListFragment : Fragment(R.layout.movie_list_fragment) {
         val recyclerView = view.findViewById(R.id.list) as RecyclerView
 
         val swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout) as SwipeRefreshLayout
-        recyclerView.apply {
+        recyclerView.run {
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
             setHasFixedSize(true)
