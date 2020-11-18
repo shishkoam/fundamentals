@@ -32,32 +32,13 @@ class MovieListFragment : Fragment(R.layout.movie_list_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val orientation = this.resources.configuration.orientation
-        val width = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
-            val display: WindowMetrics = requireActivity().windowManager.currentWindowMetrics
-            kotlin.math.abs(display.bounds.right - display.bounds.left)
-        } else {
-            val display: Display = requireActivity().windowManager.defaultDisplay
-            val size = Point()
-            display.getSize(size)
-            size.x
-        }
-//        1600
-//        720
-        val columnCount = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            3
-        } else {
-            2
-        }
-
-        val viewManager = if (columnCount == 2) {
-            GridLayoutManager(requireContext(), 2)
-        } else {
+        val viewManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             GridAutofitLayoutManager(requireContext(), -1)
+        } else {
+            GridLayoutManager(requireContext(), 2)
         }
+
         val defaultItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
-
-
-//        RecyclerView.ItemDecoration
 
         val first = ContextCompat.getColor(requireContext(), R.color.text_color_gradient_1);
         val second = ContextCompat.getColor(requireContext(), R.color.text_color_gradient_2);
