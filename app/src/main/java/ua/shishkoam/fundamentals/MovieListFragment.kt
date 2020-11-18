@@ -1,9 +1,13 @@
 package ua.shishkoam.fundamentals
 
+import android.content.Context
 import android.content.res.Configuration
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -40,7 +44,19 @@ class MovieListFragment : Fragment(R.layout.movie_list_fragment) {
 
 //        RecyclerView.ItemDecoration
 
-        val viewAdapter = FilmRecyclerViewAdapter(DummyContent.films)
+        val first = ContextCompat.getColor(requireContext(), R.color.text_color_gradient_1);
+        val second = ContextCompat.getColor(requireContext(), R.color.text_color_gradient_2);
+        val third = ContextCompat.getColor(requireContext(), R.color.text_color_gradient_3);
+        val textShader = LinearGradient(
+            0f,
+            0f,
+            0f,
+            50f,
+            intArrayOf(first, second, third),
+            floatArrayOf(0f, 0.5f, 1f),
+            Shader.TileMode.CLAMP
+        )
+        val viewAdapter = FilmRecyclerViewAdapter(DummyContent.films, textShader)
         viewAdapter.setOnItemClickListener(object : FilmRecyclerViewAdapter.OnItemClickListener {
             override fun onItemClick(itemView: View?, position: Int) {
                 findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
