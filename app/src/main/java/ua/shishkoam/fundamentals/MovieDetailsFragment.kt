@@ -28,8 +28,6 @@ class MovieDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val viewManager =
-            GridLayoutManager(requireContext(), 4)
         val defaultItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
 
         val viewAdapter = ActorRecyclerViewAdapter(DummyContent.actors)
@@ -42,8 +40,6 @@ class MovieDetailsFragment : Fragment() {
             setHasFixedSize(true)
 
             // use a linear layout manager
-            layoutManager = viewManager
-
             adapter = viewAdapter
             itemAnimator = defaultItemAnimator
         }
