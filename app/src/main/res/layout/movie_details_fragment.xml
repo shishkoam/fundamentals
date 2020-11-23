@@ -19,7 +19,6 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@string/movie_poster"
-            android:scaleType="centerCrop"
             android:src="@drawable/poster"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -27,14 +26,14 @@
 
         <ImageView
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
+            android:layout_height="0dp"
+            android:scaleType="fitXY"
             android:src="@drawable/mask_poster"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/poster"
+            app:layout_constraintStart_toStartOf="@+id/poster"
+            app:layout_constraintTop_toTopOf="@+id/poster"
+            app:layout_constraintBottom_toBottomOf="@+id/poster"
             tools:ignore="ContentDescription" />
-
 
         <View
             android:id="@+id/guidline"
@@ -56,6 +55,7 @@
             android:background="@drawable/rectangle2"
             android:gravity="center_horizontal|center_vertical"
             android:text="@string/_13"
+            android:id="@+id/age"
             android:textAppearance="@style/age_text_style"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/name"
@@ -204,6 +204,7 @@
             android:gravity="center_vertical"
             android:lineSpacingExtra="@dimen/line_spacing"
             android:text="@string/back"
+            android:id="@+id/back"
             android:textAllCaps="false"
             android:textColor="@color/text_secondary"
             android:textSize="@dimen/text_secondary"

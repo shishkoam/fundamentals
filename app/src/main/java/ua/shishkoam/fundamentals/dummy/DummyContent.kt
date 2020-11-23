@@ -16,6 +16,30 @@ object DummyContent {
     val actors: MutableList<Actor> = ArrayList()
 
     init {
+        addActor(
+            Actor(
+                "Robert Downey Jr.",
+                R.drawable.actor1
+            )
+        )
+        addActor(
+            Actor(
+                "Chris Evans",
+                R.drawable.actor2
+            )
+        )
+        addActor(
+            Actor(
+                "Mark Ruffalo",
+                R.drawable.actor3
+            )
+        )
+        addActor(
+            Actor(
+                "Chris Hemsworth",
+                R.drawable.actor4
+            )
+        )
         // Add some sample items.
         addFilm(
             Film(
@@ -24,7 +48,10 @@ object DummyContent {
                 R.drawable.movie,
                 rating = 4.0,
                 reviewNum = 125,
-                genres = "Action, Adventure, Drama"
+                genres = "Action, Adventure, Drama",
+                story = "After the devastating events of Avengers: Infinity War, the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos\' actions and restore balance to the universe.",
+                cast = actors,
+                imageBig = R.drawable.poster
             )
         )
         addFilm(
@@ -59,30 +86,7 @@ object DummyContent {
                 genres = "Action, Adventure, Fantasy"
             )
         )
-        addActor(
-            Actor(
-                "Robert Downey Jr.",
-                R.drawable.actor1
-            )
-        )
-        addActor(
-            Actor(
-                "Chris Evans",
-                R.drawable.actor2
-            )
-        )
-        addActor(
-            Actor(
-                "Mark Ruffalo",
-                R.drawable.actor3
-            )
-        )
-        addActor(
-            Actor(
-                "Chris Hemsworth",
-                R.drawable.actor4
-            )
-        )
+
     }
 
 
