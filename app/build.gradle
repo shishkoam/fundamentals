@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlinx-serialization'
     id 'androidx.navigation.safeargs'
 }
 
@@ -63,5 +62,4 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
 
     implementation("com.redmadrobot:edge-to-edge-decorator:1.0.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
 }
