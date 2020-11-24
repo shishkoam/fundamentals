@@ -1,26 +1,15 @@
 package ua.shishkoam.fundamentals.recyclerview
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Actor
 
 class ActorRecyclerViewAdapter(private var values: List<Actor>) :
-    RecyclerView.Adapter<ActorRecyclerViewAdapter.ActorViewHolder>() {
+    RecyclerView.Adapter<ActorViewHolder>() {
 
-    class ActorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val name: TextView = view.findViewById(R.id.name)
-        val imageView: ImageView = view.findViewById(R.id.imageView)
-
-        override fun toString(): String {
-            return super.toString() + " '" + name.text + "'"
-        }
-    }
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(
