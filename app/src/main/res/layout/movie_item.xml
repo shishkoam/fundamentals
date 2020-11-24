@@ -108,6 +108,7 @@
 
 
         <TextView
+            android:id="@+id/age"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/half_margin_medium"
@@ -120,6 +121,7 @@
             card_view:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:id="@+id/like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_like"

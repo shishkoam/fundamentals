@@ -1,7 +1,7 @@
 package ua.shishkoam.fundamentals.data
-import kotlinx.serialization.Serializable
 
-@Serializable
+import java.io.Serializable
+
 data class Film(
     val name: String,
     val time: Int,
@@ -14,6 +14,6 @@ data class Film(
     val story: String = "",
     val cast: List<Actor>? = null,
     val imageBig: Int? = null
-) {
+) : Serializable {
     override fun toString(): String = name
 }

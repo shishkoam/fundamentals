@@ -12,12 +12,12 @@
         tools:layout="@layout/fragment_movies_details">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            android:id="@+id/openMovieList"
             app:destination="@id/MovieListFragment" />
         <argument
             android:name="currentMovie"
-            app:argType="string"
-            android:defaultValue=""/>
+            app:argType="ua.shishkoam.fundamentals.data.Film"
+            />
 
     </fragment>
     <fragment
@@ -27,7 +27,7 @@
         tools:layout="@layout/fragment_movies_list">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            android:id="@+id/openMovieDetails"
             app:destination="@id/MovieDetailsFragment" />
 
     </fragment>
