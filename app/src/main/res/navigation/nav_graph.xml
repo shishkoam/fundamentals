@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/MovieDetailsFragment"
-        android:name="ua.shishkoam.fundamentals.MovieDetailsFragment"
+        android:name="ua.shishkoam.fundamentals.FragmentMoviesDetails"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/movie_details_fragment">
+        tools:layout="@layout/fragment_movies_details">
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
@@ -22,9 +22,9 @@
     </fragment>
     <fragment
         android:id="@+id/MovieListFragment"
-        android:name="ua.shishkoam.fundamentals.MovieListFragment"
+        android:name="ua.shishkoam.fundamentals.FragmentMoviesList"
         android:label="@string/second_fragment_label"
-        tools:layout="@layout/movie_list_fragment">
+        tools:layout="@layout/fragment_movies_list">
 
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"

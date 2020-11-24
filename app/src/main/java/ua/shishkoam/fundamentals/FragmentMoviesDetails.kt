@@ -21,14 +21,14 @@ import ua.shishkoam.fundamentals.recyclerview.LandingAnimator
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class MovieDetailsFragment : Fragment() {
+class FragmentMoviesDetails : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.movie_details_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_movies_details, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

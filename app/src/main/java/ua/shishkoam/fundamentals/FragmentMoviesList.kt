@@ -2,35 +2,29 @@ package ua.shishkoam.fundamentals
 
 import android.content.res.Configuration
 import android.graphics.LinearGradient
-import android.graphics.Point
 import android.graphics.Shader
 import android.os.Bundle
 import android.os.Handler
-import android.view.Display
 import android.view.View
-import android.view.WindowMetrics
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import ua.shishkoam.fundamentals.data.Film
 import ua.shishkoam.fundamentals.dummy.DummyContent
 import ua.shishkoam.fundamentals.recyclerview.FilmRecyclerViewAdapter
 import ua.shishkoam.fundamentals.recyclerview.GridAutofitLayoutManager
 import ua.shishkoam.fundamentals.recyclerview.LandingAnimator
-import java.lang.Math.abs
 
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class MovieListFragment : Fragment(R.layout.movie_list_fragment) {
+class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
     private val handler = Handler()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,7 +95,7 @@ class MovieListFragment : Fragment(R.layout.movie_list_fragment) {
 
         @JvmStatic
         fun newInstance(columnCount: Int) =
-            MovieListFragment().apply {
+            FragmentMoviesList().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_COLUMN_COUNT, columnCount)
                 }
