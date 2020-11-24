@@ -14,7 +14,13 @@ import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Film
 
 
-class FilmRecyclerViewAdapter(private var values: List<Film>, private val nameShader: Shader? = null, private val listener: OnItemClickListener? = null) :
+class FilmRecyclerViewAdapter(
+    private var values: List<Film>,
+    private val nameShader: Shader? = null,
+    private val likes: Map<String, Boolean> = emptyMap(),
+    private val listener: OnItemClickListener? = null,
+    private val likeListener: OnItemLikeListener? = null
+) :
     RecyclerView.Adapter<FilmRecyclerViewAdapter.RecyclerViewHolder>() {
 
     // Define the listener interface
@@ -22,7 +28,16 @@ class FilmRecyclerViewAdapter(private var values: List<Film>, private val nameSh
         fun onItemClick(itemView: View?, position: Int)
     }
 
-    class RecyclerViewHolder(view: View, listener: OnItemClickListener?, nameShader: Shader? = null) : RecyclerView.ViewHolder(
+    interface OnItemLikeListener {
+        fun onItemLike(itemView: View?, position: Int)
+    }
+
+    class RecyclerViewHolder(
+        view: View,
+        listener: OnItemClickListener?,
+        likeListener: OnItemLikeListener?,
+        nameShader: Shader? = null
+    ) : RecyclerView.ViewHolder(
         view
     ) {
         val name: TextView = view.findViewById(R.id.name)
@@ -31,6 +46,9 @@ class FilmRecyclerViewAdapter(private var values: List<Film>, private val nameSh
         val genre: TextView = view.findViewById(R.id.genre)
         val imageView: ImageView = view.findViewById(R.id.imageView)
         val ratingView: RatingBar = view.findViewById(R.id.rating)
+        val age: TextView = view.findViewById(R.id.age)
+        val like: ImageView = view.findViewById(R.id.like)
+        private var liked = false
         val textShader: Shader? = nameShader
 
         init {
@@ -39,6 +57,26 @@ class FilmRecyclerViewAdapter(private var values: List<Film>, private val nameSh
                 if (position != RecyclerView.NO_POSITION) {
                     listener?.onItemClick(itemView, position)
                 }
+            }
+            like.setOnClickListener { // Triggers click upwards to the adapter on click
+                val position = absoluteAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    likeListener?.onItemLike(itemView, position)
+                }
+                setLike(!liked)
+            }
+        }
+
+
+        fun setLike(
+            isChecked: Boolean
+        ) {
+            liked = isChecked
+            val context = like.context ?: return
+            if (isChecked) {
+                like.setColorFilter(context.resources.getColor(R.color.genre_color))
+            } else {
+                like.clearColorFilter()
             }
         }
 
@@ -56,7 +94,7 @@ class FilmRecyclerViewAdapter(private var values: List<Film>, private val nameSh
         // create a new view
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.movie_item, parent, false)
-        return RecyclerViewHolder(itemView, listener, nameShader)
+        return RecyclerViewHolder(itemView, listener, likeListener, nameShader)
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -75,11 +113,15 @@ class FilmRecyclerViewAdapter(private var values: List<Film>, private val nameSh
         )
         holder.ratingView.rating = item.rating.toFloat()
         holder.genre.text = item.genres
-        holder.time.text =context.getString(R.string.minutes_number, item.time)
+        holder.time.text = context.getString(R.string.minutes_number, item.time)
         Glide.with(context.applicationContext).load(item.image)
             .error(R.mipmap.ic_launcher)
             .into(holder.imageView)
+        holder.age.text = "${item.age}+"
+        holder.setLike(likes[item.name] == true)
     }
+
+
 
 
     // Return the size of your dataset (invoked by the layout manager)

@@ -23,9 +23,14 @@ import ua.shishkoam.fundamentals.recyclerview.LandingAnimator
  */
 class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
     private val handler = Handler()
+    private val likes: HashMap<String, Boolean> = HashMap()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState != null) {
+            likes.putAll(savedInstanceState.getSerializable("likes") as HashMap<String, Boolean>)
+        }
+
         val orientation = this.resources.configuration.orientation
         val viewManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             GridAutofitLayoutManager(requireContext(), -1)
@@ -47,12 +52,23 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
             floatArrayOf(0f, 0.5f, 1f),
             Shader.TileMode.CLAMP
         )
-        val viewAdapter = FilmRecyclerViewAdapter(DummyContent.films, textShader, object : FilmRecyclerViewAdapter.OnItemClickListener {
-            override fun onItemClick(itemView: View?, position: Int) {
-                val action = FragmentMoviesListDirections.openMovieDetails(DummyContent.films[position])
-                findNavController().navigate(action)
+        val data = DummyContent.films
+        val viewAdapter = FilmRecyclerViewAdapter(
+            data, textShader, likes = likes,
+            object : FilmRecyclerViewAdapter.OnItemClickListener {
+                override fun onItemClick(itemView: View?, position: Int) {
+                    val action =
+                        FragmentMoviesListDirections.openMovieDetails(DummyContent.films[position])
+                    findNavController().navigate(action)
+                }
+            },
+            object : FilmRecyclerViewAdapter.OnItemLikeListener {
+                override fun onItemLike(itemView: View?, position: Int) {
+                    val isLiked = likes[data[position].name] ?: false
+                    likes[data[position].name] = !isLiked
+                }
             }
-        })
+        )
         val recyclerView = view.findViewById(R.id.list) as RecyclerView
 
         val swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout) as SwipeRefreshLayout
@@ -84,6 +100,12 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
                 runnable, 3000.toLong()
             )
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable("likes", likes)
+
     }
 
     companion object {
