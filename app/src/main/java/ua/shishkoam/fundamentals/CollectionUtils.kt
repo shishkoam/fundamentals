@@ -12,13 +12,12 @@ object CollectionUtils {
     }
 
     fun fromBundleBooleanMap(input: Bundle?): Map<String, Boolean>? {
-        input?.let {
+        return input?.let {
             val output: MutableMap<String, Boolean> = HashMap()
             for (key in input.keySet()) {
                 output[key] = input.getBoolean(key)
             }
             return output
         }
-        return null
     }
 }
