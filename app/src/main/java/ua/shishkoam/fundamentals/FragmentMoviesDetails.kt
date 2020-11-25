@@ -22,7 +22,7 @@ import ua.shishkoam.fundamentals.recyclerview.LandingAnimator
  */
 class FragmentMoviesDetails : Fragment() {
 
-    val args: FragmentMoviesDetailsArgs by navArgs()
+    private val args: FragmentMoviesDetailsArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,34 +34,34 @@ class FragmentMoviesDetails : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val obj: Film = args.currentMovie
+        val film: Film = args.currentMovie
 
-        (view.findViewById(R.id.back) as Button?)?.setOnClickListener {
+        view.findViewById<Button>(R.id.back_button)?.setOnClickListener {
             findNavController().navigate(R.id.openMovieList)
         }
 
-        initCast(obj, view)
-        Glide.with(requireContext()).load(obj.imageBig)
-            .error(obj.image)
-            .into((view.findViewById(R.id.poster) as ImageView))
-        (view.findViewById(R.id.name) as TextView?)?.text = obj.name
-        (view.findViewById(R.id.genre) as TextView?)?.text = obj.genres
-        (view.findViewById(R.id.rating) as RatingBar?)?.rating = obj.rating.toFloat()
-        (view.findViewById(R.id.story) as TextView?)?.text = obj.story
-        (view.findViewById(R.id.age) as TextView?)?.text = "${obj.age}+"
-        (view.findViewById(R.id.reviews) as TextView?)?.text =
-            requireContext().getString(R.string.reviews_number, obj.reviewNum)
+        initCast(film, view)
+        Glide.with(requireContext()).load(film.imageBig)
+            .error(film.image)
+            .into(view.findViewById<ImageView>(R.id.poster))
+        view.findViewById<TextView>(R.id.name_text)?.text = film.name
+        view.findViewById<TextView>(R.id.genre_text)?.text = film.genres
+        view.findViewById<RatingBar>(R.id.rating_bar)?.rating = film.rating.toFloat()
+        view.findViewById<TextView>(R.id.story_text)?.text = film.story
+        view.findViewById<TextView>(R.id.age_text)?.text = "${film.age}+"
+        view.findViewById<TextView>(R.id.reviews_text)?.text =
+            requireContext().getString(R.string.reviews_number, film.reviewNum)
     }
 
-    private fun initCast(obj: Film, view: View) {
-        obj.cast?.let {
-            val defaultItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
-            val viewAdapter = ActorRecyclerViewAdapter(obj.cast)
-            val recyclerView = view.findViewById(R.id.list) as RecyclerView
-            recyclerView.apply {
+    private fun initCast(film: Film, view: View) {
+        film.cast?.let {
+            val landingItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
+            val actorViewAdapter = ActorRecyclerViewAdapter(film.cast)
+            val actorRecyclerView = view.findViewById(R.id.actor_list) as RecyclerView
+            actorRecyclerView.run {
                 setHasFixedSize(true)
-                adapter = viewAdapter
-                itemAnimator = defaultItemAnimator
+                adapter = actorViewAdapter
+                itemAnimator = landingItemAnimator
             }
         }
     }

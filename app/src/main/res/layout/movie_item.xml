@@ -18,13 +18,13 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/photo_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@string/movie_poster"
             android:src="@drawable/movie"
-            card_view:layout_constraintBottom_toTopOf="@+id/name"
+            card_view:layout_constraintBottom_toTopOf="@+id/name_text"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />
@@ -35,26 +35,26 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:src="@drawable/mask"
-            card_view:layout_constraintBottom_toTopOf="@+id/name"
+            card_view:layout_constraintBottom_toTopOf="@+id/name_text"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
 
         <TextView
-            android:id="@+id/genre"
+            android:id="@+id/genre_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/test_genre"
             android:textColor="@color/genre_color"
             android:textSize="@dimen/text_secondary"
-            card_view:layout_constraintBottom_toTopOf="@+id/rating"
+            card_view:layout_constraintBottom_toTopOf="@+id/rating_bar"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0"
             card_view:layout_constraintStart_toStartOf="parent" />
 
         <RatingBar
-            android:id="@+id/rating"
+            android:id="@+id/rating_bar"
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,37 +65,37 @@
             android:progressTint="@color/genre_color"
             android:rating="4"
             android:stepSize="0.1"
-            card_view:layout_constraintBottom_toBottomOf="@+id/imageView"
+            card_view:layout_constraintBottom_toBottomOf="@+id/photo_image"
             card_view:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/reviews"
+            android:id="@+id/reviews_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/half_margin_medium"
             android:textColor="@color/text_secondary"
             android:textSize="@dimen/text_secondary"
-            card_view:layout_constraintBottom_toBottomOf="@+id/imageView"
+            card_view:layout_constraintBottom_toBottomOf="@+id/photo_image"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.0"
-            card_view:layout_constraintStart_toEndOf="@id/rating"
+            card_view:layout_constraintStart_toEndOf="@id/rating_bar"
             tools:text="12 Reviews" />
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/name_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_primary"
-            card_view:layout_constraintBottom_toTopOf="@+id/time"
+            card_view:layout_constraintBottom_toTopOf="@+id/time_text"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.0"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/imageView"
+            card_view:layout_constraintTop_toBottomOf="@+id/photo_image"
             tools:text="Avengers" />
 
         <TextView
-            android:id="@+id/time"
+            android:id="@+id/time_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/text_third"
@@ -103,12 +103,12 @@
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.0"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/name"
+            card_view:layout_constraintTop_toBottomOf="@+id/name_text"
             tools:text="120 MIN" />
 
 
         <TextView
-            android:id="@+id/age"
+            android:id="@+id/age_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/half_margin_medium"
