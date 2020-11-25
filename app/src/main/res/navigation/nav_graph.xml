@@ -3,26 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/SecondFragment">
+    app:startDestination="@id/MovieListFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="ua.shishkoam.fundamentals.MovieDetailsFragment"
+        android:id="@+id/MovieDetailsFragment"
+        android:name="ua.shishkoam.fundamentals.FragmentMoviesDetails"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/movie_details_fragment">
+        tools:layout="@layout/fragment_movies_details">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/openMovieList"
+            app:destination="@id/MovieListFragment" />
+        <argument
+            android:name="currentMovie"
+            app:argType="ua.shishkoam.fundamentals.data.Film"
+            />
+
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="ua.shishkoam.fundamentals.MovieListFragment"
+        android:id="@+id/MovieListFragment"
+        android:name="ua.shishkoam.fundamentals.FragmentMoviesList"
         android:label="@string/second_fragment_label"
-        tools:layout="@layout/movie_list_fragment">
+        tools:layout="@layout/fragment_movies_list">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/openMovieDetails"
+            app:destination="@id/MovieDetailsFragment" />
+
     </fragment>
 </navigation>

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/list_background"
-    tools:context=".MovieListFragment">
+    tools:context=".FragmentMoviesList">
 
     <ImageView
         android:id="@+id/combined"
@@ -50,7 +50,7 @@
         app:layout_constraintTop_toBottomOf="@+id/text_view_first">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list"
+            android:id="@+id/actor_list"
             android:name="MovieListFragment"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
