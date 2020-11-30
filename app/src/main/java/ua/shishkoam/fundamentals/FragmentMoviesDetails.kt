@@ -13,8 +13,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
+import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
+import ua.shishkoam.fundamentals.data.Actor
 import ua.shishkoam.fundamentals.data.Film
-import ua.shishkoam.fundamentals.recyclerview.ActorRecyclerViewAdapter
 import ua.shishkoam.fundamentals.recyclerview.LandingAnimator
 
 /**
@@ -55,14 +57,35 @@ class FragmentMoviesDetails : Fragment() {
 
     private fun initCast(film: Film, view: View) {
         film.cast?.let {
+            val listAdapter = createActorDelegationAdapter(film)
             val landingItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
-            val actorViewAdapter = ActorRecyclerViewAdapter(film.cast)
+//            val actorViewAdapter = ActorRecyclerViewAdapter(film.cast)
             val actorRecyclerView = view.findViewById(R.id.movie_list) as RecyclerView
             actorRecyclerView.run {
                 setHasFixedSize(true)
-                adapter = actorViewAdapter
+//                adapter = actorViewAdapter
+                adapter = listAdapter
                 itemAnimator = landingItemAnimator
             }
         }
+    }
+
+    private fun createActorDelegationAdapter(film: Film): ListDelegationAdapter<List<Actor>> {
+        fun actorAdapterDelegate() = adapterDelegate<Actor, Actor>(R.layout.view_holder_actor) {
+            val name: TextView = findViewById(R.id.name_text)
+            val photoImage: ImageView = findViewById(R.id.photo_image)
+            bind {
+                name.text = item.name
+                Glide.with(photoImage.context.applicationContext).load(item.photo)
+                    .error(R.mipmap.ic_launcher)
+                    .into(photoImage)
+            }
+        }
+
+        val listAdapter = ListDelegationAdapter(
+            actorAdapterDelegate()
+        )
+        listAdapter.items = film.cast
+        return listAdapter
     }
 }
