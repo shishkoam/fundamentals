@@ -36,7 +36,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
 
         val orientation = this.resources.configuration.orientation
         val filmRecyclerViewManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            GridAutofitLayoutManager(requireContext(), AUTO_FIT)
+            GridAutofitLayoutManager(requireContext(), AUTO_FIT, 166f)
         } else {
             GridLayoutManager(requireContext(), 2)
         }
@@ -72,7 +72,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
                 }
             }
         )
-        val recyclerView = view.findViewById(R.id.actor_list) as RecyclerView
+        val recyclerView = view.findViewById(R.id.movie_list) as RecyclerView
 
         val swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout) as SwipeRefreshLayout
         recyclerView.run {

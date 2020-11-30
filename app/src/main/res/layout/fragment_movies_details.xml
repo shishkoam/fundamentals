@@ -7,12 +7,10 @@
     android:background="@color/card_background"
     tools:context=".FragmentMoviesDetails">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".FragmentMoviesDetails">
-
         <ImageView
             android:id="@+id/poster"
             android:layout_width="0dp"
@@ -23,7 +21,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
         <ImageView
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -34,7 +31,6 @@
             app:layout_constraintTop_toTopOf="@+id/poster"
             app:layout_constraintBottom_toBottomOf="@+id/poster"
             tools:ignore="ContentDescription" />
-
         <View
             android:id="@+id/guidline"
             android:layout_width="0dp"
@@ -43,7 +39,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/poster" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,7 +55,6 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/name_text"
             app:layout_constraintStart_toStartOf="parent" />
-
         <TextView
             android:id="@+id/name_text"
             android:layout_width="match_parent"
@@ -79,8 +73,6 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/guidline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-
         <TextView
             android:id="@+id/genre_text"
             android:layout_width="match_parent"
@@ -97,7 +89,6 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name_text" />
-
         <RatingBar
             android:id="@+id/rating_bar"
             style="?android:attr/ratingBarStyleSmall"
@@ -116,7 +107,6 @@
             android:stepSize="0.1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/genre_text" />
-
         <TextView
             android:id="@+id/reviews_text"
             android:layout_width="wrap_content"
@@ -134,7 +124,6 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/rating_bar"
             app:layout_constraintTop_toBottomOf="@+id/genre_text" />
-
         <TextView
             android:id="@+id/header_story"
             android:layout_width="match_parent"
@@ -152,8 +141,6 @@
             android:text="@string/storyline"
             android:textAppearance="@style/header_inside"
             app:layout_constraintTop_toBottomOf="@id/rating_bar" />
-
-
         <TextView
             android:id="@+id/story_text"
             android:layout_width="match_parent"
@@ -172,7 +159,6 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_medium"
             app:layout_constraintTop_toBottomOf="@id/header_story" />
-
         <TextView
             android:id="@+id/cast"
             android:layout_width="match_parent"
@@ -190,7 +176,6 @@
             android:text="@string/cast"
             android:textAppearance="@style/header_inside"
             app:layout_constraintTop_toBottomOf="@id/story_text" />
-
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -212,17 +197,18 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/actor_list"
-            android:layout_width="0dp"
+            android:id="@+id/movie_list"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/small_margin"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cast"
             app:spanCount="4"
             tools:itemCount="4"
-            tools:listitem="@layout/actor_item" />
+            tools:listitem="@layout/view_holder_actor" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

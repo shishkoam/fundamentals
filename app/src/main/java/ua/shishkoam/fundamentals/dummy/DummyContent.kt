@@ -40,6 +40,18 @@ object DummyContent {
                 R.drawable.actor4
             )
         )
+        addActor(
+            Actor(
+                "Robert Downey Jr.",
+                R.drawable.actor1
+            )
+        )
+        addActor(
+            Actor(
+                "Chris Evans",
+                R.drawable.actor2
+            )
+        )
         // Add some sample items.
         addFilm(
             Film(

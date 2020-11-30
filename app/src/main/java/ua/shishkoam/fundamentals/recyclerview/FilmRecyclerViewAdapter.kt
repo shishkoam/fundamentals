@@ -34,7 +34,7 @@ class FilmRecyclerViewAdapter(
     ): FilmViewHolder {
         // create a new view
         val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.movie_item, parent, false)
+            .inflate(R.layout.view_holder_movie, parent, false)
         return FilmViewHolder(itemView, onItemClickListener, onItemLikeListener, nameShader)
     }
 
