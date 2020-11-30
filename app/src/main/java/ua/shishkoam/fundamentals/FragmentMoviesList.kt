@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import ua.shishkoam.fundamentals.data.Film
@@ -143,9 +142,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
                 ratingView.rating = item.rating.toFloat()
                 genreTextView.text = item.genres
                 timeTextView.text = context.getString(R.string.minutes_number, item.time)
-                Glide.with(context.applicationContext).load(item.image)
-                    .error(R.mipmap.ic_launcher)
-                    .into(posterImageView)
+                ImageLoader.loadImage(posterImageView, item.image)
                 ageTextView.text = "${item.age}+"
                 setLikeColor(likedFilms[item.name] == true, likeImageView, context)
             }

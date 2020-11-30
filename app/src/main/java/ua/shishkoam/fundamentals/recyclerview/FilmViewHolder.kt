@@ -8,7 +8,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import ua.shishkoam.fundamentals.ImageLoader
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Film
 
@@ -64,9 +64,7 @@ class FilmViewHolder(
         ratingView.rating = item.rating.toFloat()
         genreTextView.text = item.genres
         timeTextView.text = context.getString(R.string.minutes_number, item.time)
-        Glide.with(context.applicationContext).load(item.image)
-            .error(R.mipmap.ic_launcher)
-            .into(posterImageView)
+        ImageLoader.loadImage(posterImageView, item.image)
         ageTextView.text = "${item.age}+"
         setLike(isLiked)
     }

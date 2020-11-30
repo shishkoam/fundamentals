@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import ua.shishkoam.fundamentals.data.Actor
@@ -43,9 +42,8 @@ class FragmentMoviesDetails : Fragment() {
         }
 
         initCast(film, view)
-        Glide.with(requireContext()).load(film.imageBig)
-            .error(film.image)
-            .into(view.findViewById<ImageView>(R.id.poster))
+        ImageLoader.loadImage(view.findViewById<ImageView>(R.id.poster), film.imageBig,film.image )
+
         view.findViewById<TextView>(R.id.name_text)?.text = film.name
         view.findViewById<TextView>(R.id.genre_text)?.text = film.genres
         view.findViewById<RatingBar>(R.id.rating_bar)?.rating = film.rating.toFloat()
@@ -76,9 +74,7 @@ class FragmentMoviesDetails : Fragment() {
             val photoImage: ImageView = findViewById(R.id.photo_image)
             bind {
                 name.text = item.name
-                Glide.with(photoImage.context.applicationContext).load(item.photo)
-                    .error(R.mipmap.ic_launcher)
-                    .into(photoImage)
+                ImageLoader.loadImage(photoImage, item.photo)
             }
         }
 
