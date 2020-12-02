@@ -1,14 +1,10 @@
 package ua.shishkoam.fundamentals
 
-import android.content.Context
 import android.content.res.Configuration
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
-import android.widget.RatingBar
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -16,13 +12,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import ua.shishkoam.fundamentals.data.Film
 import ua.shishkoam.fundamentals.dummy.DummyContent
-import ua.shishkoam.fundamentals.recyclerview.FilmRecyclerViewAdapter
-import ua.shishkoam.fundamentals.recyclerview.GridAutofitLayoutManager
+import ua.shishkoam.fundamentals.recyclerview.*
 import ua.shishkoam.fundamentals.recyclerview.GridAutofitLayoutManager.Companion.AUTO_FIT
-import ua.shishkoam.fundamentals.recyclerview.LandingAnimator
 
 
 /**
@@ -43,9 +36,9 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
 
         val orientation = this.resources.configuration.orientation
         val filmRecyclerViewManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            GridAutofitLayoutManager(requireContext(), AUTO_FIT, 166f)
+            GridAutofitLayoutManager(requireContext(), AUTO_FIT, RECOMMENDED_FILM_WIDTH)
         } else {
-            GridLayoutManager(requireContext(), 2)
+            GridLayoutManager(requireContext(), VERTICAL_COLUMN_COUNT)
         }
 
         val landingItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
@@ -66,9 +59,9 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
 
         val listAdapter = createFilmAdapterDelegate(films, textShader)
 //        val filmRecyclerViewAdapter = createFilmAdapter(films, textShader)
-        val recyclerView = view.findViewById(R.id.movie_list) as RecyclerView
+        val recyclerView = view.findViewById<RecyclerView>(R.id.movie_list)
 
-        val swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout) as SwipeRefreshLayout
+        val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
         recyclerView.run {
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
@@ -91,67 +84,22 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
 
     private fun createFilmAdapterDelegate(
         films: MutableList<Film>,
-        textShader: LinearGradient) : ListDelegationAdapter<List<Film>> {
-        fun setLikeColor(
-            isChecked: Boolean,
-            likeImageView: ImageView,
-            context: Context
-        ) {
-            if (isChecked) {
-                likeImageView.setColorFilter(
-                    ContextCompat.getColor(context, R.color.genre_color)
-                )
-            } else {
-                likeImageView.clearColorFilter()
-            }
-        }
-
-        fun filmAdapterDelegate() = adapterDelegate<Film, Film>(R.layout.view_holder_movie) {
-            val nameTextView: TextView = findViewById(R.id.name_text)
-            val reviewsTextView: TextView = findViewById(R.id.reviews_text)
-            val timeTextView: TextView = findViewById(R.id.time_text)
-            val genreTextView: TextView = findViewById(R.id.genre_text)
-            val posterImageView: ImageView = findViewById(R.id.photo_image)
-            val ratingView: RatingBar = findViewById(R.id.rating_bar)
-            val ageTextView: TextView = findViewById(R.id.age_text)
-            val likeImageView: ImageView = findViewById(R.id.like)
-            val nameTextShader: Shader? = textShader
-            itemView.setOnClickListener { // Triggers click upwards to the adapter on click
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
+        textShader: LinearGradient
+    ): ListDelegationAdapter<List<Film>> {
+        return FilmDelegateAdapter(films = films, textShader = textShader,
+            likedFilms = likedFilms,
+            onFilmClickListener = object : OnFilmClickListener {
+                override fun onFilmClick(item: Film) {
                     val action =
                         FragmentMoviesListDirections.openMovieDetails(item)
                     findNavController().navigate(action)
                 }
-            }
-            likeImageView.setOnClickListener { // Triggers click upwards to the adapter on click
-                val likedState = likedFilms[item.name] ?: false
-                likedFilms[item.name] = !likedState
-                setLikeColor(!likedState, likeImageView, context)
-            }
-            bind {
-                nameTextView.text = item.name
-                val context: Context = nameTextView.context
-                nameTextShader?.let {
-                    nameTextView.paint.shader = nameTextShader
+            },
+            onFilmLikeListener = object : OnFilmLikeListener {
+                override fun onFilmLike(item: Film, likedState: Boolean) {
+                    likedFilms[item.name] = likedState
                 }
-                reviewsTextView.text = context.getString(
-                    R.string.reviews_number,
-                    item.reviewNum
-                )
-                ratingView.rating = item.rating.toFloat()
-                genreTextView.text = item.genres
-                timeTextView.text = context.getString(R.string.minutes_number, item.time)
-                ImageLoader.loadImage(posterImageView, item.image)
-                ageTextView.text = "${item.age}+"
-                setLikeColor(likedFilms[item.name] == true, likeImageView, context)
-            }
-        }
-        val listAdapter = ListDelegationAdapter(
-            filmAdapterDelegate()
-        )
-        listAdapter.items = films
-        return listAdapter
+            })
     }
 
     private fun createFilmAdapter(
@@ -160,17 +108,16 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
     ): FilmRecyclerViewAdapter {
         val filmRecyclerViewAdapter = FilmRecyclerViewAdapter(
             values = films, nameShader = textShader, likedFilms = likedFilms,
-            onItemClickListener = object : FilmRecyclerViewAdapter.OnItemClickListener {
-                override fun onItemClick(itemView: View?, position: Int) {
+            onFilmClickListener = object : OnFilmClickListener {
+                override fun onFilmClick(item: Film) {
                     val action =
-                        FragmentMoviesListDirections.openMovieDetails(DummyContent.films[position])
+                        FragmentMoviesListDirections.openMovieDetails(item)
                     findNavController().navigate(action)
                 }
             },
-            onItemLikeListener = object : FilmRecyclerViewAdapter.OnItemLikeListener {
-                override fun onItemLike(itemView: View?, position: Int) {
-                    val isLiked = likedFilms[films[position].name] ?: false
-                    likedFilms[films[position].name] = !isLiked
+            onFilmLikeListener = object : OnFilmLikeListener {
+                override fun onFilmLike(item: Film, likedState: Boolean) {
+                    likedFilms[item.name] = likedState
                 }
             }
         )
@@ -184,6 +131,8 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
 
     companion object {
         const val ARG_COLUMN_COUNT = "column-count"
+        const val RECOMMENDED_FILM_WIDTH = 166f
+        const val VERTICAL_COLUMN_COUNT = 2
 
         @JvmStatic
         fun newInstance(columnCount: Int) =

@@ -42,10 +42,10 @@
             tools:ignore="ContentDescription" />
 
         <TextView
-            android:paddingStart="@dimen/very_small_margin"
             android:id="@+id/genre_text"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/very_small_margin"
             android:text="@string/test_genre"
             android:textColor="@color/genre_color"
             android:textSize="@dimen/text_secondary"
@@ -56,11 +56,11 @@
             tools:ignore="RtlSymmetry" />
 
         <RatingBar
-            android:layout_marginStart="@dimen/very_small_margin"
             android:id="@+id/rating_bar"
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/very_small_margin"
             android:isIndicator="true"
             android:numStars="5"
             android:progressTint="@color/genre_color"
@@ -72,7 +72,7 @@
 
         <TextView
             android:id="@+id/reviews_text"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/half_margin_medium"
             android:textColor="@color/text_secondary"
@@ -84,10 +84,10 @@
             tools:text="12 Reviews" />
 
         <TextView
-            android:paddingStart="@dimen/very_small_margin"
             android:id="@+id/name_text"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/very_small_margin"
             android:textColor="@color/text_primary"
             android:textSize="@dimen/text_primary"
             card_view:layout_constraintBottom_toTopOf="@+id/time_text"
@@ -95,22 +95,22 @@
             card_view:layout_constraintHorizontal_bias="0.0"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/photo_image"
-            tools:text="Avengers"
-            tools:ignore="RtlSymmetry" />
+            tools:ignore="RtlSymmetry"
+            tools:text="Avengers" />
 
         <TextView
-            android:paddingStart="@dimen/very_small_margin"
             android:id="@+id/time_text"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/very_small_margin"
             android:textColor="@color/text_third"
             android:textSize="@dimen/text_secondary"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintHorizontal_bias="0.0"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/name_text"
-            tools:text="120 MIN"
-            tools:ignore="RtlSymmetry" />
+            tools:ignore="RtlSymmetry"
+            tools:text="120 MIN" />
 
 
         <TextView
@@ -130,11 +130,11 @@
             android:id="@+id/like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/margin_like"
-            android:paddingBottom="@dimen/margin_like"
-            android:paddingEnd="@dimen/margin_like"
-            android:paddingStart="@dimen/margin_like"
             android:contentDescription="@string/like"
+            android:paddingStart="@dimen/margin_like"
+            android:paddingTop="@dimen/margin_like"
+            android:paddingEnd="@dimen/margin_like"
+            android:paddingBottom="@dimen/margin_like"
             android:src="@drawable/ic_favorite_white_18dp"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintTop_toTopOf="parent" />

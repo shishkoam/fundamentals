@@ -12,10 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
-import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
-import ua.shishkoam.fundamentals.data.Actor
 import ua.shishkoam.fundamentals.data.Film
+import ua.shishkoam.fundamentals.recyclerview.ActorDelegateAdapter
 import ua.shishkoam.fundamentals.recyclerview.LandingAnimator
 
 /**
@@ -55,10 +53,10 @@ class FragmentMoviesDetails : Fragment() {
 
     private fun initCast(film: Film, view: View) {
         film.cast?.let {
-            val listAdapter = createActorDelegationAdapter(film)
+            val listAdapter = ActorDelegateAdapter(film.cast)
             val landingItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
 //            val actorViewAdapter = ActorRecyclerViewAdapter(film.cast)
-            val actorRecyclerView = view.findViewById(R.id.movie_list) as RecyclerView
+            val actorRecyclerView = view.findViewById<RecyclerView>(R.id.movie_list)
             actorRecyclerView.run {
                 setHasFixedSize(true)
 //                adapter = actorViewAdapter
@@ -66,22 +64,5 @@ class FragmentMoviesDetails : Fragment() {
                 itemAnimator = landingItemAnimator
             }
         }
-    }
-
-    private fun createActorDelegationAdapter(film: Film): ListDelegationAdapter<List<Actor>> {
-        fun actorAdapterDelegate() = adapterDelegate<Actor, Actor>(R.layout.view_holder_actor) {
-            val name: TextView = findViewById(R.id.name_text)
-            val photoImage: ImageView = findViewById(R.id.photo_image)
-            bind {
-                name.text = item.name
-                ImageLoader.loadImage(photoImage, item.photo)
-            }
-        }
-
-        val listAdapter = ListDelegationAdapter(
-            actorAdapterDelegate()
-        )
-        listAdapter.items = film.cast
-        return listAdapter
     }
 }
