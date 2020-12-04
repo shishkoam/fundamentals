@@ -8,14 +8,14 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import ua.shishkoam.fundamentals.ImageLoader
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Film
 
 class FilmViewHolder(
     view: View,
-    listener: FilmRecyclerViewAdapter.OnItemClickListener?,
-    likeListener: FilmRecyclerViewAdapter.OnItemLikeListener?,
+    private val listener: OnFilmClickListener?,
+    private val likeListener: OnFilmLikeListener?,
     nameShader: Shader? = null
 ) : RecyclerView.ViewHolder(
     view
@@ -31,27 +31,23 @@ class FilmViewHolder(
     private var likedState = false
     private val nameTextShader: Shader? = nameShader
 
-    init {
-        itemView.setOnClickListener { // Triggers click upwards to the adapter on click
-            val position = bindingAdapterPosition
-            if (position != RecyclerView.NO_POSITION) {
-                listener?.onItemClick(itemView, position)
-            }
-        }
-        likeImageView.setOnClickListener { // Triggers click upwards to the adapter on click
-            val position = absoluteAdapterPosition
-            if (position != RecyclerView.NO_POSITION) {
-                likeListener?.onItemLike(itemView, position)
-            }
-            setLike(!likedState)
-        }
-    }
-
-
     fun onBind(
         item: Film, isLiked: Boolean
     ) {
-
+        itemView.setOnClickListener { // Triggers click upwards to the adapter on click
+            val position = bindingAdapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                listener?.onFilmClick(item)
+            }
+        }
+        likeImageView.setOnClickListener { // Triggers click upwards to the adapter on click
+            likedState = !likedState
+            val position = absoluteAdapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                likeListener?.onFilmLike(item, likedState)
+            }
+            setLike(likedState)
+        }
         nameTextView.text = item.name
         val context: Context = nameTextView.context
         nameTextShader?.let {
@@ -64,18 +60,15 @@ class FilmViewHolder(
         ratingView.rating = item.rating.toFloat()
         genreTextView.text = item.genres
         timeTextView.text = context.getString(R.string.minutes_number, item.time)
-        Glide.with(context.applicationContext).load(item.image)
-            .error(R.mipmap.ic_launcher)
-            .into(posterImageView)
+        ImageLoader.loadImage(posterImageView, item.image)
         ageTextView.text = "${item.age}+"
-        setLike(isLiked)
+        likedState = isLiked
+        setLike(likedState)
     }
-
 
     private fun setLike(
         isChecked: Boolean
     ) {
-        likedState = isChecked
         val context = likeImageView.context ?: return
         if (isChecked) {
             likeImageView.setColorFilter(ContextCompat.getColor(context, R.color.genre_color))

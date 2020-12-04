@@ -12,9 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import ua.shishkoam.fundamentals.data.Film
-import ua.shishkoam.fundamentals.recyclerview.ActorRecyclerViewAdapter
+import ua.shishkoam.fundamentals.recyclerview.ActorDelegateAdapter
 import ua.shishkoam.fundamentals.recyclerview.LandingAnimator
 
 /**
@@ -41,9 +40,8 @@ class FragmentMoviesDetails : Fragment() {
         }
 
         initCast(film, view)
-        Glide.with(requireContext()).load(film.imageBig)
-            .error(film.image)
-            .into(view.findViewById<ImageView>(R.id.poster))
+        ImageLoader.loadImage(view.findViewById<ImageView>(R.id.poster), film.imageBig,film.image )
+
         view.findViewById<TextView>(R.id.name_text)?.text = film.name
         view.findViewById<TextView>(R.id.genre_text)?.text = film.genres
         view.findViewById<RatingBar>(R.id.rating_bar)?.rating = film.rating.toFloat()
@@ -55,12 +53,13 @@ class FragmentMoviesDetails : Fragment() {
 
     private fun initCast(film: Film, view: View) {
         film.cast?.let {
+            val listAdapter = ActorDelegateAdapter(film.cast)
             val landingItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
-            val actorViewAdapter = ActorRecyclerViewAdapter(film.cast)
-            val actorRecyclerView = view.findViewById(R.id.actor_list) as RecyclerView
-            actorRecyclerView.run {
+//            val actorViewAdapter = ActorRecyclerViewAdapter(film.cast)
+            view.findViewById<RecyclerView>(R.id.movie_list).run {
                 setHasFixedSize(true)
-                adapter = actorViewAdapter
+//                adapter = actorViewAdapter
+                adapter = listAdapter
                 itemAnimator = landingItemAnimator
             }
         }

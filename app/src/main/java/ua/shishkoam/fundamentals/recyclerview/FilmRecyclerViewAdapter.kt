@@ -2,7 +2,6 @@ package ua.shishkoam.fundamentals.recyclerview
 
 import android.graphics.Shader
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ua.shishkoam.fundamentals.R
@@ -13,19 +12,10 @@ class FilmRecyclerViewAdapter(
     private var values: List<Film>,
     private val nameShader: Shader? = null,
     private val likedFilms: Map<String, Boolean> = emptyMap(),
-    private val onItemClickListener: OnItemClickListener? = null,
-    private val onItemLikeListener: OnItemLikeListener? = null
+    private val onFilmClickListener: OnFilmClickListener? = null,
+    private val onFilmLikeListener: OnFilmLikeListener? = null
 ) :
     RecyclerView.Adapter<FilmViewHolder>() {
-
-    // Define the listener interface
-    interface OnItemClickListener {
-        fun onItemClick(itemView: View?, position: Int)
-    }
-
-    interface OnItemLikeListener {
-        fun onItemLike(itemView: View?, position: Int)
-    }
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(
@@ -34,8 +24,8 @@ class FilmRecyclerViewAdapter(
     ): FilmViewHolder {
         // create a new view
         val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.movie_item, parent, false)
-        return FilmViewHolder(itemView, onItemClickListener, onItemLikeListener, nameShader)
+            .inflate(R.layout.view_holder_movie, parent, false)
+        return FilmViewHolder(itemView, onFilmClickListener, onFilmLikeListener, nameShader)
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -45,7 +35,7 @@ class FilmRecyclerViewAdapter(
         val item = values[position]
         holder.onBind(item, likedFilms[item.name] == true)
     }
-    
+
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = values.size
 

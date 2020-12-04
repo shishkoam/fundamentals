@@ -11,13 +11,15 @@ class GridAutofitLayoutManager : GridLayoutManager {
     private var isColumnWidthChanged = true
     private var lastWidth = 0
     private var lastHeight = 0
+    private var recommendedItemWidth = 0f
 
     companion object{
         const val AUTO_FIT = -1
     }
 
-    constructor(context: Context, columnWidth: Int) : super(context, 1) {
+    constructor(context: Context, columnWidth: Int, recommendedItemWidth: Float) : super(context, 1) {
         /* Initially set spanCount to 1, will be changed automatically later. */
+        this.recommendedItemWidth = recommendedItemWidth
         setColumnWidth(checkedColumnWidth(context, columnWidth))
     }
 
@@ -38,7 +40,7 @@ class GridAutofitLayoutManager : GridLayoutManager {
                 to static constant on top, but we need context to convert it to dp, so can't really
                 do so. */
             TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 166f,
+                TypedValue.COMPLEX_UNIT_DIP, recommendedItemWidth,
                 context.resources.displayMetrics
             ).toInt()
         } else {

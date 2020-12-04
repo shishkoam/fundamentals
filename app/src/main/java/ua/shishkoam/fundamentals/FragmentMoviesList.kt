@@ -11,11 +11,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
+import ua.shishkoam.fundamentals.data.Film
 import ua.shishkoam.fundamentals.dummy.DummyContent
-import ua.shishkoam.fundamentals.recyclerview.FilmRecyclerViewAdapter
-import ua.shishkoam.fundamentals.recyclerview.GridAutofitLayoutManager
+import ua.shishkoam.fundamentals.recyclerview.*
 import ua.shishkoam.fundamentals.recyclerview.GridAutofitLayoutManager.Companion.AUTO_FIT
-import ua.shishkoam.fundamentals.recyclerview.LandingAnimator
 
 
 /**
@@ -36,16 +36,16 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
 
         val orientation = this.resources.configuration.orientation
         val filmRecyclerViewManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            GridAutofitLayoutManager(requireContext(), AUTO_FIT)
+            GridAutofitLayoutManager(requireContext(), AUTO_FIT, RECOMMENDED_FILM_WIDTH)
         } else {
-            GridLayoutManager(requireContext(), 2)
+            GridLayoutManager(requireContext(), VERTICAL_COLUMN_COUNT)
         }
 
         val landingItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
 
-        val firstColor = ContextCompat.getColor(requireContext(), R.color.text_color_gradient_1);
-        val secondColor = ContextCompat.getColor(requireContext(), R.color.text_color_gradient_2);
-        val thirdColor = ContextCompat.getColor(requireContext(), R.color.text_color_gradient_3);
+        val firstColor = ContextCompat.getColor(requireContext(), R.color.text_color_gradient_1)
+        val secondColor = ContextCompat.getColor(requireContext(), R.color.text_color_gradient_2)
+        val thirdColor = ContextCompat.getColor(requireContext(), R.color.text_color_gradient_3)
         val textShader = LinearGradient(
             0f,
             0f,
@@ -56,25 +56,12 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
             Shader.TileMode.CLAMP
         )
         val films = DummyContent.films
-        val filmRecyclerViewAdapter = FilmRecyclerViewAdapter(
-            values = films, nameShader = textShader, likedFilms = likedFilms,
-            onItemClickListener = object : FilmRecyclerViewAdapter.OnItemClickListener {
-                override fun onItemClick(itemView: View?, position: Int) {
-                    val action =
-                        FragmentMoviesListDirections.openMovieDetails(DummyContent.films[position])
-                    findNavController().navigate(action)
-                }
-            },
-            onItemLikeListener = object : FilmRecyclerViewAdapter.OnItemLikeListener {
-                override fun onItemLike(itemView: View?, position: Int) {
-                    val isLiked = likedFilms[films[position].name] ?: false
-                    likedFilms[films[position].name] = !isLiked
-                }
-            }
-        )
-        val recyclerView = view.findViewById(R.id.actor_list) as RecyclerView
 
-        val swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout) as SwipeRefreshLayout
+        val listAdapter = createFilmAdapterDelegate(films, textShader)
+//        val filmRecyclerViewAdapter = createFilmAdapter(films, textShader)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.movie_list)
+
+        val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
         recyclerView.run {
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
@@ -83,8 +70,8 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
             // use a linear layout manager
             layoutManager = filmRecyclerViewManager
 
-            // specify an viewAdapter (see also next example)
-            adapter = filmRecyclerViewAdapter
+//            adapter = filmRecyclerViewAdapter
+            adapter = listAdapter
             itemAnimator = landingItemAnimator
 
 
@@ -95,6 +82,48 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
         }
     }
 
+    private fun createFilmAdapterDelegate(
+        films: MutableList<Film>,
+        textShader: LinearGradient
+    ): ListDelegationAdapter<List<Film>> {
+        return FilmDelegateAdapter(films = films, textShader = textShader,
+            likedFilms = likedFilms,
+            onFilmClickListener = object : OnFilmClickListener {
+                override fun onFilmClick(item: Film) {
+                    val action =
+                        FragmentMoviesListDirections.openMovieDetails(item)
+                    findNavController().navigate(action)
+                }
+            },
+            onFilmLikeListener = object : OnFilmLikeListener {
+                override fun onFilmLike(item: Film, likedState: Boolean) {
+                    likedFilms[item.name] = likedState
+                }
+            })
+    }
+
+    private fun createFilmAdapter(
+        films: MutableList<Film>,
+        textShader: LinearGradient
+    ): FilmRecyclerViewAdapter {
+        val filmRecyclerViewAdapter = FilmRecyclerViewAdapter(
+            values = films, nameShader = textShader, likedFilms = likedFilms,
+            onFilmClickListener = object : OnFilmClickListener {
+                override fun onFilmClick(item: Film) {
+                    val action =
+                        FragmentMoviesListDirections.openMovieDetails(item)
+                    findNavController().navigate(action)
+                }
+            },
+            onFilmLikeListener = object : OnFilmLikeListener {
+                override fun onFilmLike(item: Film, likedState: Boolean) {
+                    likedFilms[item.name] = likedState
+                }
+            }
+        )
+        return filmRecyclerViewAdapter
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable("likes", CollectionUtils.toBundleBooleanMap(likedFilms))
@@ -102,6 +131,8 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
 
     companion object {
         const val ARG_COLUMN_COUNT = "column-count"
+        const val RECOMMENDED_FILM_WIDTH = 166f
+        const val VERTICAL_COLUMN_COUNT = 2
 
         @JvmStatic
         fun newInstance(columnCount: Int) =

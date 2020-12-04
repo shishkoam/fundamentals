@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import ua.shishkoam.fundamentals.ImageLoader
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Actor
 
@@ -18,8 +18,6 @@ class ActorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     fun onBind(actor: Actor) {
         nameText.text = actor.name
-        Glide.with(photoImage.context.applicationContext).load(actor.photo)
-            .error(R.mipmap.ic_launcher)
-            .into(photoImage)
+        ImageLoader.loadImage(photoImage, actor.photo)
     }
 }

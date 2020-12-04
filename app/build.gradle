@@ -62,4 +62,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
 
     implementation("com.redmadrobot:edge-to-edge-decorator:1.0.0")
+
+    implementation 'com.hannesdorfmann:adapterdelegates4-kotlin-dsl:4.3.0'
 }

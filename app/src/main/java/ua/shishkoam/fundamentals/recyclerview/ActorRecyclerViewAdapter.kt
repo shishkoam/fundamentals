@@ -17,7 +17,7 @@ class ActorRecyclerViewAdapter(private var values: List<Actor>) :
     ): ActorViewHolder {
         // create a new view
         val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.actor_item, parent, false)
+            .inflate(R.layout.view_holder_actor, parent, false)
         return ActorViewHolder(itemView)
     }
 
