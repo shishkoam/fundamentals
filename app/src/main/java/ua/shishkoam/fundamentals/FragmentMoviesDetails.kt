@@ -56,8 +56,7 @@ class FragmentMoviesDetails : Fragment() {
             val listAdapter = ActorDelegateAdapter(film.cast)
             val landingItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
 //            val actorViewAdapter = ActorRecyclerViewAdapter(film.cast)
-            val actorRecyclerView = view.findViewById<RecyclerView>(R.id.movie_list)
-            actorRecyclerView.run {
+            view.findViewById<RecyclerView>(R.id.movie_list).run {
                 setHasFixedSize(true)
 //                adapter = actorViewAdapter
                 adapter = listAdapter
