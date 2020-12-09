@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import ua.shishkoam.fundamentals.ImageLoader
 import ua.shishkoam.fundamentals.R
-import ua.shishkoam.fundamentals.data.Film
+import ua.shishkoam.fundamentals.data.Movie
 
 class FilmViewHolder(
     view: View,
@@ -32,7 +32,7 @@ class FilmViewHolder(
     private val nameTextShader: Shader? = nameShader
 
     fun onBind(
-        item: Film, isLiked: Boolean
+        item: Movie, isLiked: Boolean
     ) {
         itemView.setOnClickListener { // Triggers click upwards to the adapter on click
             val position = bindingAdapterPosition
@@ -48,20 +48,21 @@ class FilmViewHolder(
             }
             setLike(likedState)
         }
-        nameTextView.text = item.name
+        nameTextView.text = item.title
         val context: Context = nameTextView.context
         nameTextShader?.let {
             nameTextView.paint.shader = nameTextShader
         }
         reviewsTextView.text = context.getString(
             R.string.reviews_number,
-            item.reviewNum
+            item.numberOfRatings
         )
-        ratingView.rating = item.rating.toFloat()
-        genreTextView.text = item.genres
-        timeTextView.text = context.getString(R.string.minutes_number, item.time)
-        ImageLoader.loadImage(posterImageView, item.image)
-        ageTextView.text = "${item.age}+"
+        ratingView.rating = item.getRatingIn5Stars()
+
+        genreTextView.text = item.getGenresString()
+        timeTextView.text = context.getString(R.string.minutes_number, item.runtime)
+        ImageLoader.loadImage(posterImageView, item.poster)
+        ageTextView.text = "${item.minimumAge}+"
         likedState = isLiked
         setLike(likedState)
     }

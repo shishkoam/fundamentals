@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/half_margin_bad"
+    android:paddingStart="@dimen/main_margin"
     android:background="@color/list_background"
     tools:context=".FragmentMoviesList">
 
@@ -47,6 +49,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+
         app:layout_constraintTop_toBottomOf="@+id/text_view_first">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -54,9 +57,6 @@
             android:name="MovieListFragment"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/half_margin_bad"
-            android:layout_marginLeft="@dimen/main_margin"
-            android:layout_marginRight="@dimen/main_margin"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"
             tools:context=".ui.features.RecyclerViewFragment"

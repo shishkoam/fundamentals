@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ua.shishkoam.fundamentals.R
-import ua.shishkoam.fundamentals.data.Film
+import ua.shishkoam.fundamentals.data.Movie
 
 
 class FilmRecyclerViewAdapter(
-    private var values: List<Film>,
+    private var values: List<Movie>,
     private val nameShader: Shader? = null,
     private val likedFilms: Map<String, Boolean> = emptyMap(),
     private val onFilmClickListener: OnFilmClickListener? = null,
@@ -33,7 +33,7 @@ class FilmRecyclerViewAdapter(
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         val item = values[position]
-        holder.onBind(item, likedFilms[item.name] == true)
+        holder.onBind(item, likedFilms[item.title] == true)
     }
 
     // Return the size of your dataset (invoked by the layout manager)

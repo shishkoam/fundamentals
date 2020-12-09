@@ -5,6 +5,7 @@
     <dimen name="text_primary">18sp</dimen>
     <dimen name="small_margin">12dp</dimen>
     <dimen name="half_margin_bad">7dp</dimen>
+    <dimen name="margin_bad">14dp</dimen>
     <dimen name="half_small_margin">4dp</dimen>
     <dimen name="very_small_margin">2dp</dimen>
     <dimen name="card_elevation">8dp</dimen>

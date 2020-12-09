@@ -21,6 +21,6 @@ fun actorAdapterDelegate() = adapterDelegate<Actor, Actor>(R.layout.view_holder_
     val photoImage: ImageView = findViewById(R.id.photo_image)
     bind {
         name.text = item.name
-        ImageLoader.loadImage(photoImage, item.photo)
+        ImageLoader.loadImage(photoImage, item.picture)
     }
 }

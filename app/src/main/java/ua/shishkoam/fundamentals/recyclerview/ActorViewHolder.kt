@@ -18,6 +18,6 @@ class ActorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     fun onBind(actor: Actor) {
         nameText.text = actor.name
-        ImageLoader.loadImage(photoImage, actor.photo)
+        ImageLoader.loadImage(photoImage, actor.picture)
     }
 }
