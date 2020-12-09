@@ -4,11 +4,12 @@ import android.content.res.Configuration
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +17,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import kotlinx.coroutines.*
 import ua.shishkoam.fundamentals.data.Movie
-import ua.shishkoam.fundamentals.data.loadMovies
 import ua.shishkoam.fundamentals.recyclerview.*
 import ua.shishkoam.fundamentals.recyclerview.GridAutofitLayoutManager.Companion.AUTO_FIT
 
@@ -27,48 +27,32 @@ import ua.shishkoam.fundamentals.recyclerview.GridAutofitLayoutManager.Companion
 private const val TAG = "MovieList"
 
 class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
+
+    private var filmsListViewModel: FilmsListViewModel? = null
+
+    private val filmsListStateObserver = Observer<List<Movie>> {
+        val movies = it ?: return@Observer
+        listAdapter?.items = movies
+        listAdapter?.notifyDataSetChanged()
+    }
+
+    private val filmsListErrorStateObserver = Observer<FilmsListViewModel.FilmsListError> {
+        val error = it ?: return@Observer
+        if (error == FilmsListViewModel.FilmsListError.LOAD_ERROR) {
+            showExceptionToUser(getString(R.string.cant_load_films))
+        }
+    }
+
     private val likedFilms: HashMap<String, Boolean> = HashMap()
-    private var coroutineSupervisorScope : CoroutineScope? = null
-    private var exceptionLogView: TextView? = null
     private var listAdapter: ListDelegationAdapter<List<Movie>>? = null
-    private fun createSuperScope(): CoroutineScope =
-        CoroutineScope(Dispatchers.Default + SupervisorJob() + superExceptionHandler)
-    private val superExceptionHandler = CoroutineExceptionHandler { canceledContext, exception ->
-        val isActive = coroutineSupervisorScope?.isActive
-        Log.e(
-            TAG,
-            "ExceptionHandler [Scope active:$isActive, canceledContext:$canceledContext]"
-        )
-        coroutineSupervisorScope?.launch {
-            logExceptionSuspend("superExceptionHandler", exception)
-        }
-    }
 
-    private fun cancelCoroutines() {
-        coroutineSupervisorScope?.cancel("It's time")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        cancelCoroutines()
-    }
-
-    private suspend fun logExceptionSuspend(who: String, throwable: Throwable) =
-        withContext(Dispatchers.Main) {
-            logException(who, throwable)
-        }
-
-    private fun logException(who: String, throwable: Throwable) {
-        Log.e(TAG, "$who::Failed", throwable)
-        exceptionLogView?.text = getString(
-            R.string.exception_log_text,
-            "Can/'t load films: ",
-            throwable
-        )
+    private fun showExceptionToUser(msg: String) {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         if (savedInstanceState != null) {
             val savedData =
                 CollectionUtils.fromBundleBooleanMap(savedInstanceState.getBundle("likes"))
@@ -76,7 +60,6 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
                 likedFilms.putAll(savedData)
             }
         }
-        coroutineSupervisorScope  = createSuperScope()
         val orientation = this.resources.configuration.orientation
         val filmRecyclerViewManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             GridAutofitLayoutManager(requireContext(), AUTO_FIT, RECOMMENDED_FILM_WIDTH)
@@ -99,11 +82,16 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
             Shader.TileMode.CLAMP
         )
 
-        listAdapter = createFilmAdapterDelegate(textShader =  textShader)
+        listAdapter = createFilmAdapterDelegate(textShader = textShader)
 //        val filmRecyclerViewAdapter = createFilmAdapter(films, textShader)
         val recyclerView = view.findViewById<RecyclerView>(R.id.movie_list)
 
         val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
+        filmsListViewModel = ViewModelProvider(
+            this@FragmentMoviesList,
+            defaultViewModelProviderFactory
+        ).get(FilmsListViewModel::class.java)
+        observe(filmsListViewModel!!.filmList, filmsListStateObserver)
         updateMoviesList()
 
         recyclerView.run {
@@ -127,13 +115,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
     }
 
     private fun updateMoviesList() {
-        coroutineSupervisorScope?.launch {
-            val movies = loadMovies(requireContext())
-            withContext(Dispatchers.Main) {
-                listAdapter?.items = movies
-                listAdapter?.notifyDataSetChanged()
-            }
-        }
+        filmsListViewModel?.loadFilm(requireContext())
     }
 
     private fun createFilmAdapterDelegate(

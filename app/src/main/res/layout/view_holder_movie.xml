@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@string/movie_poster"
-            android:padding="1dp"
+            android:padding="@dimen/micro_padding"
             android:src="@drawable/movie"
             card_view:layout_constraintBottom_toTopOf="@+id/name_text"
             card_view:layout_constraintEnd_toEndOf="parent"
