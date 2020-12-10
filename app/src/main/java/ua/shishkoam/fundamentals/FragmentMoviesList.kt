@@ -126,8 +126,8 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
     private fun createFilmAdapterDelegate(
         films: MutableList<Movie>? = null,
         textShader: LinearGradient? = null
-    ): ListDelegationAdapter<List<Movie>> {
-        return FilmDelegateAdapter(films = films, textShader = textShader,
+    ): ListDelegationAdapter<List<Movie>> =
+        FilmDelegateAdapter(films = films, textShader = textShader,
             likedFilms = likedFilms,
             onFilmClickListener = object : OnFilmClickListener {
                 override fun onFilmClick(item: Movie) {
@@ -141,7 +141,6 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
                     likedFilms[item.title] = likedState
                 }
             })
-    }
 
     private fun createFilmAdapter(
         films: MutableList<Movie>,

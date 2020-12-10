@@ -12,10 +12,9 @@ data class Actor(
 
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
-        parcel.readString() ?: "",
+        parcel.readString() ?: "no name",
         parcel.readString() ?: ""
-    ) {
-    }
+    )
 
     override fun toString(): String = name
     override fun writeToParcel(parcel: Parcel, flags: Int) {
