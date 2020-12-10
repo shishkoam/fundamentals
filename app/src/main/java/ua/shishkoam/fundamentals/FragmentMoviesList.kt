@@ -24,8 +24,6 @@ import ua.shishkoam.fundamentals.recyclerview.GridAutofitLayoutManager.Companion
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-private const val TAG = "MovieList"
-
 class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
 
     private var filmsListViewModel: FilmsListViewModel? = null
@@ -43,7 +41,6 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
         }
     }
 
-    private val likedFilms: HashMap<String, Boolean> = HashMap()
     private var listAdapter: ListDelegationAdapter<List<Movie>>? = null
 
     private fun showExceptionToUser(msg: String) {
@@ -53,13 +50,13 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (savedInstanceState != null) {
-            val savedData =
-                CollectionUtils.fromBundleBooleanMap(savedInstanceState.getBundle("likes"))
-            savedData?.let {
-                likedFilms.putAll(savedData)
-            }
-        }
+//        if (savedInstanceState != null) {
+//            val savedData =
+//                CollectionUtils.fromBundleBooleanMap(savedInstanceState.getBundle("likes"))
+//            savedData?.let {
+//                likedFilms.putAll(savedData)
+//            }
+//        }
         val orientation = this.resources.configuration.orientation
         val filmRecyclerViewManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             GridAutofitLayoutManager(requireContext(), AUTO_FIT, RECOMMENDED_FILM_WIDTH)
@@ -82,8 +79,6 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
             Shader.TileMode.CLAMP
         )
 
-        listAdapter = createFilmAdapterDelegate(textShader = textShader)
-//        val filmRecyclerViewAdapter = createFilmAdapter(films, textShader)
         val recyclerView = view.findViewById<RecyclerView>(R.id.movie_list)
 
         val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
@@ -91,6 +86,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
             this@FragmentMoviesList,
             defaultViewModelProviderFactory
         ).get(FilmsListViewModel::class.java)
+        listAdapter = createFilmAdapterDelegate(textShader = textShader)
         filmsListViewModel?.run {
             this@FragmentMoviesList.observe(filmList, filmsListStateObserver)
             this@FragmentMoviesList.observe(error, filmsListErrorStateObserver)
@@ -100,19 +96,12 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
         }
 
         recyclerView.run {
-            // use this setting to improve performance if you know that changes
-            // in content do not change the layout size of the RecyclerView
             setHasFixedSize(true)
-
-            // use a linear layout manager
             layoutManager = filmRecyclerViewManager
-
-//            adapter = filmRecyclerViewAdapter
             adapter = listAdapter
             itemAnimator = landingItemAnimator
-
-
         }
+
         swipeRefreshLayout.setOnRefreshListener {
             updateMoviesList()
             swipeRefreshLayout.isRefreshing = false
@@ -128,7 +117,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
         textShader: LinearGradient? = null
     ): ListDelegationAdapter<List<Movie>> =
         FilmDelegateAdapter(films = films, textShader = textShader,
-            likedFilms = likedFilms,
+            likedFilms = filmsListViewModel?.likedFilms ?: HashMap(),
             onFilmClickListener = object : OnFilmClickListener {
                 override fun onFilmClick(item: Movie) {
                     val action =
@@ -138,36 +127,9 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
             },
             onFilmLikeListener = object : OnFilmLikeListener {
                 override fun onFilmLike(item: Movie, likedState: Boolean) {
-                    likedFilms[item.title] = likedState
+                    filmsListViewModel?.likedFilms?.put(item.title, likedState)
                 }
             })
-
-    private fun createFilmAdapter(
-        films: MutableList<Movie>,
-        textShader: LinearGradient
-    ): FilmRecyclerViewAdapter {
-        val filmRecyclerViewAdapter = FilmRecyclerViewAdapter(
-            values = films, nameShader = textShader, likedFilms = likedFilms,
-            onFilmClickListener = object : OnFilmClickListener {
-                override fun onFilmClick(item: Movie) {
-                    val action =
-                        FragmentMoviesListDirections.openMovieDetails(item)
-                    findNavController().navigate(action)
-                }
-            },
-            onFilmLikeListener = object : OnFilmLikeListener {
-                override fun onFilmLike(item: Movie, likedState: Boolean) {
-                    likedFilms[item.title] = likedState
-                }
-            }
-        )
-        return filmRecyclerViewAdapter
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable("likes", CollectionUtils.toBundleBooleanMap(likedFilms))
-    }
 
     companion object {
         const val ARG_COLUMN_COUNT = "column-count"

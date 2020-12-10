@@ -14,6 +14,7 @@ import ua.shishkoam.fundamentals.data.loadMovies
 class FilmsListViewModel : ViewModel() {
     var filmList: MutableLiveData<List<Movie>> = MutableLiveData<List<Movie>>()
     var error: MutableLiveData<FilmsListError> = MutableLiveData<FilmsListError>()
+    val likedFilms: HashMap<String, Boolean> = HashMap()
 
     fun loadFilm(context: Context) {
         viewModelScope.launch(exceptionHandler) {
@@ -23,6 +24,7 @@ class FilmsListViewModel : ViewModel() {
             }
         }
     }
+
     private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
         viewModelScope.launch {
             showExceptionToUser()
