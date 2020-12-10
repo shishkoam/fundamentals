@@ -1,7 +1,7 @@
 package ua.shishkoam.fundamentals.recyclerview
 
-import ua.shishkoam.fundamentals.data.Film
+import ua.shishkoam.fundamentals.data.Movie
 
 interface OnFilmClickListener {
-    fun onFilmClick(item: Film)
+    fun onFilmClick(item: Movie)
 }

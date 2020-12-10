@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
-import ua.shishkoam.fundamentals.data.Film
+import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.recyclerview.ActorDelegateAdapter
 import ua.shishkoam.fundamentals.recyclerview.LandingAnimator
 
@@ -33,27 +33,27 @@ class FragmentMoviesDetails : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val film: Film = args.currentMovie
+        val film: Movie = args.currentMovie
 
         view.findViewById<Button>(R.id.back_button)?.setOnClickListener {
             findNavController().navigate(R.id.openMovieList)
         }
 
         initCast(film, view)
-        ImageLoader.loadImage(view.findViewById<ImageView>(R.id.poster), film.imageBig,film.image )
+        ImageLoader.loadImage(view.findViewById<ImageView>(R.id.poster), film.backdrop)
 
-        view.findViewById<TextView>(R.id.name_text)?.text = film.name
-        view.findViewById<TextView>(R.id.genre_text)?.text = film.genres
-        view.findViewById<RatingBar>(R.id.rating_bar)?.rating = film.rating.toFloat()
-        view.findViewById<TextView>(R.id.story_text)?.text = film.story
-        view.findViewById<TextView>(R.id.age_text)?.text = "${film.age}+"
+        view.findViewById<TextView>(R.id.name_text)?.text = film.title
+        view.findViewById<TextView>(R.id.genre_text)?.text = film.getGenresString()
+        view.findViewById<RatingBar>(R.id.rating_bar)?.rating = film.getRatingIn5Stars()
+        view.findViewById<TextView>(R.id.story_text)?.text = film.overview
+        view.findViewById<TextView>(R.id.age_text)?.text = "${film.minimumAge}+"
         view.findViewById<TextView>(R.id.reviews_text)?.text =
-            requireContext().getString(R.string.reviews_number, film.reviewNum)
+            requireContext().getString(R.string.reviews_number, film.numberOfRatings)
     }
 
-    private fun initCast(film: Film, view: View) {
-        film.cast?.let {
-            val listAdapter = ActorDelegateAdapter(film.cast)
+    private fun initCast(film: Movie, view: View) {
+        film.actors?.let {
+            val listAdapter = ActorDelegateAdapter(film.actors)
             val landingItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
 //            val actorViewAdapter = ActorRecyclerViewAdapter(film.cast)
             view.findViewById<RecyclerView>(R.id.movie_list).run {

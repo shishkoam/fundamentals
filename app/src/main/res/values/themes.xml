@@ -25,6 +25,12 @@
         <item name="cornerSize">15%</item>
     </style>
 
+    <style name="filmImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="background">@android:color/transparent</item>
+        <item name="cornerSize">5%</item>
+    </style>
+
     <style name="age_text_style">
 
         <item name="android:textSize">

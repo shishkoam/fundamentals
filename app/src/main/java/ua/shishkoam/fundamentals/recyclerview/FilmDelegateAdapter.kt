@@ -12,19 +12,21 @@ import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import ua.shishkoam.fundamentals.ImageLoader
 import ua.shishkoam.fundamentals.R
-import ua.shishkoam.fundamentals.data.Film
+import ua.shishkoam.fundamentals.data.Movie
 
 class FilmDelegateAdapter(
-    films: MutableList<Film>,
-    textShader: LinearGradient,
+    films: MutableList<Movie>?,
+    textShader: LinearGradient?,
     likedFilms: HashMap<String, Boolean> = HashMap(),
     onFilmClickListener: OnFilmClickListener? = null,
     onFilmLikeListener: OnFilmLikeListener? = null
-) : ListDelegationAdapter<List<Film>>(
+) : ListDelegationAdapter<List<Movie>>(
     filmAdapterDelegate(textShader, likedFilms, onFilmClickListener, onFilmLikeListener)
 ) {
     init {
-        items = films
+        films?.let {
+            items = films
+        }
     }
 }
 
@@ -43,12 +45,12 @@ fun setLikeColor(
 }
 
 fun filmAdapterDelegate(
-    textShader: LinearGradient,
+    textShader: LinearGradient?,
     likedFilms: HashMap<String, Boolean>,
     onFilmClickListener: OnFilmClickListener?,
     onItemLikeListener: OnFilmLikeListener?
 ) =
-    adapterDelegate<Film, Film>(R.layout.view_holder_movie) {
+    adapterDelegate<Movie, Movie>(R.layout.view_holder_movie) {
         val nameTextView: TextView = findViewById(R.id.name_text)
         val reviewsTextView: TextView = findViewById(R.id.reviews_text)
         val timeTextView: TextView = findViewById(R.id.time_text)
@@ -71,21 +73,22 @@ fun filmAdapterDelegate(
             setLikeColor(likedState, likeImageView, context)
         }
         bind {
-            nameTextView.text = item.name
+            nameTextView.text = item.title
             val context: Context = nameTextView.context
             nameTextShader?.let {
                 nameTextView.paint.shader = nameTextShader
             }
             reviewsTextView.text = context.getString(
                 R.string.reviews_number,
-                item.reviewNum
+                item.numberOfRatings
             )
-            ratingView.rating = item.rating.toFloat()
-            genreTextView.text = item.genres
-            timeTextView.text = context.getString(R.string.minutes_number, item.time)
-            ImageLoader.loadImage(posterImageView, item.image)
-            ageTextView.text = "${item.age}+"
-            likedState = likedFilms[item.name] == true
+            ratingView.rating = item.getRatingIn5Stars()
+            genreTextView.text = item.getGenresString()
+
+            timeTextView.text = context.getString(R.string.minutes_number, item.runtime)
+            ImageLoader.loadImage(posterImageView, item.poster)
+            ageTextView.text = "${item.minimumAge}+"
+            likedState = likedFilms[item.title] == true
             setLikeColor(likedState, likeImageView, context)
         }
     }

@@ -16,7 +16,7 @@
             app:destination="@id/MovieListFragment" />
         <argument
             android:name="currentMovie"
-            app:argType="ua.shishkoam.fundamentals.data.Film"
+            app:argType="ua.shishkoam.fundamentals.data.Movie"
             />
 
     </fragment>

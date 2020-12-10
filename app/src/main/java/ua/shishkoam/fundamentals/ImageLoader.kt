@@ -45,4 +45,10 @@ object ImageLoader {
             .error(errorDrawable)
             .into(imageView)
     }
+
+    fun loadImage(imageView: ImageView, drawable: String?) {
+        Glide.with(imageView.context.applicationContext).load(drawable)
+            .error(android.R.drawable.stat_notify_error)
+            .into(imageView)
+    }
 }

@@ -15,25 +15,28 @@
     <!-- Main Content View -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:minWidth="166dp">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/photo_image"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@string/movie_poster"
+            android:padding="@dimen/micro_padding"
             android:src="@drawable/movie"
             card_view:layout_constraintBottom_toTopOf="@+id/name_text"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toTopOf="parent" />
+            card_view:layout_constraintTop_toTopOf="parent"
+            card_view:shapeAppearanceOverlay="@style/filmImageView" />
 
         <ImageView
             android:id="@+id/imageViewMask"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
+            android:layout_height="0dp"
+            android:scaleType="fitXY"
             android:src="@drawable/mask"
             card_view:layout_constraintBottom_toTopOf="@+id/name_text"
             card_view:layout_constraintEnd_toEndOf="parent"

@@ -3,20 +3,24 @@ package ua.shishkoam.fundamentals.data
 import android.os.Parcel
 import android.os.Parcelable
 
-data class Actor (
+data class Actor(
+    val id: Int,
     val name: String,
-    val photo: Int
+    val picture: String
 ) : Parcelable {
+
+
     constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "empty",
-        parcel.readInt()
+        parcel.readInt(),
+        parcel.readString() ?: "no name",
+        parcel.readString() ?: ""
     )
 
     override fun toString(): String = name
-
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(id)
         parcel.writeString(name)
-        parcel.writeInt(photo)
+        parcel.writeString(picture)
     }
 
     override fun describeContents(): Int {
@@ -32,4 +36,6 @@ data class Actor (
             return arrayOfNulls(size)
         }
     }
+
+
 }
