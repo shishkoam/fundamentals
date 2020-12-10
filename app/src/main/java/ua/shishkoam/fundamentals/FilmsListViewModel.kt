@@ -1,12 +1,13 @@
 package ua.shishkoam.fundamentals
 
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.data.loadMovies
 
@@ -15,10 +16,10 @@ class FilmsListViewModel : ViewModel() {
     var error: MutableLiveData<FilmsListError> = MutableLiveData<FilmsListError>()
 
     fun loadFilm(context: Context) {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             val list = loadMovies(context)
             withContext(Dispatchers.Main) {
-                filmList.value = list
+                    filmList.value = list
             }
         }
     }
@@ -34,7 +35,7 @@ class FilmsListViewModel : ViewModel() {
         }
 
     enum class FilmsListError {
-        LOAD_ERROR
+        LOAD_ERROR, EMPTY_LIST
     }
 }
 

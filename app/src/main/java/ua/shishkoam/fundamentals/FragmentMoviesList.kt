@@ -91,8 +91,13 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
             this@FragmentMoviesList,
             defaultViewModelProviderFactory
         ).get(FilmsListViewModel::class.java)
-        observe(filmsListViewModel!!.filmList, filmsListStateObserver)
-        updateMoviesList()
+        filmsListViewModel?.run {
+            this@FragmentMoviesList.observe(filmList, filmsListStateObserver)
+            this@FragmentMoviesList.observe(error, filmsListErrorStateObserver)
+            if (filmList.value.isNullOrEmpty()) {
+                updateMoviesList()
+            }
+        }
 
         recyclerView.run {
             // use this setting to improve performance if you know that changes
