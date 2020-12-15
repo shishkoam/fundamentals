@@ -4,9 +4,7 @@ import android.content.res.Configuration
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -16,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import kotlinx.coroutines.*
 import ua.shishkoam.fundamentals.data.Movie
@@ -27,24 +26,11 @@ import ua.shishkoam.fundamentals.recyclerview.GridAutofitLayoutManager.Companion
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class FragmentMoviesList : Fragment() {
+class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
 
     private var filmsListViewModel: FilmsListViewModel? = null
 
-    private var binding: FragmentMoviesListBinding? = null
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentMoviesListBinding.inflate(inflater)
-        return binding?.root
-    }
+    private val binding by viewBinding(FragmentMoviesListBinding::bind)
 
     private val filmsListStateObserver = Observer<List<Movie>> {
         val movies = it ?: return@Observer
@@ -101,16 +87,20 @@ class FragmentMoviesList : Fragment() {
             this@FragmentMoviesList.observe(error, filmsListErrorStateObserver)
             if (filmList.value.isNullOrEmpty()) {
                 updateMoviesList()
+            } else {
+                listAdapter?.items = filmList.value
             }
         }
-        binding?.movieList?.run {
+        binding.movieList.run {
             setHasFixedSize(true)
             layoutManager = filmRecyclerViewManager
             adapter = listAdapter
             itemAnimator = landingItemAnimator
         }
 
-        binding?.swipeRefreshLayout?.setOnRefreshListener {
+
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
             updateMoviesList()
             swipeRefreshLayout.isRefreshing = false
         }

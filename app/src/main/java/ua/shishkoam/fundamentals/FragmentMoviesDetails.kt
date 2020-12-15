@@ -1,13 +1,12 @@
 package ua.shishkoam.fundamentals
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesDetailsBinding
 import ua.shishkoam.fundamentals.recyclerview.ActorDelegateAdapter
@@ -16,29 +15,17 @@ import ua.shishkoam.fundamentals.recyclerview.LandingAnimator
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FragmentMoviesDetails : Fragment() {
+class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details) {
 
     private val args: FragmentMoviesDetailsArgs by navArgs()
 
-    private var binding: FragmentMoviesDetailsBinding? = null
+    private val binding by viewBinding(FragmentMoviesDetailsBinding::bind)
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentMoviesDetailsBinding.inflate(inflater)
-        return binding?.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val film: Movie = args.currentMovie
-        binding?.run {
+        binding.run {
             backButton.setOnClickListener {
                 findNavController().navigate(R.id.openMovieList)
             }
