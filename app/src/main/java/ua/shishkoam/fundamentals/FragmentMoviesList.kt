@@ -14,9 +14,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import kotlinx.coroutines.*
 import ua.shishkoam.fundamentals.data.Movie
+import ua.shishkoam.fundamentals.databinding.FragmentMoviesListBinding
 import ua.shishkoam.fundamentals.recyclerview.*
 import ua.shishkoam.fundamentals.recyclerview.GridAutofitLayoutManager.Companion.AUTO_FIT
 
@@ -27,6 +29,8 @@ import ua.shishkoam.fundamentals.recyclerview.GridAutofitLayoutManager.Companion
 class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
 
     private var filmsListViewModel: FilmsListViewModel? = null
+
+    private val binding by viewBinding(FragmentMoviesListBinding::bind)
 
     private val filmsListStateObserver = Observer<List<Movie>> {
         val movies = it ?: return@Observer
@@ -50,13 +54,6 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        if (savedInstanceState != null) {
-//            val savedData =
-//                CollectionUtils.fromBundleBooleanMap(savedInstanceState.getBundle("likes"))
-//            savedData?.let {
-//                likedFilms.putAll(savedData)
-//            }
-//        }
         val orientation = this.resources.configuration.orientation
         val filmRecyclerViewManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             GridAutofitLayoutManager(requireContext(), AUTO_FIT, RECOMMENDED_FILM_WIDTH)
@@ -79,8 +76,6 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
             Shader.TileMode.CLAMP
         )
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.movie_list)
-
         val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
         filmsListViewModel = ViewModelProvider(
             this@FragmentMoviesList,
@@ -92,17 +87,20 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
             this@FragmentMoviesList.observe(error, filmsListErrorStateObserver)
             if (filmList.value.isNullOrEmpty()) {
                 updateMoviesList()
+            } else {
+                listAdapter?.items = filmList.value
             }
         }
-
-        recyclerView.run {
+        binding.movieList.run {
             setHasFixedSize(true)
             layoutManager = filmRecyclerViewManager
             adapter = listAdapter
             itemAnimator = landingItemAnimator
         }
 
-        swipeRefreshLayout.setOnRefreshListener {
+
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
             updateMoviesList()
             swipeRefreshLayout.isRefreshing = false
         }

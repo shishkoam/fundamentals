@@ -9,10 +9,9 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.redmadrobot.e2e.decorator.EdgeToEdgeDecorator
-import java.util.ArrayList
+import ua.shishkoam.fundamentals.databinding.ActivityMainBinding
+import java.util.*
 
 private const val PERMISSION_REQUESTS = 1
 private const val TAG = "ChooserActivity"
@@ -26,8 +25,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         edgeToEdgeCompatibilityManager.apply(this, window)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.toolbar))
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
 
         if (!allPermissionsGranted()) {
             getRuntimePermissions()
@@ -77,7 +77,6 @@ class MainActivity : AppCompatActivity() {
             )
         }
     }
-
 
 
     private fun isPermissionGranted(context: Context, permission: String): Boolean {

@@ -1,12 +1,10 @@
 package ua.shishkoam.fundamentals.recyclerview
 
-import android.widget.ImageView
-import android.widget.TextView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
+import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import ua.shishkoam.fundamentals.ImageLoader
-import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Actor
+import ua.shishkoam.fundamentals.databinding.ViewHolderActorBinding
 
 class ActorDelegateAdapter(actors: List<Actor>) : ListDelegationAdapter<List<Actor>>(
     actorAdapterDelegate()
@@ -16,11 +14,11 @@ class ActorDelegateAdapter(actors: List<Actor>) : ListDelegationAdapter<List<Act
     }
 }
 
-fun actorAdapterDelegate() = adapterDelegate<Actor, Actor>(R.layout.view_holder_actor) {
-    val name: TextView = findViewById(R.id.name_text)
-    val photoImage: ImageView = findViewById(R.id.photo_image)
+fun actorAdapterDelegate() = adapterDelegateViewBinding<Actor, Actor, ViewHolderActorBinding>(
+    { layoutInflater, root -> ViewHolderActorBinding.inflate(layoutInflater, root, false) }
+) {
     bind {
-        name.text = item.name
-        ImageLoader.loadImage(photoImage, item.picture)
+        binding.nameText.text = item.name
+        ImageLoader.loadImage(binding.photoImage, item.picture)
     }
 }
