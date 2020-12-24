@@ -1,6 +1,7 @@
-package ua.shishkoam.fundamentals
+package ua.shishkoam.fundamentals.presentation.viewmodels
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,17 +13,28 @@ import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.data.loadMovies
 
 class FilmsListViewModel : ViewModel() {
-    var filmList: MutableLiveData<List<Movie>> = MutableLiveData<List<Movie>>()
-    var error: MutableLiveData<FilmsListError> = MutableLiveData<FilmsListError>()
-    val likedFilms: HashMap<String, Boolean> = HashMap()
+    private var filmList: MutableLiveData<List<Movie>> = MutableLiveData<List<Movie>>()
+    private var errorData: MutableLiveData<FilmsListError> = MutableLiveData<FilmsListError>()
+    private val likedFilms: HashMap<String, Boolean> = HashMap()
+
+    val movies: LiveData<List<Movie>> get() = filmList
+    val error: LiveData<FilmsListError> get() = errorData
 
     fun loadFilm(context: Context) {
         viewModelScope.launch(exceptionHandler) {
             val list = loadMovies(context)
             withContext(Dispatchers.Main) {
-                    filmList.value = list
+                filmList.value = list
             }
         }
+    }
+
+    fun setLike(film: String, isLiked: Boolean) {
+        likedFilms[film] = isLiked
+    }
+
+    fun getLikes(): HashMap<String, Boolean> {
+        return likedFilms
     }
 
     private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
@@ -33,7 +45,7 @@ class FilmsListViewModel : ViewModel() {
 
     private suspend fun showExceptionToUser() =
         withContext(Dispatchers.Main) {
-            error.value = FilmsListError.LOAD_ERROR
+            errorData.value = FilmsListError.LOAD_ERROR
         }
 
     enum class FilmsListError {

@@ -1,4 +1,4 @@
-package ua.shishkoam.fundamentals
+package ua.shishkoam.fundamentals.presentation
 
 import android.content.res.Configuration
 import android.graphics.LinearGradient
@@ -17,10 +17,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import kotlinx.coroutines.*
+import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesListBinding
-import ua.shishkoam.fundamentals.recyclerview.*
-import ua.shishkoam.fundamentals.recyclerview.GridAutofitLayoutManager.Companion.AUTO_FIT
+import ua.shishkoam.fundamentals.utils.observe
+import ua.shishkoam.fundamentals.presentation.recyclerview.*
+import ua.shishkoam.fundamentals.presentation.recyclerview.GridAutofitLayoutManager.Companion.AUTO_FIT
+import ua.shishkoam.fundamentals.presentation.viewmodels.FilmsListViewModel
 
 
 /**
@@ -83,12 +86,12 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
         ).get(FilmsListViewModel::class.java)
         listAdapter = createFilmAdapterDelegate(textShader = textShader)
         filmsListViewModel?.run {
-            this@FragmentMoviesList.observe(filmList, filmsListStateObserver)
+            this@FragmentMoviesList.observe(movies, filmsListStateObserver)
             this@FragmentMoviesList.observe(error, filmsListErrorStateObserver)
-            if (filmList.value.isNullOrEmpty()) {
+            if (movies.value.isNullOrEmpty()) {
                 updateMoviesList()
             } else {
-                listAdapter?.items = filmList.value
+                listAdapter?.items = movies.value
             }
         }
         binding.movieList.run {
@@ -97,8 +100,6 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
             adapter = listAdapter
             itemAnimator = landingItemAnimator
         }
-
-
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             updateMoviesList()
@@ -115,7 +116,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
         textShader: LinearGradient? = null
     ): ListDelegationAdapter<List<Movie>> =
         FilmDelegateAdapter(films = films, textShader = textShader,
-            likedFilms = filmsListViewModel?.likedFilms ?: HashMap(),
+            likedFilms = filmsListViewModel?.getLikes() ?: HashMap(),
             onFilmClickListener = object : OnFilmClickListener {
                 override fun onFilmClick(item: Movie) {
                     val action =
@@ -125,7 +126,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
             },
             onFilmLikeListener = object : OnFilmLikeListener {
                 override fun onFilmLike(item: Movie, likedState: Boolean) {
-                    filmsListViewModel?.likedFilms?.put(item.title, likedState)
+                    filmsListViewModel?.setLike(item.title, likedState)
                 }
             })
 

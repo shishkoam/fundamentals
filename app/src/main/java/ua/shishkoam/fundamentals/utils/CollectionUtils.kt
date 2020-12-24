@@ -1,4 +1,4 @@
-package ua.shishkoam.fundamentals
+package ua.shishkoam.fundamentals.utils
 
 import android.os.Bundle
 

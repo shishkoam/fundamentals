@@ -1,8 +1,8 @@
-package ua.shishkoam.fundamentals.recyclerview
+package ua.shishkoam.fundamentals.presentation.recyclerview
 
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import ua.shishkoam.fundamentals.ImageLoader
+import ua.shishkoam.fundamentals.utils.ImageLoader
 import ua.shishkoam.fundamentals.data.Actor
 import ua.shishkoam.fundamentals.databinding.ViewHolderActorBinding
 

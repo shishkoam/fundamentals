@@ -1,4 +1,4 @@
-package ua.shishkoam.fundamentals.recyclerview
+package ua.shishkoam.fundamentals.presentation.recyclerview
 
 import android.content.Context
 import android.graphics.LinearGradient
@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import ua.shishkoam.fundamentals.ImageLoader
+import ua.shishkoam.fundamentals.utils.ImageLoader
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.databinding.ViewHolderMovieBinding
