@@ -5,18 +5,15 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.di
-import ua.shishkoam.fundamentals.utils.ImageLoader
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesDetailsBinding
-import ua.shishkoam.fundamentals.utils.observe
 import ua.shishkoam.fundamentals.presentation.recyclerview.ActorDelegateAdapter
 import ua.shishkoam.fundamentals.presentation.recyclerview.LandingAnimator
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieDetailsViewModel
@@ -59,11 +56,8 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
             this@FragmentMoviesDetails,
             defaultViewModelProviderFactory
         ).get(MovieDetailsViewModel::class.java)
+        movieDetails.movieData.value = movie
         observe(movieDetails.movieData, movieStateObserver)
-        if (movieDetails.movieData.value != movie) {
-            movieDetails.movieData.value = movie
-        }
-
         binding.backButton.setOnClickListener {
             activity?.onBackPressed()
         }

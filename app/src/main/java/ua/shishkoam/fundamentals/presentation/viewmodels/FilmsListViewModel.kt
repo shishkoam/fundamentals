@@ -1,6 +1,5 @@
 package ua.shishkoam.fundamentals.presentation.viewmodels
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,12 +9,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ua.shishkoam.fundamentals.data.Movie
-import ua.shishkoam.fundamentals.data.loadMovies
 import ua.shishkoam.fundamentals.domain.MovieRepository
 
 class FilmsListViewModel(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
+
+    init {
+        loadFilm()
+    }
+
     private var filmList: MutableLiveData<List<Movie>> = MutableLiveData<List<Movie>>()
     private var errorData: MutableLiveData<FilmsListError> = MutableLiveData<FilmsListError>()
     private val likedFilmsData: MutableLiveData<HashMap<String, Boolean>> = MutableLiveData<HashMap<String, Boolean>>()
@@ -37,7 +40,7 @@ class FilmsListViewModel(
         likedFilmsData.value?.put(film, isLiked)
     }
 
-    private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
+    private val exceptionHandler get() = CoroutineExceptionHandler { _, _ ->
         viewModelScope.launch {
             showExceptionToUser()
         }

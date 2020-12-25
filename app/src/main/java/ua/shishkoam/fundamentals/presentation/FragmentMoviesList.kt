@@ -23,11 +23,9 @@ import org.kodein.di.android.x.di
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesListBinding
-import ua.shishkoam.fundamentals.utils.observe
 import ua.shishkoam.fundamentals.presentation.recyclerview.*
 import ua.shishkoam.fundamentals.presentation.recyclerview.GridAutofitLayoutManager.Companion.AUTO_FIT
 import ua.shishkoam.fundamentals.presentation.viewmodels.FilmsListViewModel
-import ua.shishkoam.fundamentals.utils.observe
 import ua.shishkoam.fundamentals.presentation.viewmodels.KodeinViewModelFactory
 import ua.shishkoam.fundamentals.utils.observe
 
@@ -88,22 +86,18 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
         )
 
         val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
-//        filmsListViewModel = ViewModelProvider(
-//            this@FragmentMoviesList,
-//            defaultViewModelProviderFactory
-//        ).get(FilmsListViewModel::class.java)
         listAdapter = createFilmAdapterDelegate(textShader = textShader)
-        filmsListViewModel?.run {
-            this@FragmentMoviesList.observe(movies, filmsListStateObserver)
-            this@FragmentMoviesList.observe(error, filmsListErrorStateObserver)
-            updateMoviesList()
-        }
         binding.movieList.run {
             setHasFixedSize(true)
             layoutManager = filmRecyclerViewManager
             adapter = listAdapter
             itemAnimator = landingItemAnimator
         }
+        filmsListViewModel.run {
+            this@FragmentMoviesList.observe(movies, filmsListStateObserver)
+            this@FragmentMoviesList.observe(error, filmsListErrorStateObserver)
+        }
+
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             updateMoviesList()
