@@ -15,10 +15,10 @@ import ua.shishkoam.fundamentals.databinding.ViewHolderMovieBinding
 
 class FilmDelegateAdapter(
     films: MutableList<Movie>?,
-    textShader: LinearGradient?,
-    likedFilms: HashMap<String, Boolean> = HashMap(),
-    onFilmClickListener: OnFilmClickListener? = null,
-    onFilmLikeListener: OnFilmLikeListener? = null
+    val textShader: LinearGradient?,
+    val likedFilms: HashMap<String, Boolean> = HashMap(),
+    val onFilmClickListener: OnFilmClickListener? = null,
+    val onFilmLikeListener: OnFilmLikeListener? = null
 ) : ListDelegationAdapter<List<Movie>>(
     filmAdapterDelegate(textShader, likedFilms, onFilmClickListener, onFilmLikeListener)
 ) {

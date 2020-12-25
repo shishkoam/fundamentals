@@ -5,18 +5,17 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
-import ua.shishkoam.fundamentals.utils.ImageLoader
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesDetailsBinding
-import ua.shishkoam.fundamentals.utils.observe
 import ua.shishkoam.fundamentals.presentation.recyclerview.ActorDelegateAdapter
 import ua.shishkoam.fundamentals.presentation.recyclerview.LandingAnimator
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieDetailsViewModel
+import ua.shishkoam.fundamentals.utils.ImageLoader
+import ua.shishkoam.fundamentals.utils.observe
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -27,10 +26,14 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details) {
 
     private val binding by viewBinding(FragmentMoviesDetailsBinding::bind)
 
-    private val movieStateObserver = Observer<Movie> {
-        val movie = it ?: return@Observer
+    private val listAdapter = ActorDelegateAdapter()
+
+    private val movieStateObserver = Observer<Movie> { movie ->
+        movie ?: return@Observer
         binding.run {
-            initCast(movie, movieList)
+            listAdapter.items = movie.actors
+            listAdapter.notifyDataSetChanged()
+
             ImageLoader.loadImage(poster, movie.backdrop)
             nameText.text = movie.title
             genreText.text = movie.getGenresString()
@@ -50,24 +53,19 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details) {
             defaultViewModelProviderFactory
         ).get(MovieDetailsViewModel::class.java)
         observe(movieDetails.movieData, movieStateObserver)
-        if (movieDetails.movieData.value != movie) {
-            movieDetails.movieData.value = movie
-        }
 
         binding.backButton.setOnClickListener {
-            findNavController().popBackStack()
+            activity?.onBackPressed()
         }
+        initCast()
     }
 
-    private fun initCast(movie: Movie, movieList: RecyclerView) {
-        movie.actors.let {
-            val listAdapter = ActorDelegateAdapter(movie.actors)
-            val landingItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
-            movieList.run {
-                setHasFixedSize(true)
-                adapter = listAdapter
-                itemAnimator = landingItemAnimator
-            }
+    private fun initCast() {
+        val landingItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
+        binding.movieList.run {
+            setHasFixedSize(true)
+            adapter = listAdapter
+            itemAnimator = landingItemAnimator
         }
     }
 }
