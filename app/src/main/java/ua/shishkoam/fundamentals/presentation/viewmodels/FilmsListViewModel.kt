@@ -11,8 +11,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.data.loadMovies
+import ua.shishkoam.fundamentals.domain.MovieRepository
 
-class FilmsListViewModel : ViewModel() {
+class FilmsListViewModel(
+    private val movieRepository: MovieRepository
+) : ViewModel() {
     private var filmList: MutableLiveData<List<Movie>> = MutableLiveData<List<Movie>>()
     private var errorData: MutableLiveData<FilmsListError> = MutableLiveData<FilmsListError>()
     private val likedFilms: HashMap<String, Boolean> = HashMap()
@@ -20,9 +23,9 @@ class FilmsListViewModel : ViewModel() {
     val movies: LiveData<List<Movie>> get() = filmList
     val error: LiveData<FilmsListError> get() = errorData
 
-    fun loadFilm(context: Context) {
+    fun loadFilm() {
         viewModelScope.launch(exceptionHandler) {
-            val list = loadMovies(context)
+            val list = movieRepository.getMovies()
             withContext(Dispatchers.Main) {
                 filmList.value = list
             }

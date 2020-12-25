@@ -9,6 +9,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.di
 import ua.shishkoam.fundamentals.utils.ImageLoader
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Movie
@@ -21,7 +24,8 @@ import ua.shishkoam.fundamentals.presentation.viewmodels.MovieDetailsViewModel
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details) {
+class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAware {
+    override val di: DI by di()
 
     private val args: FragmentMoviesDetailsArgs by navArgs()
 
