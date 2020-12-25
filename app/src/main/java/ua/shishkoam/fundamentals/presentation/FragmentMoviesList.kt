@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -41,10 +42,18 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
 
     private val binding by viewBinding(FragmentMoviesListBinding::bind)
 
-    private val filmsListStateObserver = Observer<List<Movie>> {movies ->
+    private val filmsListStateObserver = Observer<HashMap<Int,Movie>> {movies ->
         movies ?: return@Observer
-        listAdapter?.items = movies
+        listAdapter?.items = movies.values.toList()
         listAdapter?.notifyDataSetChanged()
+        listAdapter?.run{
+            val newList = movies.values.toList()
+            val diffUtil = RecyclerDiffUtil(items, newList)
+            val diffResult = DiffUtil.calculateDiff(diffUtil, false)
+            items = newList
+            diffResult.dispatchUpdatesTo(this);
+        }
+
     }
 
     private val filmsListErrorStateObserver = Observer<FilmsListViewModel.FilmsListError> { error ->
@@ -114,7 +123,6 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
         textShader: LinearGradient? = null
     ): ListDelegationAdapter<List<Movie>> =
         FilmDelegateAdapter(films = films, textShader = textShader,
-            likedFilms = filmsListViewModel?.likedFilms?.value ?: HashMap(),
             onFilmClickListener = object : OnFilmClickListener {
                 override fun onFilmClick(item: Movie) {
                     val action =
@@ -124,7 +132,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
             },
             onFilmLikeListener = object : OnFilmLikeListener {
                 override fun onFilmLike(item: Movie, likedState: Boolean) {
-                    filmsListViewModel?.setLike(item.title, likedState)
+                    filmsListViewModel.setLike(item.id, likedState)
                 }
             })
 

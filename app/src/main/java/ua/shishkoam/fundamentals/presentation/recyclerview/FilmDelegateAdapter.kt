@@ -16,11 +16,10 @@ import ua.shishkoam.fundamentals.databinding.ViewHolderMovieBinding
 class FilmDelegateAdapter(
     films: MutableList<Movie>?,
     val textShader: LinearGradient?,
-    val likedFilms: HashMap<String, Boolean> = HashMap(),
     val onFilmClickListener: OnFilmClickListener? = null,
     val onFilmLikeListener: OnFilmLikeListener? = null
 ) : ListDelegationAdapter<List<Movie>>(
-    filmAdapterDelegate(textShader, likedFilms, onFilmClickListener, onFilmLikeListener)
+    filmAdapterDelegate(textShader, onFilmClickListener, onFilmLikeListener)
 ) {
     init {
         films?.let {
@@ -46,7 +45,6 @@ fun setLikeColor(
 
 fun filmAdapterDelegate(
     textShader: LinearGradient?,
-    likedFilms: HashMap<String, Boolean>,
     onFilmClickListener: OnFilmClickListener?,
     onItemLikeListener: OnFilmLikeListener?
 ) =
@@ -64,7 +62,6 @@ fun filmAdapterDelegate(
         binding.like.setOnClickListener { // Triggers click upwards to the adapter on click
             likedState = !likedState
             onItemLikeListener?.onFilmLike(item, likedState)
-            setLikeColor(likedState, binding.like, context)
         }
         bind {
             binding.nameText.text = item.title
@@ -81,7 +78,7 @@ fun filmAdapterDelegate(
             binding.timeText.text = context.getString(R.string.minutes_number, item.runtime)
             ImageLoader.loadImage(binding.photoImage, item.poster)
             binding.ageText.text = "${item.minimumAge}+"
-            likedState = likedFilms[item.title] == true
+            likedState = item.isFavorite
             setLikeColor(likedState, binding.like, context)
         }
     }

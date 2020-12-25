@@ -17,6 +17,7 @@ import ua.shishkoam.fundamentals.databinding.FragmentMoviesDetailsBinding
 import ua.shishkoam.fundamentals.presentation.recyclerview.ActorDelegateAdapter
 import ua.shishkoam.fundamentals.presentation.recyclerview.LandingAnimator
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieDetailsViewModel
+import ua.shishkoam.fundamentals.presentation.viewmodels.MovieViewModelFactory
 import ua.shishkoam.fundamentals.utils.ImageLoader
 import ua.shishkoam.fundamentals.utils.observe
 
@@ -54,10 +55,9 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
         val movie: Movie = args.currentMovie
         val movieDetails = ViewModelProvider(
             this@FragmentMoviesDetails,
-            defaultViewModelProviderFactory
+            MovieViewModelFactory(movie)
         ).get(MovieDetailsViewModel::class.java)
-        movieDetails.movieData.value = movie
-        observe(movieDetails.movieData, movieStateObserver)
+        observe(movieDetails.movie, movieStateObserver)
         binding.backButton.setOnClickListener {
             activity?.onBackPressed()
         }

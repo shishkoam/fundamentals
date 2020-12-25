@@ -14,7 +14,8 @@ data class Movie(
     val minimumAge: Int,
     val runtime: Int,
     val genres: List<Genre>,
-    val actors: List<Actor>
+    val actors: List<Actor>,
+    var isFavorite: Boolean = false
 ) : Parcelable {
 
     fun getRatingIn5Stars():Float {

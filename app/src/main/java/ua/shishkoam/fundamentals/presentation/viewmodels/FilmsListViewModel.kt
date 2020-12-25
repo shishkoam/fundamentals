@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.domain.MovieRepository
+import ua.shishkoam.fundamentals.utils.InitMutableLiveData
 
 class FilmsListViewModel(
     private val movieRepository: MovieRepository
@@ -19,25 +20,28 @@ class FilmsListViewModel(
         loadFilm()
     }
 
-    private var filmList: MutableLiveData<List<Movie>> = MutableLiveData<List<Movie>>()
+    private var filmList: InitMutableLiveData<HashMap<Int, Movie>> = InitMutableLiveData<HashMap<Int,Movie>>()
     private var errorData: MutableLiveData<FilmsListError> = MutableLiveData<FilmsListError>()
-    private val likedFilmsData: MutableLiveData<HashMap<String, Boolean>> = MutableLiveData<HashMap<String, Boolean>>()
 
-    val movies: LiveData<List<Movie>> get() = filmList
+    val movies: LiveData<HashMap<Int,Movie>> get() = filmList
     val error: LiveData<FilmsListError> get() = errorData
-    val likedFilms: LiveData<HashMap<String, Boolean>> get() = likedFilmsData
 
     fun loadFilm() {
         viewModelScope.launch(exceptionHandler) {
             val list = movieRepository.getMovies()
             withContext(Dispatchers.Main) {
-                filmList.value = list
+                val movies = HashMap<Int, Movie>()
+                for (movie in list){
+                    movies[movie.id] = movie
+                }
+                filmList.value = movies
             }
         }
     }
 
-    fun setLike(film: String, isLiked: Boolean) {
-        likedFilmsData.value?.put(film, isLiked)
+    fun setLike(id: Int, isLiked: Boolean) {
+        filmList.value?.get(id)?.isFavorite = isLiked
+        filmList.postValue(filmList.value)
     }
 
     private val exceptionHandler get() = CoroutineExceptionHandler { _, _ ->
