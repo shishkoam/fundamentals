@@ -23,9 +23,11 @@ import org.kodein.di.android.x.di
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesListBinding
+import ua.shishkoam.fundamentals.utils.observe
 import ua.shishkoam.fundamentals.presentation.recyclerview.*
 import ua.shishkoam.fundamentals.presentation.recyclerview.GridAutofitLayoutManager.Companion.AUTO_FIT
 import ua.shishkoam.fundamentals.presentation.viewmodels.FilmsListViewModel
+import ua.shishkoam.fundamentals.utils.observe
 import ua.shishkoam.fundamentals.presentation.viewmodels.KodeinViewModelFactory
 import ua.shishkoam.fundamentals.utils.observe
 
@@ -41,14 +43,14 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
 
     private val binding by viewBinding(FragmentMoviesListBinding::bind)
 
-    private val filmsListStateObserver = Observer<List<Movie>> {
-        val movies = it ?: return@Observer
+    private val filmsListStateObserver = Observer<List<Movie>> {movies ->
+        movies ?: return@Observer
         listAdapter?.items = movies
         listAdapter?.notifyDataSetChanged()
     }
 
-    private val filmsListErrorStateObserver = Observer<FilmsListViewModel.FilmsListError> {
-        val error = it ?: return@Observer
+    private val filmsListErrorStateObserver = Observer<FilmsListViewModel.FilmsListError> { error ->
+        error ?: return@Observer
         if (error == FilmsListViewModel.FilmsListError.LOAD_ERROR) {
             showExceptionToUser(getString(R.string.cant_load_films))
         }
@@ -94,11 +96,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
         filmsListViewModel?.run {
             this@FragmentMoviesList.observe(movies, filmsListStateObserver)
             this@FragmentMoviesList.observe(error, filmsListErrorStateObserver)
-            if (movies.value.isNullOrEmpty()) {
-                updateMoviesList()
-            } else {
-                listAdapter?.items = movies.value
-            }
+            updateMoviesList()
         }
         binding.movieList.run {
             setHasFixedSize(true)
@@ -122,7 +120,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
         textShader: LinearGradient? = null
     ): ListDelegationAdapter<List<Movie>> =
         FilmDelegateAdapter(films = films, textShader = textShader,
-            likedFilms = filmsListViewModel?.getLikes() ?: HashMap(),
+            likedFilms = filmsListViewModel?.likedFilms?.value ?: HashMap(),
             onFilmClickListener = object : OnFilmClickListener {
                 override fun onFilmClick(item: Movie) {
                     val action =

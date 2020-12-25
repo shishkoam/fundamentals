@@ -6,7 +6,7 @@ import ua.shishkoam.fundamentals.utils.ImageLoader
 import ua.shishkoam.fundamentals.data.Actor
 import ua.shishkoam.fundamentals.databinding.ViewHolderActorBinding
 
-class ActorDelegateAdapter(actors: List<Actor>) : ListDelegationAdapter<List<Actor>>(
+class ActorDelegateAdapter(actors: List<Actor> = emptyList()) : ListDelegationAdapter<List<Actor>>(
     actorAdapterDelegate()
 ) {
     init {

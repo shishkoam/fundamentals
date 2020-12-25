@@ -18,10 +18,11 @@ class FilmsListViewModel(
 ) : ViewModel() {
     private var filmList: MutableLiveData<List<Movie>> = MutableLiveData<List<Movie>>()
     private var errorData: MutableLiveData<FilmsListError> = MutableLiveData<FilmsListError>()
-    private val likedFilms: HashMap<String, Boolean> = HashMap()
+    private val likedFilmsData: MutableLiveData<HashMap<String, Boolean>> = MutableLiveData<HashMap<String, Boolean>>()
 
     val movies: LiveData<List<Movie>> get() = filmList
     val error: LiveData<FilmsListError> get() = errorData
+    val likedFilms: LiveData<HashMap<String, Boolean>> get() = likedFilmsData
 
     fun loadFilm() {
         viewModelScope.launch(exceptionHandler) {
@@ -33,11 +34,7 @@ class FilmsListViewModel(
     }
 
     fun setLike(film: String, isLiked: Boolean) {
-        likedFilms[film] = isLiked
-    }
-
-    fun getLikes(): HashMap<String, Boolean> {
-        return likedFilms
+        likedFilmsData.value?.put(film, isLiked)
     }
 
     private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
