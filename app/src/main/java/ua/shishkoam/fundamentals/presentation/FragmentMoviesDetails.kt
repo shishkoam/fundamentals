@@ -19,7 +19,6 @@ import ua.shishkoam.fundamentals.presentation.recyclerview.LandingAnimator
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieDetailsViewModel
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieViewModelFactory
 import ua.shishkoam.fundamentals.utils.ImageLoader
-import ua.shishkoam.fundamentals.utils.observe
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -57,7 +56,7 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
             this@FragmentMoviesDetails,
             MovieViewModelFactory(movie)
         ).get(MovieDetailsViewModel::class.java)
-        observe(movieDetails.movie, movieStateObserver)
+        movieDetails.movie.observe(viewLifecycleOwner, movieStateObserver)
         binding.backButton.setOnClickListener {
             activity?.onBackPressed()
         }

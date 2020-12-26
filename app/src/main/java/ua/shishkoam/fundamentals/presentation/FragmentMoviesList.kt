@@ -28,7 +28,6 @@ import ua.shishkoam.fundamentals.presentation.recyclerview.*
 import ua.shishkoam.fundamentals.presentation.recyclerview.GridAutofitLayoutManager.Companion.AUTO_FIT
 import ua.shishkoam.fundamentals.presentation.viewmodels.FilmsListViewModel
 import ua.shishkoam.fundamentals.presentation.viewmodels.KodeinViewModelFactory
-import ua.shishkoam.fundamentals.utils.observe
 
 
 /**
@@ -103,8 +102,8 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
             itemAnimator = landingItemAnimator
         }
         filmsListViewModel.run {
-            this@FragmentMoviesList.observe(movies, filmsListStateObserver)
-            this@FragmentMoviesList.observe(error, filmsListErrorStateObserver)
+            movies.observe(viewLifecycleOwner, filmsListStateObserver)
+            error.observe(viewLifecycleOwner, filmsListErrorStateObserver)
         }
 
 

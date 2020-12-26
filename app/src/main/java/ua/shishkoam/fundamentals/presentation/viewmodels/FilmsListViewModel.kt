@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.domain.MovieRepository
-import ua.shishkoam.fundamentals.utils.InitMutableLiveData
 
 class FilmsListViewModel(
     private val movieRepository: MovieRepository
@@ -20,7 +19,7 @@ class FilmsListViewModel(
         loadFilm()
     }
 
-    private var filmList: InitMutableLiveData<HashMap<Int, Movie>> = InitMutableLiveData<HashMap<Int,Movie>>()
+    private var filmList: MutableLiveData<HashMap<Int, Movie>> = MutableLiveData<HashMap<Int,Movie>>()
     private var errorData: MutableLiveData<FilmsListError> = MutableLiveData<FilmsListError>()
 
     val movies: LiveData<HashMap<Int,Movie>> get() = filmList
