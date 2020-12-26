@@ -11,12 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import kotlinx.coroutines.*
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -43,16 +41,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
 
     private val filmsListStateObserver = Observer<HashMap<Int,Movie>> {movies ->
         movies ?: return@Observer
-        listAdapter?.items = movies.values.toList()
-        listAdapter?.notifyDataSetChanged()
-        listAdapter?.run{
-            val newList = movies.values.toList()
-            val diffUtil = RecyclerDiffUtil(items, newList)
-            val diffResult = DiffUtil.calculateDiff(diffUtil, false)
-            items = newList
-            diffResult.dispatchUpdatesTo(this);
-        }
-
+        listAdapter?.updateValues(movies.values.toList())
     }
 
     private val filmsListErrorStateObserver = Observer<FilmsListViewModel.FilmsListError> { error ->
@@ -62,7 +51,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
         }
     }
 
-    private var listAdapter: ListDelegationAdapter<List<Movie>>? = null
+    private var listAdapter: FilmDelegateAdapter? = null
 
     private fun showExceptionToUser(msg: String) {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
@@ -94,7 +83,17 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
         )
 
         val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
-        listAdapter = createFilmAdapterDelegate(textShader = textShader)
+        listAdapter = FilmDelegateAdapter(
+            textShader = textShader,
+            onFilmLike = { item, likedState -> filmsListViewModel.setLike(item.id, likedState) },
+            onFilmClick = { movie ->
+                findNavController().navigate(
+                    FragmentMoviesListDirections.openMovieDetails(
+                        movie
+                    )
+                )
+            })
+
         binding.movieList.run {
             setHasFixedSize(true)
             layoutManager = filmRecyclerViewManager
@@ -106,7 +105,6 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
             error.observe(viewLifecycleOwner, filmsListErrorStateObserver)
         }
 
-
         binding.swipeRefreshLayout.setOnRefreshListener {
             updateMoviesList()
             swipeRefreshLayout.isRefreshing = false
@@ -114,26 +112,8 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
     }
 
     private fun updateMoviesList() {
-        filmsListViewModel?.loadFilm()
+        filmsListViewModel.loadFilm()
     }
-
-    private fun createFilmAdapterDelegate(
-        films: MutableList<Movie>? = null,
-        textShader: LinearGradient? = null
-    ): ListDelegationAdapter<List<Movie>> =
-        FilmDelegateAdapter(films = films, textShader = textShader,
-            onFilmClickListener = object : OnFilmClickListener {
-                override fun onFilmClick(item: Movie) {
-                    val action =
-                        FragmentMoviesListDirections.openMovieDetails(item)
-                    findNavController().navigate(action)
-                }
-            },
-            onFilmLikeListener = object : OnFilmLikeListener {
-                override fun onFilmLike(item: Movie, likedState: Boolean) {
-                    filmsListViewModel.setLike(item.id, likedState)
-                }
-            })
 
     companion object {
         const val ARG_COLUMN_COUNT = "column-count"

@@ -39,8 +39,13 @@ class FilmsListViewModel(
     }
 
     fun setLike(id: Int, isLiked: Boolean) {
-        filmList.value?.get(id)?.isFavorite = isLiked
-        filmList.postValue(filmList.value)
+        val movie = filmList.value?.get(id)?.copy()
+        movie?.run{
+            isFavorite = isLiked
+            filmList.value?.put(id, this)
+            filmList.postValue(filmList.value)
+        }
+
     }
 
     private val exceptionHandler get() = CoroutineExceptionHandler { _, _ ->

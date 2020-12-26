@@ -4,5 +4,6 @@ import ua.shishkoam.fundamentals.data.Movie
 
 interface MovieRepository {
     suspend fun getMovies() : List<Movie>
-    val favoriteFilms: HashMap<String, Boolean>
+    fun getFavoriteFilms(): HashMap<String, Boolean>
+    fun setFavoriteFilmState(id:String, isFavorite:Boolean)
 }

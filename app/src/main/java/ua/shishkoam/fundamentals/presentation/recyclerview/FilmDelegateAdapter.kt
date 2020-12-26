@@ -5,26 +5,35 @@ import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
-import ua.shishkoam.fundamentals.utils.ImageLoader
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.databinding.ViewHolderMovieBinding
+import ua.shishkoam.fundamentals.utils.ImageLoader
 
 class FilmDelegateAdapter(
-    films: MutableList<Movie>?,
+    films: List<Movie> = emptyList(),
     val textShader: LinearGradient?,
-    val onFilmClickListener: OnFilmClickListener? = null,
-    val onFilmLikeListener: OnFilmLikeListener? = null
+    onFilmLike: ((item: Movie, likedState: Boolean) -> Unit)? = null,
+    onFilmClick: ((movie: Movie) -> Unit)? = null
 ) : ListDelegationAdapter<List<Movie>>(
-    filmAdapterDelegate(textShader, onFilmClickListener, onFilmLikeListener)
+    filmAdapterDelegate(textShader, onFilmLike, onFilmClick)
 ) {
     init {
-        films?.let {
+        films.let {
             items = films
         }
+    }
+
+    fun updateValues(movies: List<Movie>){
+        val diffUtil = RecyclerDiffUtil(items, movies)
+        val diffResult = DiffUtil.calculateDiff(diffUtil, true)
+        items = movies
+        diffResult.dispatchUpdatesTo(this)
+//        notifyDataSetChanged()
     }
 }
 
@@ -45,8 +54,8 @@ fun setLikeColor(
 
 fun filmAdapterDelegate(
     textShader: LinearGradient?,
-    onFilmClickListener: OnFilmClickListener?,
-    onItemLikeListener: OnFilmLikeListener?
+    onFilmLike: ((item: Movie, likedState: Boolean) -> Unit)? = null,
+    onFilmClick: ((movie: Movie) -> Unit)? = null
 ) =
     adapterDelegateViewBinding<Movie, Movie, ViewHolderMovieBinding>(
         { layoutInflater, root -> ViewHolderMovieBinding.inflate(layoutInflater, root, false) }
@@ -56,12 +65,12 @@ fun filmAdapterDelegate(
         itemView.setOnClickListener { // Triggers click upwards to the adapter on click
             val position = bindingAdapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                onFilmClickListener?.onFilmClick(item)
+                onFilmClick?.invoke(item)
             }
         }
         binding.like.setOnClickListener { // Triggers click upwards to the adapter on click
             likedState = !likedState
-            onItemLikeListener?.onFilmLike(item, likedState)
+            onFilmLike?.invoke(item, likedState)
         }
         bind {
             binding.nameText.text = item.title

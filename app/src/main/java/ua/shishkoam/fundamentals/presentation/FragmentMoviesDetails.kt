@@ -32,12 +32,18 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
 
     private val listAdapter = ActorDelegateAdapter()
 
+    private val movieDetails: MovieDetailsViewModel by lazy {
+        ViewModelProvider(
+            this@FragmentMoviesDetails,
+            MovieViewModelFactory(args.currentMovie)
+        ).get(MovieDetailsViewModel::class.java)
+    }
+
     private val movieStateObserver = Observer<Movie> { movie ->
         movie ?: return@Observer
         binding.run {
             listAdapter.items = movie.actors
             listAdapter.notifyDataSetChanged()
-
             ImageLoader.loadImage(poster, movie.backdrop)
             nameText.text = movie.title
             genreText.text = movie.getGenresString()
@@ -51,14 +57,9 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val movie: Movie = args.currentMovie
-        val movieDetails = ViewModelProvider(
-            this@FragmentMoviesDetails,
-            MovieViewModelFactory(movie)
-        ).get(MovieDetailsViewModel::class.java)
         movieDetails.movie.observe(viewLifecycleOwner, movieStateObserver)
         binding.backButton.setOnClickListener {
-            activity?.onBackPressed()
+            requireActivity().onBackPressed()
         }
         initCast()
     }
