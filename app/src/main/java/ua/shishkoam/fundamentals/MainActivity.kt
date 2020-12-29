@@ -17,6 +17,7 @@ private const val PERMISSION_REQUESTS = 1
 private const val TAG = "ChooserActivity"
 
 class MainActivity : AppCompatActivity() {
+
     private val edgeToEdgeCompatibilityManager = EdgeToEdgeDecorator.updateConfig {
         // default config
         isEdgeToEdgeEnabled = true

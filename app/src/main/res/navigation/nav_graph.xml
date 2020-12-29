@@ -7,13 +7,15 @@
 
     <fragment
         android:id="@+id/MovieDetailsFragment"
-        android:name="ua.shishkoam.fundamentals.FragmentMoviesDetails"
+        android:name="ua.shishkoam.fundamentals.presentation.FragmentMoviesDetails"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_movies_details">
 
         <action
             android:id="@+id/openMovieList"
-            app:destination="@id/MovieListFragment" />
+            app:destination="@id/MovieListFragment"
+            app:popUpToInclusive="true"
+            />
         <argument
             android:name="currentMovie"
             app:argType="ua.shishkoam.fundamentals.data.Movie"
@@ -22,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/MovieListFragment"
-        android:name="ua.shishkoam.fundamentals.FragmentMoviesList"
+        android:name="ua.shishkoam.fundamentals.presentation.FragmentMoviesList"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_movies_list">
 

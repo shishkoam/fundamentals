@@ -1,4 +1,4 @@
-package ua.shishkoam.fundamentals
+package ua.shishkoam.fundamentals.presentation
 
 import android.content.res.Configuration
 import android.graphics.LinearGradient
@@ -15,37 +15,43 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import kotlinx.coroutines.*
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.x.di
+import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesListBinding
-import ua.shishkoam.fundamentals.recyclerview.*
-import ua.shishkoam.fundamentals.recyclerview.GridAutofitLayoutManager.Companion.AUTO_FIT
+import ua.shishkoam.fundamentals.presentation.recyclerview.*
+import ua.shishkoam.fundamentals.presentation.recyclerview.GridAutofitLayoutManager.Companion.AUTO_FIT
+import ua.shishkoam.fundamentals.presentation.viewmodels.FilmsListViewModel
+import ua.shishkoam.fundamentals.presentation.viewmodels.KodeinViewModelFactory
 
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
-
-    private var filmsListViewModel: FilmsListViewModel? = null
+class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
+    override val di: DI by di()
+    private val filmsListViewModel: FilmsListViewModel by lazy {
+        ViewModelProvider(this, KodeinViewModelFactory(di)).get(FilmsListViewModel::class.java)
+    }
 
     private val binding by viewBinding(FragmentMoviesListBinding::bind)
 
-    private val filmsListStateObserver = Observer<List<Movie>> {
-        val movies = it ?: return@Observer
-        listAdapter?.items = movies
-        listAdapter?.notifyDataSetChanged()
+    private val filmsListStateObserver = Observer<HashMap<Int,Movie>> {movies ->
+        movies ?: return@Observer
+        listAdapter?.updateValues(movies.values.toList())
     }
 
-    private val filmsListErrorStateObserver = Observer<FilmsListViewModel.FilmsListError> {
-        val error = it ?: return@Observer
+    private val filmsListErrorStateObserver = Observer<FilmsListViewModel.FilmsListError> { error ->
+        error ?: return@Observer
         if (error == FilmsListViewModel.FilmsListError.LOAD_ERROR) {
             showExceptionToUser(getString(R.string.cant_load_films))
         }
     }
 
-    private var listAdapter: ListDelegationAdapter<List<Movie>>? = null
+    private var listAdapter: FilmDelegateAdapter? = null
 
     private fun showExceptionToUser(msg: String) {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
@@ -77,28 +83,27 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
         )
 
         val swipeRefreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
-        filmsListViewModel = ViewModelProvider(
-            this@FragmentMoviesList,
-            defaultViewModelProviderFactory
-        ).get(FilmsListViewModel::class.java)
-        listAdapter = createFilmAdapterDelegate(textShader = textShader)
-        filmsListViewModel?.run {
-            this@FragmentMoviesList.observe(filmList, filmsListStateObserver)
-            this@FragmentMoviesList.observe(error, filmsListErrorStateObserver)
-            if (filmList.value.isNullOrEmpty()) {
-                updateMoviesList()
-            } else {
-                listAdapter?.items = filmList.value
-            }
-        }
+        listAdapter = FilmDelegateAdapter(
+            textShader = textShader,
+            onFilmLike = { item, likedState -> filmsListViewModel.setLike(item.id, likedState) },
+            onFilmClick = { movie ->
+                findNavController().navigate(
+                    FragmentMoviesListDirections.openMovieDetails(
+                        movie
+                    )
+                )
+            })
+
         binding.movieList.run {
             setHasFixedSize(true)
             layoutManager = filmRecyclerViewManager
             adapter = listAdapter
             itemAnimator = landingItemAnimator
         }
-
-
+        filmsListViewModel.run {
+            movies.observe(viewLifecycleOwner, filmsListStateObserver)
+            error.observe(viewLifecycleOwner, filmsListErrorStateObserver)
+        }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             updateMoviesList()
@@ -107,27 +112,8 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list) {
     }
 
     private fun updateMoviesList() {
-        filmsListViewModel?.loadFilm(requireContext())
+        filmsListViewModel.loadFilm()
     }
-
-    private fun createFilmAdapterDelegate(
-        films: MutableList<Movie>? = null,
-        textShader: LinearGradient? = null
-    ): ListDelegationAdapter<List<Movie>> =
-        FilmDelegateAdapter(films = films, textShader = textShader,
-            likedFilms = filmsListViewModel?.likedFilms ?: HashMap(),
-            onFilmClickListener = object : OnFilmClickListener {
-                override fun onFilmClick(item: Movie) {
-                    val action =
-                        FragmentMoviesListDirections.openMovieDetails(item)
-                    findNavController().navigate(action)
-                }
-            },
-            onFilmLikeListener = object : OnFilmLikeListener {
-                override fun onFilmLike(item: Movie, likedState: Boolean) {
-                    filmsListViewModel?.likedFilms?.put(item.title, likedState)
-                }
-            })
 
     companion object {
         const val ARG_COLUMN_COUNT = "column-count"

@@ -1,11 +1,11 @@
-package ua.shishkoam.fundamentals.recyclerview
+package ua.shishkoam.fundamentals.presentation.recyclerview
 
 import android.animation.Animator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.Interpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import ua.shishkoam.fundamentals.recyclerview.ViewHelper.clear
+import ua.shishkoam.fundamentals.presentation.recyclerview.ViewHelper.clear
 import java.util.ArrayList
 import kotlin.math.abs
 

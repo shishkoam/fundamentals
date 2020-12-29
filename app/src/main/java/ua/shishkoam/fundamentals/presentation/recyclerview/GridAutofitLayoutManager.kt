@@ -1,4 +1,4 @@
-package ua.shishkoam.fundamentals.recyclerview
+package ua.shishkoam.fundamentals.presentation.recyclerview
 
 import android.content.Context
 import android.util.TypedValue

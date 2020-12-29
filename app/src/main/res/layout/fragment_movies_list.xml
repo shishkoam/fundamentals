@@ -7,7 +7,7 @@
     android:padding="@dimen/half_margin_bad"
     android:paddingStart="@dimen/main_margin"
     android:background="@color/list_background"
-    tools:context=".FragmentMoviesList">
+    tools:context=".presentation.FragmentMoviesList">
 
     <ImageView
         android:id="@+id/combined"
