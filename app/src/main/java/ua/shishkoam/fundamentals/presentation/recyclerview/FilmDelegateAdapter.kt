@@ -79,14 +79,15 @@ fun filmAdapterDelegate(
             }
             binding.reviewsText.text = context.getString(
                 R.string.reviews_number,
-                item.numberOfRatings
+                item.vote_count
             )
             binding.ratingBar.rating = item.getRatingIn5Stars()
             binding.genreText.text = item.getGenresString()
 
-            binding.timeText.text = context.getString(R.string.minutes_number, item.runtime)
-            ImageLoader.loadImage(binding.photoImage, item.poster)
-            binding.ageText.text = "${item.minimumAge}+"
+
+//            binding.timeText.text = context.getString(R.string.minutes_number, item.runtime)
+            ImageLoader.loadImage(binding.photoImage, item.getPosterFullImageUrl())
+//            binding.ageText.text = "${item.minimumAge}+"
             likedState = item.isFavorite
             setLikeColor(likedState, binding.like, context)
         }

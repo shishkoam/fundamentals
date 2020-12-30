@@ -19,6 +19,8 @@ import kotlinx.coroutines.*
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.di
+import org.kodein.di.instance
+import ua.shishkoam.fundamentals.MovieRetrofitInterface
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.data.Movie
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesListBinding

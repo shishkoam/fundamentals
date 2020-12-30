@@ -15,12 +15,12 @@ class FilmsListViewModel(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
 
+    private var filmList: MutableLiveData<HashMap<Int, Movie>> = MutableLiveData<HashMap<Int,Movie>>()
+    private var errorData: MutableLiveData<FilmsListError> = MutableLiveData<FilmsListError>()
+
     init {
         loadFilm()
     }
-
-    private var filmList: MutableLiveData<HashMap<Int, Movie>> = MutableLiveData<HashMap<Int,Movie>>()
-    private var errorData: MutableLiveData<FilmsListError> = MutableLiveData<FilmsListError>()
 
     val movies: LiveData<HashMap<Int,Movie>> get() = filmList
     val error: LiveData<FilmsListError> get() = errorData
@@ -48,8 +48,10 @@ class FilmsListViewModel(
 
     }
 
-    private val exceptionHandler get() = CoroutineExceptionHandler { _, _ ->
+    private val exceptionHandler get() = CoroutineExceptionHandler { context, throwable ->
         viewModelScope.launch {
+            throwable.printStackTrace()
+            throwable.stackTrace
             showExceptionToUser()
         }
     }

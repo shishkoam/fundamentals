@@ -42,16 +42,17 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
     private val movieStateObserver = Observer<Movie> { movie ->
         movie ?: return@Observer
         binding.run {
-            listAdapter.items = movie.actors
+//            listAdapter.items = movie.actors
             listAdapter.notifyDataSetChanged()
-            ImageLoader.loadImage(poster, movie.backdrop)
+            ImageLoader.loadImage(poster, movie.getBackdropFullImageUrl())
+
             nameText.text = movie.title
             genreText.text = movie.getGenresString()
             ratingBar.rating = movie.getRatingIn5Stars()
             storyText.text = movie.overview
-            ageText.text = "${movie.minimumAge}+"
+            ageText.text = "${movie.adult}+"
             reviewsText.text =
-                requireContext().getString(R.string.reviews_number, movie.numberOfRatings)
+                requireContext().getString(R.string.reviews_number, movie.vote_count)
         }
     }
 
