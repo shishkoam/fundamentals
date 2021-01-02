@@ -3,9 +3,8 @@ package ua.shishkoam.fundamentals.utils
 import android.graphics.Bitmap
 import android.util.LruCache
 import android.widget.ImageView
-import androidx.annotation.NonNull
 import com.bumptech.glide.Glide
-import ua.shishkoam.fundamentals.data.Movie
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 object ImageLoader {
 
@@ -54,6 +53,7 @@ object ImageLoader {
 
     fun loadImage(imageView: ImageView, drawable: String?) {
         Glide.with(imageView.context.applicationContext).load(drawable)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .error(android.R.drawable.stat_notify_error)
             .into(imageView)
     }

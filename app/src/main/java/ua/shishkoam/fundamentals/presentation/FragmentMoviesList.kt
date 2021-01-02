@@ -19,10 +19,8 @@ import kotlinx.coroutines.*
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.di
-import org.kodein.di.instance
-import ua.shishkoam.fundamentals.MovieRetrofitInterface
 import ua.shishkoam.fundamentals.R
-import ua.shishkoam.fundamentals.data.Movie
+import ua.shishkoam.fundamentals.domain.data.Movie
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesListBinding
 import ua.shishkoam.fundamentals.presentation.recyclerview.*
 import ua.shishkoam.fundamentals.presentation.recyclerview.GridAutofitLayoutManager.Companion.AUTO_FIT
@@ -41,7 +39,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
 
     private val binding by viewBinding(FragmentMoviesListBinding::bind)
 
-    private val filmsListStateObserver = Observer<HashMap<Int,Movie>> {movies ->
+    private val filmsListStateObserver = Observer<HashMap<Int, Movie>> { movies ->
         movies ?: return@Observer
         listAdapter?.updateValues(movies.values.toList())
     }

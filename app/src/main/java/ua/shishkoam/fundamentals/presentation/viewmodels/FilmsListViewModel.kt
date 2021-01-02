@@ -8,21 +8,21 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ua.shishkoam.fundamentals.data.Movie
+import ua.shishkoam.fundamentals.domain.data.Movie
 import ua.shishkoam.fundamentals.domain.MovieRepository
 
 class FilmsListViewModel(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
 
-    private var filmList: MutableLiveData<HashMap<Int, Movie>> = MutableLiveData<HashMap<Int,Movie>>()
+    private var filmList: MutableLiveData<HashMap<Int, Movie>> = MutableLiveData<HashMap<Int, Movie>>()
     private var errorData: MutableLiveData<FilmsListError> = MutableLiveData<FilmsListError>()
 
     init {
         loadFilm()
     }
 
-    val movies: LiveData<HashMap<Int,Movie>> get() = filmList
+    val movies: LiveData<HashMap<Int, Movie>> get() = filmList
     val error: LiveData<FilmsListError> get() = errorData
 
     fun loadFilm() {

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import ua.shishkoam.fundamentals.R
-import ua.shishkoam.fundamentals.data.Movie
+import ua.shishkoam.fundamentals.domain.data.Movie
 import ua.shishkoam.fundamentals.databinding.ViewHolderMovieBinding
 import ua.shishkoam.fundamentals.utils.ImageLoader
 
@@ -33,7 +33,6 @@ class FilmDelegateAdapter(
         val diffResult = DiffUtil.calculateDiff(diffUtil, true)
         items = movies
         diffResult.dispatchUpdatesTo(this)
-//        notifyDataSetChanged()
     }
 }
 
@@ -82,12 +81,12 @@ fun filmAdapterDelegate(
                 item.vote_count
             )
             binding.ratingBar.rating = item.getRatingIn5Stars()
-            binding.genreText.text = item.getGenresString()
-
+            binding.genreText.text = item.getGenresNames()
+            val age = if (item.adult) 17 else 13
+            binding.ageText.text = "$age+"
 
 //            binding.timeText.text = context.getString(R.string.minutes_number, item.runtime)
-            ImageLoader.loadImage(binding.photoImage, item.getPosterFullImageUrl())
-//            binding.ageText.text = "${item.minimumAge}+"
+            ImageLoader.loadImage(binding.photoImage, item.posterFullImageUrl)
             likedState = item.isFavorite
             setLikeColor(likedState, binding.like, context)
         }

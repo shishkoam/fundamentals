@@ -1,4 +1,4 @@
-package ua.shishkoam.fundamentals.data
+package ua.shishkoam.fundamentals.domain.data
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -23,7 +23,9 @@ data class Movie(
     var vote_count: Int = 0,
 ) : Parcelable {
     var isFavorite: Boolean = false
-    var configuration: Configuration? = null
+    var genresNames: HashSet<String> = HashSet()
+    var posterFullImageUrl: String? = null
+    var backdropFullImageUrl: String? = null
 
     constructor(parcel: Parcel) : this(
         parcel.readByte() != 0.toByte(),
@@ -46,47 +48,53 @@ data class Movie(
         return vote_average / 2
     }
 
-    fun getGenresString(): String {
-        val sb = StringBuilder()
-        val genres = genre_ids
-        val size = genres.size
-        for (i in 0 until size - 1) {
-            sb.append(genres[i]).append(", ")
+    fun setGenresNames(genresMap: HashMap<Int, String>) {
+        genresNames.clear()
+        for (genreId in genre_ids) {
+            genresNames.add(genresMap[genreId] ?: "")
         }
-        sb.append(genres[size - 1])
-        return sb.toString()
+        genresNames.remove("")
     }
 
+    fun getGenresNames() : String {
+        if (genresNames.isNullOrEmpty()) {
+            return ""
+        }
+        val sb = java.lang.StringBuilder()
+        for (genre in genresNames) {
+            sb.append(genre).append(", ")
+        }
+        return sb.substring(0, sb.length-2)
+    }
+//
+//    fun getGenresString(): String {
+//        val sb = StringBuilder()
+//        val genres = genre_ids
+//        val size = genres.size
+//        for (i in 0 until size - 1) {
+//            sb.append(genres[i]).append(", ")
+//        }
+//        sb.append(genres[size - 1])
+//        return sb.toString()
+//    }
+
     @NonNull
-    fun getPosterFullImageUrl(): String {
+    fun setPosterFullImageUrl(configuration: Configuration) {
         val imagePath: String = if (poster_path.isNullOrEmpty()) {
             backdrop_path
         } else {
             poster_path!!
         }
-        return getFullImageUrl(imagePath)
+        posterFullImageUrl = configuration.getFullImageUrl(imagePath)
     }
 
     @NonNull
-    fun getBackdropFullImageUrl(): String {
+    fun setBackdropFullImageUrl(configuration: Configuration) {
         val imagePath: String = backdrop_path
-        return getFullImageUrl(imagePath)
+        backdropFullImageUrl = configuration.getFullImageUrl(imagePath)
     }
 
-    private fun getFullImageUrl(imagePath: String): String {
-        val images = configuration?.images
-        if (images?.base_url?.isNotEmpty() == true && images.poster_sizes?.isNotEmpty() == true) {
-            val size = images.poster_sizes?.size ?: 0
-            return if (size > 4) {
-                // usually equal to 'w500'
-                images.base_url + images.poster_sizes?.get(4) + imagePath
-            } else {
-                // back-off to hard-coded value
-                images.base_url.toString() + "w500" + imagePath
-            }
-        }
-        return ""
-    }
+
     override fun describeContents(): Int {
         return 0
     }

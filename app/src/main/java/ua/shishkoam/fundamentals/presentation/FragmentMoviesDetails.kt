@@ -11,11 +11,15 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.di
+import org.kodein.di.instance
 import ua.shishkoam.fundamentals.R
-import ua.shishkoam.fundamentals.data.Movie
+import ua.shishkoam.fundamentals.domain.data.Movie
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesDetailsBinding
+import ua.shishkoam.fundamentals.domain.MovieRepository
+import ua.shishkoam.fundamentals.domain.data.Actor
 import ua.shishkoam.fundamentals.presentation.recyclerview.ActorDelegateAdapter
 import ua.shishkoam.fundamentals.presentation.recyclerview.LandingAnimator
+import ua.shishkoam.fundamentals.presentation.viewmodels.FilmsListViewModel
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieDetailsViewModel
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieViewModelFactory
 import ua.shishkoam.fundamentals.utils.ImageLoader
@@ -27,30 +31,34 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
     override val di: DI by di()
 
     private val args: FragmentMoviesDetailsArgs by navArgs()
+    private val movieRepository: MovieRepository by instance()
 
     private val binding by viewBinding(FragmentMoviesDetailsBinding::bind)
+    private val actorListStateObserver = Observer<List<Actor>> { actors ->
+        actors ?: return@Observer
+        listAdapter.items = actors
+        listAdapter.notifyDataSetChanged()
+    }
 
     private val listAdapter = ActorDelegateAdapter()
 
     private val movieDetails: MovieDetailsViewModel by lazy {
         ViewModelProvider(
             this@FragmentMoviesDetails,
-            MovieViewModelFactory(args.currentMovie)
+            MovieViewModelFactory(movieRepository, args.currentMovie)
         ).get(MovieDetailsViewModel::class.java)
     }
 
     private val movieStateObserver = Observer<Movie> { movie ->
         movie ?: return@Observer
         binding.run {
-//            listAdapter.items = movie.actors
-            listAdapter.notifyDataSetChanged()
-            ImageLoader.loadImage(poster, movie.getBackdropFullImageUrl())
-
+            ImageLoader.loadImage(poster, movie.backdropFullImageUrl)
             nameText.text = movie.title
-            genreText.text = movie.getGenresString()
+            genreText.text = movie.getGenresNames()
             ratingBar.rating = movie.getRatingIn5Stars()
             storyText.text = movie.overview
-            ageText.text = "${movie.adult}+"
+            val age = if (movie.adult) 17 else 13
+            ageText.text = "$age+"
             reviewsText.text =
                 requireContext().getString(R.string.reviews_number, movie.vote_count)
         }
@@ -58,11 +66,12 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initCast()
         movieDetails.movie.observe(viewLifecycleOwner, movieStateObserver)
+        movieDetails.actors.observe(viewLifecycleOwner, actorListStateObserver)
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
         }
-        initCast()
     }
 
     private fun initCast() {

@@ -1,4 +1,4 @@
-package ua.shishkoam.fundamentals.data
+package ua.shishkoam.fundamentals.domain.data
 
 import android.os.Parcel
 import android.os.Parcelable

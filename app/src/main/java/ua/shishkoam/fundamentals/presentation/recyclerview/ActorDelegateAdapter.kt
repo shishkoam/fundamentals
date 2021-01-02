@@ -3,7 +3,7 @@ package ua.shishkoam.fundamentals.presentation.recyclerview
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import ua.shishkoam.fundamentals.utils.ImageLoader
-import ua.shishkoam.fundamentals.data.Actor
+import ua.shishkoam.fundamentals.domain.data.Actor
 import ua.shishkoam.fundamentals.databinding.ViewHolderActorBinding
 
 class ActorDelegateAdapter(actors: List<Actor> = emptyList()) : ListDelegationAdapter<List<Actor>>(
@@ -19,6 +19,6 @@ fun actorAdapterDelegate() = adapterDelegateViewBinding<Actor, Actor, ViewHolder
 ) {
     bind {
         binding.nameText.text = item.name
-        ImageLoader.loadImage(binding.photoImage, item.picture)
+        ImageLoader.loadImage(binding.photoImage, item.profileFullImageUrl)
     }
 }
