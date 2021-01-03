@@ -1,5 +1,6 @@
 package ua.shishkoam.fundamentals.data
 
+import retrofit2.HttpException
 import ua.shishkoam.fundamentals.MovieRetrofitInterface
 import ua.shishkoam.fundamentals.domain.MovieRepository
 import ua.shishkoam.fundamentals.domain.data.Actor
@@ -14,26 +15,35 @@ class MovieRepositoryImpl(
     private var genreMap: HashMap<Int, String> = HashMap()
 
     override suspend fun getMovies(): List<Movie> {
-        val movies = movieRetrofitInterface.getTopRated().results ?: emptyList()
-        val genres = getGenreMap()
-        val configuration = getConfiguration()
-        for (movie in movies) {
-            configuration?.let { config ->
-                movie.setPosterFullImageUrl(config)
-                movie.setBackdropFullImageUrl(config)
+        try {
+            val movies = movieRetrofitInterface.getNowPlaying()?.results ?: emptyList()
+            val genres = getGenreMap()
+            val configuration = getConfiguration()
+            for (movie in movies) {
+                configuration?.let { config ->
+                    movie.setPosterFullImageUrl(config)
+                    movie.setBackdropFullImageUrl(config)
+                }
+                movie.setGenresNames(genres)
             }
-            movie.setGenresNames(genres)
+            return movies
+        } catch (e: HttpException) {
+            e.printStackTrace()
+            return emptyList()
         }
-        return movies
     }
 
     private suspend fun getGenreMap(): HashMap<Int, String> {
         if (genreMap.isNullOrEmpty()) {
-            val genreList = movieRetrofitInterface.getGenreList().genres
-            genreList?.let {
-                for (genre in genreList) {
-                    genreMap[genre.id] = genre.name
+            try {
+                val genreList = movieRetrofitInterface.getGenreList()?.genres
+                genreList?.let {
+                    for (genre in genreList) {
+                        genreMap[genre.id] = genre.name
+                    }
                 }
+            } catch (e: HttpException) {
+                e.printStackTrace()
             }
         }
         return genreMap
@@ -41,20 +51,31 @@ class MovieRepositoryImpl(
 
     private suspend fun getConfiguration(): Configuration? {
         if (configuration == null) {
-            configuration = movieRetrofitInterface.getConfiguration()
+            try {
+                configuration = movieRetrofitInterface.getConfiguration()
+            } catch (e: HttpException) {
+                e.printStackTrace()
+            }
         }
         return configuration
     }
 
-    override suspend fun getActors(id : Int): List<Actor> {
-        val credits = movieRetrofitInterface.getMovieCredits(id)
-        val configuration = getConfiguration()
-        configuration?.let { config ->
-            for (actor in credits.cast) {
-                actor.setProfileFullImageUrl(config)
+    override suspend fun getActors(id: Int): List<Actor> {
+        try {
+            val credits = movieRetrofitInterface.getMovieCredits(id)
+            val config = getConfiguration()
+            credits?.cast?.let { cast ->
+                config?.let { config ->
+                    for (actor in cast) {
+                        actor.setProfileFullImageUrl(config)
+                    }
+                }
+                return credits.cast
             }
+        } catch (e: HttpException) {
+            e.printStackTrace()
         }
-        return credits.cast
+        return emptyList()
     }
 
     override fun getFavoriteFilms(): HashMap<String, Boolean> {

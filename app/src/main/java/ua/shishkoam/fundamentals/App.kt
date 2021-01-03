@@ -4,10 +4,8 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
-import okhttp3.Interceptor
+import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import org.kodein.di.*
 import org.kodein.di.android.x.androidXModule
@@ -62,13 +60,16 @@ class App : Application(), DIAware {
         override fun intercept(chain: Interceptor.Chain): Response {
             val originalRequest = chain.request()
             val originalHttpUrl = originalRequest.url
-            val request = originalRequest.newBuilder()
-                .url(originalHttpUrl)
-                .addHeader(API_KEY_HEADER, api)
-//                .addHeader("language", "en-US")
-//                .addHeader("page", "1")
+            val url = originalHttpUrl.newBuilder()
+                .addQueryParameter("api_key", api)
+                .addQueryParameter("language", "en-US")
+                .addQueryParameter("page", "1")
                 .build()
 
+            val requestBuilder: Request.Builder = originalRequest.newBuilder()
+                .url(url)
+
+            val request: Request = requestBuilder.build()
             return chain.proceed(request)
         }
     }

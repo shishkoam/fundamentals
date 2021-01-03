@@ -39,8 +39,9 @@ class FilmsListViewModel(
     }
 
     fun setLike(id: Int, isLiked: Boolean) {
-        val movie = filmList.value?.get(id)?.copy()
-        movie?.run{
+        val oldMovie = filmList.value?.get(id)
+        val newMovie = oldMovie?.clone()
+        newMovie?.run{
             isFavorite = isLiked
             filmList.value?.put(id, this)
             filmList.postValue(filmList.value)

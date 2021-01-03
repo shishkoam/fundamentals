@@ -23,7 +23,7 @@ data class Movie(
     var vote_count: Int = 0,
 ) : Parcelable {
     var isFavorite: Boolean = false
-    var genresNames: HashSet<String> = HashSet()
+    var genresNames: HashSet<String>? = HashSet()
     var posterFullImageUrl: String? = null
     var backdropFullImageUrl: String? = null
 
@@ -49,34 +49,34 @@ data class Movie(
     }
 
     fun setGenresNames(genresMap: HashMap<Int, String>) {
-        genresNames.clear()
+        genresNames?.clear()
         for (genreId in genre_ids) {
-            genresNames.add(genresMap[genreId] ?: "")
+            genresNames?.add(genresMap[genreId] ?: "")
         }
-        genresNames.remove("")
+        genresNames?.remove("")
     }
 
     fun getGenresNames() : String {
         if (genresNames.isNullOrEmpty()) {
             return ""
         }
-        val sb = java.lang.StringBuilder()
-        for (genre in genresNames) {
-            sb.append(genre).append(", ")
+        genresNames?.let{ names ->
+            val sb = java.lang.StringBuilder()
+            for (genre in names) {
+                sb.append(genre).append(", ")
+            }
+            return sb.substring(0, sb.length-2)
         }
-        return sb.substring(0, sb.length-2)
+        return ""
     }
-//
-//    fun getGenresString(): String {
-//        val sb = StringBuilder()
-//        val genres = genre_ids
-//        val size = genres.size
-//        for (i in 0 until size - 1) {
-//            sb.append(genres[i]).append(", ")
-//        }
-//        sb.append(genres[size - 1])
-//        return sb.toString()
-//    }
+
+    fun clone(): Movie {
+        val newMovie = copy()
+        newMovie.posterFullImageUrl = posterFullImageUrl
+        newMovie.backdropFullImageUrl = backdropFullImageUrl
+        newMovie.genresNames = genresNames
+        return newMovie
+    }
 
     @NonNull
     fun setPosterFullImageUrl(configuration: Configuration) {
