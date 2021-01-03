@@ -27,6 +27,7 @@ class FilmsListViewModel(
 
     fun loadFilm() {
         viewModelScope.launch(exceptionHandler) {
+            errorData.value = FilmsListError.WITHOUT_ERROR
             val list = movieRepository.getMovies()
             withContext(Dispatchers.Main) {
                 val movies = HashMap<Int, Movie>()
@@ -34,6 +35,9 @@ class FilmsListViewModel(
                     movies[movie.id] = movie
                 }
                 filmList.value = movies
+                if (movies.isEmpty()) {
+                    errorData.value = FilmsListError.LOAD_ERROR
+                }
             }
         }
     }
@@ -63,7 +67,7 @@ class FilmsListViewModel(
         }
 
     enum class FilmsListError {
-        LOAD_ERROR, EMPTY_LIST
+        WITHOUT_ERROR, LOAD_ERROR, EMPTY_LIST
     }
 }
 
