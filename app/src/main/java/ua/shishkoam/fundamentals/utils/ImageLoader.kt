@@ -53,12 +53,10 @@ object ImageLoader {
     }
 
     fun loadImage(imageView: ImageView, drawable: String?) {
-        val uri = Uri.parse(drawable)
+        val uri = Uri.parse(drawable ?: "")
         Glide.with(imageView.context.applicationContext).load(uri)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .error(android.R.drawable.stat_notify_error)
             .into(imageView)
     }
-
-
 }

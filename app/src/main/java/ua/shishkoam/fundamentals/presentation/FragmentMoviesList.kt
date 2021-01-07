@@ -20,8 +20,9 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.di
 import ua.shishkoam.fundamentals.R
-import ua.shishkoam.fundamentals.domain.data.Movie
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesListBinding
+import ua.shishkoam.fundamentals.domain.RepositoryError
+import ua.shishkoam.fundamentals.domain.data.Movie
 import ua.shishkoam.fundamentals.presentation.recyclerview.*
 import ua.shishkoam.fundamentals.presentation.recyclerview.GridAutofitLayoutManager.Companion.AUTO_FIT
 import ua.shishkoam.fundamentals.presentation.viewmodels.FilmsListViewModel
@@ -44,9 +45,9 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
         listAdapter?.updateValues(movies.values.toList())
     }
 
-    private val filmsListErrorStateObserver = Observer<FilmsListViewModel.FilmsListError> { error ->
+    private val filmsListErrorStateObserver = Observer<RepositoryError> { error ->
         error ?: return@Observer
-        if (error == FilmsListViewModel.FilmsListError.LOAD_ERROR) {
+        if (error == RepositoryError.LOAD_ERROR) {
             showExceptionToUser(getString(R.string.cant_load_films))
         }
     }

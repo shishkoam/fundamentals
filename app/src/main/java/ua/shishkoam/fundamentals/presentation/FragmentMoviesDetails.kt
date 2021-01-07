@@ -2,6 +2,7 @@ package ua.shishkoam.fundamentals.presentation
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,13 +14,13 @@ import org.kodein.di.DIAware
 import org.kodein.di.android.x.di
 import org.kodein.di.instance
 import ua.shishkoam.fundamentals.R
-import ua.shishkoam.fundamentals.domain.data.Movie
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesDetailsBinding
 import ua.shishkoam.fundamentals.domain.MovieRepository
+import ua.shishkoam.fundamentals.domain.RepositoryError
 import ua.shishkoam.fundamentals.domain.data.Actor
+import ua.shishkoam.fundamentals.domain.data.Movie
 import ua.shishkoam.fundamentals.presentation.recyclerview.ActorDelegateAdapter
 import ua.shishkoam.fundamentals.presentation.recyclerview.LandingAnimator
-import ua.shishkoam.fundamentals.presentation.viewmodels.FilmsListViewModel
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieDetailsViewModel
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieViewModelFactory
 import ua.shishkoam.fundamentals.utils.ImageLoader
@@ -40,6 +41,17 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
         listAdapter.notifyDataSetChanged()
     }
 
+    private val errorStateObserver = Observer<RepositoryError> { error ->
+        error ?: return@Observer
+        if (error == RepositoryError.LOAD_ERROR) {
+            showExceptionToUser(getString(R.string.cant_load_film_details))
+        }
+    }
+
+    private fun showExceptionToUser(msg: String) {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+    }
+
     private val listAdapter = ActorDelegateAdapter()
 
     private val movieDetails: MovieDetailsViewModel by lazy {
@@ -52,23 +64,27 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
     private val movieStateObserver = Observer<Movie> { movie ->
         movie ?: return@Observer
         binding.run {
-            ImageLoader.loadImage(poster, movie.backdropFullImageUrl)
+            ImageLoader.loadImage(poster, movie.backdropUrl)
             nameText.text = movie.title
-            genreText.text = movie.getGenresNames()
+            genreText.text = movie.getGenresString()
             ratingBar.rating = movie.getRatingIn5Stars()
             storyText.text = movie.overview
-            val age = if (movie.adult) 17 else 13
-            ageText.text = "$age+"
+//            val age = if (movie.adult) 17 else 13
+//            ageText.text = "$age+"
             reviewsText.text =
-                requireContext().getString(R.string.reviews_number, movie.vote_count)
+                requireContext().getString(R.string.reviews_number, movie.voteCount)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initCast()
-        movieDetails.movie.observe(viewLifecycleOwner, movieStateObserver)
-        movieDetails.actors.observe(viewLifecycleOwner, actorListStateObserver)
+        movieDetails.run {
+            movie.observe(viewLifecycleOwner, movieStateObserver)
+            actors.observe(viewLifecycleOwner, actorListStateObserver)
+            error.observe(viewLifecycleOwner, errorStateObserver)
+        }
+
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
         }

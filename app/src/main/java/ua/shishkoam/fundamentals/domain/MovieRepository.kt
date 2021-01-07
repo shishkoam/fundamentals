@@ -1,11 +1,12 @@
 package ua.shishkoam.fundamentals.domain
 
+import by.kirich1409.result.RequestResult
 import ua.shishkoam.fundamentals.domain.data.Actor
 import ua.shishkoam.fundamentals.domain.data.Movie
 
 interface MovieRepository {
-    suspend fun getMovies() : List<Movie>
-    suspend fun getActors(id : Int): List<Actor>
+    suspend fun getMovies() : RequestResult<List<Movie>>
+    suspend fun getActors(id : Int): RequestResult<List<Actor>>
     fun getFavoriteFilms(): HashMap<String, Boolean>
     fun setFavoriteFilmState(id:String, isFavorite:Boolean)
 }

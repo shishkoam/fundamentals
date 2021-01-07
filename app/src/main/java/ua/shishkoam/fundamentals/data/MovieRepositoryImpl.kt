@@ -1,10 +1,12 @@
 package ua.shishkoam.fundamentals.data
 
-import retrofit2.HttpException
-import ua.shishkoam.fundamentals.MovieRetrofitInterface
+import by.kirich1409.result.RequestResult
+import by.kirich1409.result.asFailure
+import by.kirich1409.result.asSuccess
+import by.kirich1409.result.isSuccess
+import ua.shishkoam.fundamentals.data.dto.Configuration
 import ua.shishkoam.fundamentals.domain.MovieRepository
 import ua.shishkoam.fundamentals.domain.data.Actor
-import ua.shishkoam.fundamentals.domain.data.Configuration
 import ua.shishkoam.fundamentals.domain.data.Movie
 
 class MovieRepositoryImpl(
@@ -14,36 +16,34 @@ class MovieRepositoryImpl(
     private var configuration: Configuration? = null
     private var genreMap: HashMap<Int, String> = HashMap()
 
-    override suspend fun getMovies(): List<Movie> {
-        try {
-            val movies = movieRetrofitInterface.getNowPlaying()?.results ?: emptyList()
+    override suspend fun getMovies(): RequestResult<List<Movie>> {
+        val movies = ArrayList<Movie>()
+        val result = movieRetrofitInterface.getNowPlaying()
+        return if (result.isSuccess()) {
+            val moviesDTO = result.asSuccess().value?.results ?: emptyList()
             val genres = getGenreMap()
             val configuration = getConfiguration()
-            for (movie in movies) {
-                configuration?.let { config ->
-                    movie.setPosterFullImageUrl(config)
-                    movie.setBackdropFullImageUrl(config)
-                }
-                movie.setGenresNames(genres)
+            for (movie in moviesDTO) {
+                movies.add(movie.toDomainMovie(configuration, genres))
             }
-            return movies
-        } catch (e: HttpException) {
-            e.printStackTrace()
-            return emptyList()
+            RequestResult.Success.Value(movies)
+        } else {
+            result.asFailure()
         }
     }
 
     private suspend fun getGenreMap(): HashMap<Int, String> {
         if (genreMap.isNullOrEmpty()) {
-            try {
-                val genreList = movieRetrofitInterface.getGenreList()?.genres
+            val result = movieRetrofitInterface.getGenreList()
+            if (result.isSuccess()) {
+                val genreList = result.asSuccess().value?.genres
                 genreList?.let {
                     for (genre in genreList) {
                         genreMap[genre.id] = genre.name
                     }
                 }
-            } catch (e: HttpException) {
-                e.printStackTrace()
+            } else {
+                print(result.asFailure().error)
             }
         }
         return genreMap
@@ -51,31 +51,34 @@ class MovieRepositoryImpl(
 
     private suspend fun getConfiguration(): Configuration? {
         if (configuration == null) {
-            try {
-                configuration = movieRetrofitInterface.getConfiguration()
-            } catch (e: HttpException) {
-                e.printStackTrace()
+            val result = movieRetrofitInterface.getConfiguration()
+            if (result.isSuccess()) {
+                configuration = result.asSuccess().value
+            } else {
+                print(result.asFailure().error)
             }
         }
         return configuration
     }
 
-    override suspend fun getActors(id: Int): List<Actor> {
-        try {
-            val credits = movieRetrofitInterface.getMovieCredits(id)
+    override suspend fun getActors(id: Int): RequestResult<List<Actor>> {
+        val result = movieRetrofitInterface.getMovieCredits(id)
+        val actors: ArrayList<Actor> = ArrayList()
+        if (result.isSuccess()) {
+            val credits = result.asSuccess().value
             val config = getConfiguration()
             credits?.cast?.let { cast ->
                 config?.let { config ->
                     for (actor in cast) {
-                        actor.setProfileFullImageUrl(config)
+                        actors.add(actor.toDomainActor(config))
                     }
                 }
-                return credits.cast
+                return RequestResult.Success.Value(actors)
             }
-        } catch (e: HttpException) {
-            e.printStackTrace()
+        } else {
+            return result.asFailure()
         }
-        return emptyList()
+        return RequestResult.Success.Value(emptyList())
     }
 
     override fun getFavoriteFilms(): HashMap<String, Boolean> {

@@ -2,6 +2,7 @@ package ua.shishkoam.fundamentals
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
+import by.kirich1409.result.retrofit.ResultAdapterFactory
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.*
@@ -11,6 +12,7 @@ import org.kodein.di.*
 import org.kodein.di.android.x.androidXModule
 import retrofit2.Retrofit
 import ua.shishkoam.fundamentals.data.MovieRepositoryImpl
+import ua.shishkoam.fundamentals.data.MovieRetrofitInterface
 import ua.shishkoam.fundamentals.domain.MovieRepository
 import ua.shishkoam.fundamentals.presentation.viewmodels.FilmsListViewModel
 
@@ -29,6 +31,7 @@ class App : Application(), DIAware {
             Retrofit.Builder()
                 .client(client)
                 .baseUrl(BASE_URL)
+                .addCallAdapterFactory(ResultAdapterFactory())
                 .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
                 .build()
         }
