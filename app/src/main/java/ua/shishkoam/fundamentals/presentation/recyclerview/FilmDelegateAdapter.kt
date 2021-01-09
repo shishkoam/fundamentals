@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 import ua.shishkoam.fundamentals.R
+import ua.shishkoam.fundamentals.databinding.ItemLoadingBinding
 import ua.shishkoam.fundamentals.databinding.ViewHolderMovieBinding
+import ua.shishkoam.fundamentals.domain.data.ListItem
 import ua.shishkoam.fundamentals.domain.data.Movie
 import ua.shishkoam.fundamentals.utils.ImageLoader
 
@@ -19,8 +21,9 @@ class FilmDelegateAdapter(
     val textShader: LinearGradient?,
     onFilmLike: ((item: Movie, likedState: Boolean) -> Unit)? = null,
     onFilmClick: ((movie: Movie) -> Unit)? = null
-) : ListDelegationAdapter<List<Movie>>(
-    filmAdapterDelegate(textShader, onFilmLike, onFilmClick)
+) : ListDelegationAdapter<List<ListItem>>(
+    filmAdapterDelegate(textShader, onFilmLike, onFilmClick),
+    loadAdapterDelegate()
 ) {
     init {
         films.let {
@@ -28,7 +31,7 @@ class FilmDelegateAdapter(
         }
     }
 
-    fun updateValues(movies: List<Movie>){
+    fun updateValues(movies: List<ListItem>){
         val diffUtil = RecyclerDiffUtil(items, movies)
         val diffResult = DiffUtil.calculateDiff(diffUtil, true)
         items = movies
@@ -56,7 +59,7 @@ fun filmAdapterDelegate(
     onFilmLike: ((item: Movie, likedState: Boolean) -> Unit)? = null,
     onFilmClick: ((movie: Movie) -> Unit)? = null
 ) =
-    adapterDelegateViewBinding<Movie, Movie, ViewHolderMovieBinding>(
+    adapterDelegateViewBinding<Movie, ListItem, ViewHolderMovieBinding>(
         { layoutInflater, root -> ViewHolderMovieBinding.inflate(layoutInflater, root, false) }
     ) {
         val nameTextShader: Shader? = textShader
@@ -89,4 +92,13 @@ fun filmAdapterDelegate(
             likedState = item.isFavorite
             setLikeColor(likedState, binding.like, context)
         }
+    }
+
+fun loadAdapterDelegate(
+) =
+    adapterDelegateViewBinding<LoadItem, ListItem, ItemLoadingBinding>(
+        { layoutInflater, root -> ItemLoadingBinding.inflate(layoutInflater, root, false) }
+    ) {
+
+
     }

@@ -19,19 +19,17 @@ fun MovieDTO.toDomainMovie(configuration: Configuration?, genres: HashMap<Int, S
 }
 
 
-@NonNull
 fun getPosterFullImageUrl(movieDTO: MovieDTO, configuration: Configuration): String {
-    val imagePath: String = if (movieDTO.posterPath.isNullOrEmpty()) {
+    val imagePath: String? = if (movieDTO.posterPath.isNullOrEmpty()) {
         movieDTO.backdrop_path
     } else {
-        movieDTO.posterPath!!
+        movieDTO.posterPath
     }
-    return configuration.getFullImageUrl(imagePath)
+    return configuration.getFullImageUrl(imagePath) ?: ""
 }
 
-@NonNull
 fun getBackdropFullImageUrl(movieDTO: MovieDTO, configuration: Configuration): String {
-    val imagePath: String = movieDTO.backdrop_path
+    val imagePath: String? = movieDTO.backdrop_path
     return configuration.getFullImageUrl(imagePath)
 }
 

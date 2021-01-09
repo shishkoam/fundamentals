@@ -16,7 +16,7 @@ data class Movie(
     var backdropUrl: String? = null,
     var isFavorite: Boolean = false,
     var genresNames: HashSet<String>? = HashSet()
-) : Parcelable {
+) : Parcelable, ListItem {
 
     constructor(parcel: Parcel) : this(
         parcel.readInt(),

@@ -2,7 +2,8 @@ package ua.shishkoam.fundamentals.data
 
 import ua.shishkoam.fundamentals.data.dto.Configuration
 
-fun Configuration.getFullImageUrl(imagePath: String): String {
+fun Configuration.getFullImageUrl(imagePath: String?): String {
+    imagePath ?: return ""
     val images = this.images
     if (images?.baseUrl?.isNotEmpty() == true && images.posterSizes?.isNotEmpty() == true) {
         val size = images.posterSizes?.size ?: 0

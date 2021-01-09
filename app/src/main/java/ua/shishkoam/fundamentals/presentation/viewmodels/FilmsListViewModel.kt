@@ -12,50 +12,101 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ua.shishkoam.fundamentals.domain.MovieRepository
 import ua.shishkoam.fundamentals.domain.RepositoryError
+import ua.shishkoam.fundamentals.domain.data.ListItem
 import ua.shishkoam.fundamentals.domain.data.Movie
+import ua.shishkoam.fundamentals.presentation.recyclerview.LoadItem
 
 class FilmsListViewModel(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
 
-    private var filmList: MutableLiveData<HashMap<Int, Movie>> =
-        MutableLiveData<HashMap<Int, Movie>>()
-    private var errorData: MutableLiveData<RepositoryError> = MutableLiveData<RepositoryError>()
+    private var moviesData: MutableLiveData<List<ListItem>> = MutableLiveData<List<ListItem>>()
+    private var isLoadingData: MutableLiveData<State> = MutableLiveData<State>()
+    private val loadItem = LoadItem()
 
     init {
         loadFilm()
     }
 
-    val movies: LiveData<HashMap<Int, Movie>> get() = filmList
-    val error: LiveData<RepositoryError> get() = errorData
+    val movies: LiveData<List<ListItem>> get() = moviesData
+    val isLoading: LiveData<State> get() = isLoadingData
 
     fun loadFilm() {
         viewModelScope.launch(exceptionHandler) {
-            errorData.value = null
+            setLoading(State.Loading)
+            isLoadingData.value = State.None
             val result = movieRepository.getMovies()
             withContext(Dispatchers.Main) {
                 if (result.isSuccess()) {
-                    val movies = HashMap<Int, Movie>()
-                    for (movie in result.asSuccess().value) {
-                        movies[movie.id] = movie
-                    }
-                    filmList.value = movies
+                    moviesData.value = result.asSuccess().value
+                    setLoading(State.Loaded(1, movieRepository.getTotalPageNumber()))
                 } else {
-                    errorData.value = RepositoryError.LOAD_ERROR
+                    setLoading(State.Error(RepositoryError.LOAD_ERROR))
+                    moviesData.value = emptyList()
                 }
             }
         }
     }
 
+    suspend fun setLoading(loading: State) = withContext(Dispatchers.Main) {
+        isLoadingData.value = loading
+        if (loading is State.Loading) {
+            val list: ArrayList<ListItem> = ArrayList()
+            moviesData.value?.run {
+                list.addAll(this)
+            }
+            list.add(loadItem)
+            moviesData.value = list
+        }
+    }
+
+    fun loadMoreFilms() {
+        viewModelScope.launch(exceptionHandler) {
+            setLoading(State.Loading)
+            val result = movieRepository.getMoreMovies()
+            withContext(Dispatchers.Main) {
+                val list: ArrayList<ListItem> = ArrayList(moviesData.value!!)
+                if (result.isSuccess()) {
+                    val loaded = result.asSuccess().value
+                    list.addAll(loaded)
+                    setLoading(
+                        State.Loaded(
+                            movieRepository.getCurrentPageNumber(),
+                            movieRepository.getTotalPageNumber()
+                        )
+                    )
+                } else {
+                    setLoading(State.Error(RepositoryError.LOAD_ERROR))
+                }
+                list.remove(loadItem)
+                moviesData.value = list
+
+            }
+        }
+    }
+
     fun setLike(id: Int, isLiked: Boolean) {
-        val oldMovie = filmList.value?.get(id)
-        val newMovie = oldMovie?.copy()
+        moviesData.value ?: return
+        val oldMovie = findMovie(id)
+        val newMovie = oldMovie?.second?.copy()
         newMovie?.run {
             isFavorite = isLiked
-            filmList.value?.put(id, this)
-            filmList.postValue(filmList.value)
+            val newList = moviesData.value?.toMutableList()
+            newList?.set(oldMovie.first, newMovie)
+            moviesData.postValue(newList)
         }
+    }
 
+    private fun findMovie(id: Int): Pair<Int, Movie>? {
+        moviesData.value?.run {
+            for (i in 0 until size - 1) {
+                val movie = get(i)
+                if ((movie as? Movie)?.id == id) {
+                    return Pair(i, movie)
+                }
+            }
+        }
+        return null
     }
 
     private val exceptionHandler
@@ -69,7 +120,14 @@ class FilmsListViewModel(
 
     private suspend fun showExceptionToUser() =
         withContext(Dispatchers.Main) {
-            errorData.value = RepositoryError.LOAD_ERROR
+            setLoading(State.Error(RepositoryError.LOAD_ERROR))
         }
+
+    sealed class State {
+        object None : State()
+        object Loading : State()
+        class Loaded(val current: Int, val total: Int) : State()
+        class Error(val error: RepositoryError) : State()
+    }
 }
 

@@ -66,7 +66,7 @@ class App : Application(), DIAware {
             val url = originalHttpUrl.newBuilder()
                 .addQueryParameter("api_key", api)
                 .addQueryParameter("language", "en-US")
-                .addQueryParameter("page", "1")
+//                .addQueryParameter("page", "1")
                 .build()
 
             val requestBuilder: Request.Builder = originalRequest.newBuilder()

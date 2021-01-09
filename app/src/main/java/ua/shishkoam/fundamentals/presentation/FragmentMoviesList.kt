@@ -22,7 +22,7 @@ import org.kodein.di.android.x.di
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesListBinding
 import ua.shishkoam.fundamentals.domain.RepositoryError
-import ua.shishkoam.fundamentals.domain.data.Movie
+import ua.shishkoam.fundamentals.domain.data.ListItem
 import ua.shishkoam.fundamentals.presentation.recyclerview.*
 import ua.shishkoam.fundamentals.presentation.recyclerview.GridAutofitLayoutManager.Companion.AUTO_FIT
 import ua.shishkoam.fundamentals.presentation.viewmodels.FilmsListViewModel
@@ -40,19 +40,44 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
 
     private val binding by viewBinding(FragmentMoviesListBinding::bind)
 
-    private val filmsListStateObserver = Observer<HashMap<Int, Movie>> { movies ->
+    private val filmsListStateObserver = Observer<List<ListItem>> { movies ->
         movies ?: return@Observer
-        listAdapter?.updateValues(movies.values.toList())
-    }
-
-    private val filmsListErrorStateObserver = Observer<RepositoryError> { error ->
-        error ?: return@Observer
-        if (error == RepositoryError.LOAD_ERROR) {
-            showExceptionToUser(getString(R.string.cant_load_films))
+        listAdapter.updateValues(movies)
+        if (scrollListener == null) {
+            initScrollListener(movies.size)
         }
     }
 
-    private var listAdapter: FilmDelegateAdapter? = null
+    private fun initScrollListener(size: Int) {
+        scrollListener = RecyclerViewOnScrollListener(
+            binding.movieList.layoutManager!!, size, 0,
+            isLoading = false,
+            isLastPage = false,
+        ) {
+            filmsListViewModel.loadMoreFilms()
+        }
+        binding.movieList.addOnScrollListener(scrollListener!!)
+    }
+
+    private val loadingStateObserver = Observer<FilmsListViewModel.State> { isLoading ->
+        when (isLoading) {
+            is FilmsListViewModel.State.Loading -> scrollListener?.isLoading = true
+            is FilmsListViewModel.State.Error -> {
+                scrollListener?.isLoading = false
+                if (isLoading.error == RepositoryError.LOAD_ERROR) {
+                    showExceptionToUser(getString(R.string.cant_load_films))
+                }
+            }
+            is FilmsListViewModel.State.Loaded -> {
+                scrollListener?.isLoading = false
+                scrollListener?.isLastPage = isLoading.total <= isLoading.current
+            }
+            else -> scrollListener?.isLoading = false
+        }
+    }
+
+    private lateinit var listAdapter: FilmDelegateAdapter
+    private var scrollListener: RecyclerViewOnScrollListener? = null
 
     private fun showExceptionToUser(msg: String) {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
@@ -101,9 +126,10 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
             adapter = listAdapter
             itemAnimator = landingItemAnimator
         }
+
         filmsListViewModel.run {
             movies.observe(viewLifecycleOwner, filmsListStateObserver)
-            error.observe(viewLifecycleOwner, filmsListErrorStateObserver)
+            isLoading.observe(viewLifecycleOwner, loadingStateObserver)
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {

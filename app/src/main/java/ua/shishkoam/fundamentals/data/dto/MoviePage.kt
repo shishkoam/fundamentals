@@ -8,7 +8,7 @@ class MoviePage {
     var page = 0
     var results: List<MovieDTO>? = null
     @SerialName("total_pages")
-    var totalPages = 0
+    var totalPages: Int  = 0
     @SerialName("total_results")
     var totalResults: Int = 0
 

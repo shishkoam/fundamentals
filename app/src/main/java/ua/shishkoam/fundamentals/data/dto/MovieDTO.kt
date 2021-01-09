@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MovieDTO(
     val adult: Boolean = false,
-    val backdrop_path: String,
+    val backdrop_path: String?,
     @SerialName("genre_ids")
     var genreIds: List<Int> = emptyList(),
     val id: Int,

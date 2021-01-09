@@ -5,4 +5,4 @@ data class Actor(
     val name: String? = null,
     val order:Int = 0,
     var imageUrl: String? = null
-)
+) : ListItem

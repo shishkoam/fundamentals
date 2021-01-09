@@ -15,12 +15,20 @@ class MovieRepositoryImpl(
     private val favoriteFilms: HashMap<String, Boolean> = HashMap()
     private var configuration: Configuration? = null
     private var genreMap: HashMap<Int, String> = HashMap()
+    private var currentPage: Int = 1
+    private var totalPages: Int = 1
 
     override suspend fun getMovies(): RequestResult<List<Movie>> {
+        currentPage = 1
+        return getMovies(currentPage)
+    }
+
+    private suspend fun getMovies(page: Int): RequestResult<List<Movie>> {
+        val result = movieRetrofitInterface.getNowPlaying(page)
         val movies = ArrayList<Movie>()
-        val result = movieRetrofitInterface.getNowPlaying()
         return if (result.isSuccess()) {
             val moviesDTO = result.asSuccess().value?.results ?: emptyList()
+            totalPages = result.asSuccess().value?.totalPages ?: 1
             val genres = getGenreMap()
             val configuration = getConfiguration()
             for (movie in moviesDTO) {
@@ -30,6 +38,11 @@ class MovieRepositoryImpl(
         } else {
             result.asFailure()
         }
+    }
+
+    override suspend fun getMoreMovies(): RequestResult<List<Movie>> {
+        currentPage++
+        return getMovies(currentPage)
     }
 
     private suspend fun getGenreMap(): HashMap<Int, String> {
@@ -89,4 +102,11 @@ class MovieRepositoryImpl(
         favoriteFilms[id] = isFavorite
     }
 
+    override fun getTotalPageNumber(): Int {
+        return totalPages
+    }
+
+    override fun getCurrentPageNumber(): Int {
+        return currentPage
+    }
 }
