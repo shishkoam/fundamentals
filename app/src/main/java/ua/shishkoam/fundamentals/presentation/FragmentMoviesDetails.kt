@@ -69,8 +69,7 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
             genreText.text = movie.getGenresString()
             ratingBar.rating = movie.getRatingIn5Stars()
             storyText.text = movie.overview
-//            val age = if (movie.adult) 17 else 13
-//            ageText.text = "$age+"
+            langText.text = "${movie.originalLanguage}"
             reviewsText.text =
                 requireContext().getString(R.string.reviews_number, movie.voteCount)
         }

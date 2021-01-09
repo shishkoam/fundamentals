@@ -85,20 +85,17 @@ fun filmAdapterDelegate(
             )
             binding.ratingBar.rating = item.getRatingIn5Stars()
             binding.genreText.text = item.getGenresString()
-//            binding.ageText.text = "$age+"
 
-//            binding.timeText.text = context.getString(R.string.minutes_number, item.runtime)
+            binding.langText.text = "${item.originalLanguage}"
+            binding.timeText.text = "${item.releaseDate}"
             ImageLoader.loadImage(binding.photoImage, item.posterUrl)
             likedState = item.isFavorite
             setLikeColor(likedState, binding.like, context)
         }
     }
 
-fun loadAdapterDelegate(
-) =
+fun loadAdapterDelegate() =
     adapterDelegateViewBinding<LoadItem, ListItem, ItemLoadingBinding>(
         { layoutInflater, root -> ItemLoadingBinding.inflate(layoutInflater, root, false) }
     ) {
-
-
     }
