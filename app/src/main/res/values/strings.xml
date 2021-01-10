@@ -21,5 +21,6 @@
     <string name="minutes_number">"%d MIN"</string>
     <string name="exception_log_text">%s\n%s</string>
     <string name="cant_load_films">Can\'t load films!</string>
+    <string name="cant_load_film_details">Can\'t load film details!</string>
 
 </resources>

@@ -6,17 +6,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="96dp"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/half_small_margin">
+    android:layout_margin="@dimen/very_small_margin">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/photo_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_margin="@dimen/half_small_margin"
+        android:layout_width="wrap_content"
+        android:maxWidth="100dp"
+        android:layout_height="140dp"
         android:adjustViewBounds="true"
         card_view:layout_constraintEnd_toEndOf="parent"
         card_view:layout_constraintStart_toStartOf="parent"
         card_view:layout_constraintTop_toTopOf="parent"
+        card_view:layout_constraintBottom_toTopOf="@id/name_text"
         card_view:shapeAppearanceOverlay="@style/circleImageView"
         tools:srcCompat="@drawable/actor1" />
 
@@ -29,7 +31,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/half_small_margin"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:lineSpacingExtra="@dimen/half_line_spacing"
         android:textColor="@color/text_color_actor"
         android:textSize="@dimen/text_secondary"
@@ -37,7 +39,7 @@
         card_view:layout_constraintEnd_toEndOf="parent"
         card_view:layout_constraintHorizontal_bias="0.0"
         card_view:layout_constraintStart_toStartOf="parent"
-        card_view:layout_constraintTop_toBottomOf="@+id/photo_image"
+        card_view:layout_constraintBottom_toBottomOf="parent"
         tools:text="Robert Downey JR." />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
