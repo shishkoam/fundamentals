@@ -49,8 +49,7 @@ class FilmsListViewModel(
     }
 
     suspend fun setLoading(loading: State) = withContext(Dispatchers.Main) {
-        isLoadingData.value = loading
-        if (loading is State.Loading) {
+        if (loading is State.Loading && isLoadingData.value !is State.Loading) {
             val list: ArrayList<ListItem> = ArrayList()
             moviesData.value?.run {
                 list.addAll(this)
@@ -58,6 +57,7 @@ class FilmsListViewModel(
             list.add(loadItem)
             moviesData.value = list
         }
+        isLoadingData.value = loading
     }
 
     fun loadMoreFilms() {
