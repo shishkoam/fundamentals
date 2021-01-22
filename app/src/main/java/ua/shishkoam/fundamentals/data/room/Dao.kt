@@ -1,8 +1,10 @@
 package ua.shishkoam.fundamentals.data.room
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 
 @Dao
 interface Dao {
@@ -17,7 +19,7 @@ interface Dao {
     suspend fun insert(actor: ActorEntity)
 
     @Query("SELECT * FROM movies WHERE _id == :id")
-    suspend fun getById(id: Long) : MovieEntity
+    suspend fun getById(id: Long): MovieEntity
 
     @Query("SELECT * FROM actors WHERE _id == :id")
     suspend fun getActorById(id: Long): ActorEntity

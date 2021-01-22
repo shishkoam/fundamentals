@@ -15,6 +15,7 @@ import ua.shishkoam.fundamentals.data.MovieInteractorImpl
 import ua.shishkoam.fundamentals.data.MovieRepositoryImpl
 import ua.shishkoam.fundamentals.data.MovieRetrofitInterface
 import ua.shishkoam.fundamentals.data.room.RoomRepository
+import ua.shishkoam.fundamentals.domain.CacheRepository
 import ua.shishkoam.fundamentals.domain.MovieInteractor
 import ua.shishkoam.fundamentals.domain.MovieRepository
 import ua.shishkoam.fundamentals.presentation.viewmodels.FilmsListViewModel
@@ -44,7 +45,7 @@ class App : Application(), DIAware {
         }
 
         bind<MovieRepository>() with singleton { MovieRepositoryImpl(instance()) }
-        bind<RoomRepository>() with singleton { RoomRepository(instance()) }
+        bind<CacheRepository>() with singleton { RoomRepository(instance()) }
         bind<MovieInteractor>() with provider { MovieInteractorImpl(instance(), instance()) }
 
         bind<ViewModel>(tag = FilmsListViewModel::class.java.simpleName) with provider {

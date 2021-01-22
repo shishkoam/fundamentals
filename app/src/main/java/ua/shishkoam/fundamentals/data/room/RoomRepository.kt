@@ -3,22 +3,21 @@ package ua.shishkoam.fundamentals.data.room
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import ua.shishkoam.fundamentals.domain.CacheRepository
 import ua.shishkoam.fundamentals.domain.data.Actor
 import ua.shishkoam.fundamentals.domain.data.Movie
 
-class RoomRepository(applicationContext: Context)
-//    : MovieRepository
-{
+class RoomRepository(applicationContext: Context) : CacheRepository {
 
     private val db = DataBase.create(applicationContext)
 
-    suspend fun getAllMovies(): List<Movie> = withContext(Dispatchers.IO) {
+    override suspend fun getAllMovies(): List<Movie> = withContext(Dispatchers.IO) {
         db.dao.getAll().map {
             toMovie(it)
         }
     }
 
-    suspend fun addMovies(movies: List<Movie>): List<Movie> =
+    override suspend fun addMovies(movies: List<Movie>): List<Movie> =
         withContext(Dispatchers.IO) {
             for (movie in movies) {
                 db.dao.insert(toEntity(movie))
@@ -26,7 +25,7 @@ class RoomRepository(applicationContext: Context)
             getAllMovies()
         }
 
-    suspend fun addActors(id: Long, actors: List<Actor>) = withContext(Dispatchers.IO) {
+    override suspend fun addActors(id: Long, actors: List<Actor>) = withContext(Dispatchers.IO) {
         val actorsIds = ArrayList<Long>()
         for (actor in actors) {
             db.dao.insert(toEntity(actor))
@@ -37,7 +36,7 @@ class RoomRepository(applicationContext: Context)
         db.dao.insert(movie)
     }
 
-    suspend fun getActors(id: Long) : List<Actor> = withContext(Dispatchers.IO) {
+    override suspend fun getActors(id: Long): List<Actor> = withContext(Dispatchers.IO) {
         val movie = db.dao.getById(id)
         val actorsIds = movie.actors
         val result = db.dao.getActorsByIds(actorsIds)
@@ -92,32 +91,4 @@ class RoomRepository(applicationContext: Context)
         order = entity.order,
         imageUrl = entity.imageUrl
     )
-//    override suspend fun getMovies(): RequestResult<List<Movie>>  =
-//        withContext(Dispatchers.IO) {
-//            RequestResult.Success.Value<List<Movie>>(getAllMovies())
-//        }
-
-
-//    override suspend fun getMoreMovies(): RequestResult<List<Movie>>  =
-//        withContext(Dispatchers.IO) {
-//            getMovies()
-//        }
-
-
-//    override suspend fun getActors(id: Int): RequestResult<List<Actor>>  =
-//        withContext(Dispatchers.IO) {
-//            getMovies()
-//        }
-
-
-//    override fun getFavoriteFilms(): HashMap<String, Boolean>  =
-//        withContext(Dispatchers.IO) {
-//            getMovies()
-//        }
-
-
-//    override fun setFavoriteFilmState(id: String, isFavorite: Boolean)  =
-//        withContext(Dispatchers.IO) {
-//            getAllLocations()
-//        }
 }
