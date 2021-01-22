@@ -19,18 +19,22 @@ class RoomRepository(applicationContext: Context) : CacheRepository {
 
     override suspend fun addMovies(movies: List<Movie>): List<Movie> =
         withContext(Dispatchers.IO) {
+            val movieEntityList = ArrayList<MovieEntity>()
             for (movie in movies) {
-                db.dao.insert(toEntity(movie))
+                movieEntityList.add(toEntity(movie))
             }
+            db.dao.insertMovies(movieEntityList)
             getAllMovies()
         }
 
     override suspend fun addActors(id: Long, actors: List<Actor>) = withContext(Dispatchers.IO) {
         val actorsIds = ArrayList<Long>()
+        val actorsEntityList = ArrayList<ActorEntity>()
         for (actor in actors) {
-            db.dao.insert(toEntity(actor))
+            actorsEntityList.add(toEntity(actor))
             actorsIds.add(actor.id.toLong())
         }
+        db.dao.insertActors(actorsEntityList)
         val movie = db.dao.getById(id)
         movie.actors = actorsIds
         db.dao.insert(movie)

@@ -13,10 +13,16 @@ interface Dao {
     suspend fun getAll(): List<MovieEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(actor: ActorEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(movie: MovieEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(actor: ActorEntity)
+    suspend fun insertMovies(movies: ArrayList<MovieEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertActors(actors: ArrayList<ActorEntity>)
 
     @Query("SELECT * FROM movies WHERE _id == :id")
     suspend fun getById(id: Long): MovieEntity
