@@ -1,12 +1,9 @@
-package ua.shishkoam.fundamentals.data
+package ua.shishkoam.fundamentals.domain
 
 import by.kirich1409.result.RequestResult
 import by.kirich1409.result.asSuccess
 import by.kirich1409.result.isFailure
 import by.kirich1409.result.isSuccess
-import ua.shishkoam.fundamentals.domain.CacheRepository
-import ua.shishkoam.fundamentals.domain.MovieInteractor
-import ua.shishkoam.fundamentals.domain.MovieRepository
 import ua.shishkoam.fundamentals.domain.data.Actor
 import ua.shishkoam.fundamentals.domain.data.Movie
 

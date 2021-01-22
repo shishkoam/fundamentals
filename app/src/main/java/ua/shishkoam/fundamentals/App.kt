@@ -11,7 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.kodein.di.*
 import org.kodein.di.android.x.androidXModule
 import retrofit2.Retrofit
-import ua.shishkoam.fundamentals.data.MovieInteractorImpl
+import ua.shishkoam.fundamentals.domain.MovieInteractorImpl
 import ua.shishkoam.fundamentals.data.MovieRepositoryImpl
 import ua.shishkoam.fundamentals.data.MovieRetrofitInterface
 import ua.shishkoam.fundamentals.data.room.RoomRepository
