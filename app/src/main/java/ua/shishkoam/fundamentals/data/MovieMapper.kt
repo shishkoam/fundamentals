@@ -7,8 +7,8 @@ import ua.shishkoam.fundamentals.domain.data.Movie
 
 fun MovieDTO.toDomainMovie(configuration: Configuration?, genres: HashMap<Int, String>): Movie {
     val movie = Movie(
-        id, originalLanguage, originalTitle, overview,
-        releaseDate, title, voteAverage, voteCount
+        id, originalLanguage ?: "", originalTitle ?: "", overview ?: "",
+        releaseDate ?: "", title ?: "", voteAverage, voteCount
     )
     configuration?.let { config ->
         movie.posterUrl = getPosterFullImageUrl(this, config)

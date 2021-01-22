@@ -9,12 +9,12 @@ import by.kirich1409.result.isSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ua.shishkoam.fundamentals.domain.MovieRepository
+import ua.shishkoam.fundamentals.domain.MovieInteractor
 import ua.shishkoam.fundamentals.domain.RepositoryError
 import ua.shishkoam.fundamentals.domain.data.Actor
 import ua.shishkoam.fundamentals.domain.data.Movie
 
-class MovieDetailsViewModel(private val movieRepository: MovieRepository, movie: Movie) : ViewModel() {
+class MovieDetailsViewModel(private val movieInteractor: MovieInteractor, movie: Movie) : ViewModel() {
     private var actorList: MutableLiveData<List<Actor>> = MutableLiveData<List<Actor>>()
     private var errorData: MutableLiveData<RepositoryError> = MutableLiveData<RepositoryError>()
 
@@ -34,7 +34,7 @@ class MovieDetailsViewModel(private val movieRepository: MovieRepository, movie:
 
     fun loadActors(movie: Movie) {
         viewModelScope.launch() {
-            val result = movieRepository.getActors(movie.id)
+            val result = movieInteractor.getActors(movie.id)
             withContext(Dispatchers.Main) {
                 if (result.isSuccess()) {
                     actorList.value = result.asSuccess().value

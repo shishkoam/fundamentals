@@ -15,7 +15,7 @@ import org.kodein.di.android.x.di
 import org.kodein.di.instance
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesDetailsBinding
-import ua.shishkoam.fundamentals.domain.MovieRepository
+import ua.shishkoam.fundamentals.domain.MovieInteractor
 import ua.shishkoam.fundamentals.domain.RepositoryError
 import ua.shishkoam.fundamentals.domain.data.Actor
 import ua.shishkoam.fundamentals.domain.data.Movie
@@ -32,7 +32,7 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
     override val di: DI by di()
 
     private val args: FragmentMoviesDetailsArgs by navArgs()
-    private val movieRepository: MovieRepository by instance()
+    private val movieInteractor: MovieInteractor by instance()
 
     private val binding by viewBinding(FragmentMoviesDetailsBinding::bind)
     private val actorListStateObserver = Observer<List<Actor>> { actors ->
@@ -57,7 +57,7 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
     private val movieDetails: MovieDetailsViewModel by lazy {
         ViewModelProvider(
             this@FragmentMoviesDetails,
-            MovieViewModelFactory(movieRepository, args.currentMovie)
+            MovieViewModelFactory(movieInteractor, args.currentMovie)
         ).get(MovieDetailsViewModel::class.java)
     }
 

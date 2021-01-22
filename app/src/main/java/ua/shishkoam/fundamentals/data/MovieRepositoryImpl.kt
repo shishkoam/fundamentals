@@ -12,23 +12,20 @@ import ua.shishkoam.fundamentals.domain.data.Movie
 class MovieRepositoryImpl(
     private val movieRetrofitInterface: MovieRetrofitInterface
 ) : MovieRepository {
-    private val favoriteFilms: HashMap<String, Boolean> = HashMap()
     private var configuration: Configuration? = null
     private var genreMap: HashMap<Int, String> = HashMap()
-    private var currentPage: Int = 1
-    private var totalPages: Int = 1
+    private var totalPages: Int = -1
 
     override suspend fun getMovies(): RequestResult<List<Movie>> {
-        currentPage = 1
-        return getMovies(currentPage)
+        return getMovies(1)
     }
 
-    private suspend fun getMovies(page: Int): RequestResult<List<Movie>> {
+    override suspend fun getMovies(page: Int): RequestResult<List<Movie>> {
         val result = movieRetrofitInterface.getNowPlaying(page)
         val movies = ArrayList<Movie>()
         return if (result.isSuccess()) {
             val moviesDTO = result.asSuccess().value?.results ?: emptyList()
-            totalPages = result.asSuccess().value?.totalPages ?: 1
+            totalPages = result.asSuccess().value?.totalPages ?: -1
             val genres = getGenreMap()
             val configuration = getConfiguration()
             for (movie in moviesDTO) {
@@ -38,11 +35,6 @@ class MovieRepositoryImpl(
         } else {
             result.asFailure()
         }
-    }
-
-    override suspend fun getMoreMovies(): RequestResult<List<Movie>> {
-        currentPage++
-        return getMovies(currentPage)
     }
 
     private suspend fun getGenreMap(): HashMap<Int, String> {
@@ -94,19 +86,6 @@ class MovieRepositoryImpl(
         return RequestResult.Success.Value(emptyList())
     }
 
-    override fun getFavoriteFilms(): HashMap<String, Boolean> {
-        return favoriteFilms
-    }
+    override suspend fun getTotalPagesNumber(): Int = totalPages
 
-    override fun setFavoriteFilmState(id: String, isFavorite: Boolean) {
-        favoriteFilms[id] = isFavorite
-    }
-
-    override fun getTotalPageNumber(): Int {
-        return totalPages
-    }
-
-    override fun getCurrentPageNumber(): Int {
-        return currentPage
-    }
 }

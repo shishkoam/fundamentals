@@ -6,17 +6,17 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Movie(
     val id: Int,
-    var originalLanguage: String? = null,
-    var originalTitle: String? = null,
-    var overview: String? = null,
-    var releaseDate: String? = null,
-    var title: String? = null,
+    var originalLanguage: String,
+    var originalTitle: String,
+    var overview: String,
+    var releaseDate: String,
+    var title: String,
     var voteAverage: Float = 0.0f,
     var voteCount: Int = 0,
     var posterUrl: String? = null,
     var backdropUrl: String? = null,
     var isFavorite: Boolean = false,
-    var genresNames: HashSet<String>? = HashSet()
+    var genresNames: HashSet<String> = HashSet()
 ) : Parcelable, ListItem {
 
     fun getRatingIn5Stars(): Float {

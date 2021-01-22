@@ -10,14 +10,14 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ua.shishkoam.fundamentals.domain.MovieRepository
+import ua.shishkoam.fundamentals.domain.MovieInteractor
 import ua.shishkoam.fundamentals.domain.RepositoryError
 import ua.shishkoam.fundamentals.domain.data.ListItem
 import ua.shishkoam.fundamentals.domain.data.Movie
 import ua.shishkoam.fundamentals.presentation.recyclerview.LoadItem
 
 class FilmsListViewModel(
-    private val movieRepository: MovieRepository
+    private val movieInteractor: MovieInteractor
 ) : ViewModel() {
 
     private var moviesData: MutableLiveData<List<ListItem>> = MutableLiveData<List<ListItem>>()
@@ -35,11 +35,11 @@ class FilmsListViewModel(
         viewModelScope.launch(exceptionHandler) {
             setLoading(State.Loading)
             isLoadingData.value = State.None
-            val result = movieRepository.getMovies()
+            val result = movieInteractor.getMovies()
             withContext(Dispatchers.Main) {
                 if (result.isSuccess()) {
                     moviesData.value = result.asSuccess().value
-                    setLoading(State.Loaded(1, movieRepository.getTotalPageNumber()))
+                    setLoading(State.Loaded(1, movieInteractor.getTotalPageNumber()))
                 } else {
                     setLoading(State.Error(RepositoryError.LOAD_ERROR))
                     moviesData.value = emptyList()
@@ -63,7 +63,7 @@ class FilmsListViewModel(
     fun loadMoreFilms() {
         viewModelScope.launch(exceptionHandler) {
             setLoading(State.Loading)
-            val result = movieRepository.getMoreMovies()
+            val result = movieInteractor.getMoreMovies()
             withContext(Dispatchers.Main) {
                 val list: ArrayList<ListItem> = ArrayList(moviesData.value!!)
                 if (result.isSuccess()) {
@@ -71,8 +71,8 @@ class FilmsListViewModel(
                     list.addAll(loaded)
                     setLoading(
                         State.Loaded(
-                            movieRepository.getCurrentPageNumber(),
-                            movieRepository.getTotalPageNumber()
+                            movieInteractor.getCurrentPageNumber(),
+                            movieInteractor.getTotalPageNumber()
                         )
                     )
                 } else {
