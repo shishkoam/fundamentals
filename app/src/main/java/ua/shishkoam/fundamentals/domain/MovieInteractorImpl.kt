@@ -27,6 +27,20 @@ class MovieInteractorImpl(
         return result
     }
 
+    override suspend fun updateMoviesInDb() {
+        val movies = ArrayList<Movie>()
+        for (pageNumber in 1..currentPage) {
+            val result = getMovies(pageNumber)
+            if (result.isSuccess()) {
+                movies.addAll(result.asSuccess().value)
+            }
+        }
+        if (movies.isNotEmpty()) {
+            cacheRepository.clearMovies()
+            cacheRepository.addMovies(movies)
+        }
+    }
+
     private suspend fun getMovies(page: Int): RequestResult<List<Movie>> {
         val result = movieRepository.getMovies(page)
         if (result.isSuccess()) {

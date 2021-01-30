@@ -6,6 +6,7 @@ import ua.shishkoam.fundamentals.domain.data.Movie
 
 interface MovieInteractor {
     suspend fun getMovies() : RequestResult<List<Movie>>
+    suspend fun updateMoviesInDb()
     suspend fun getMoreMovies() : RequestResult<List<Movie>>
     suspend fun getActors(id : Int): RequestResult<List<Actor>>
     fun getFavoriteFilms(): HashMap<String, Boolean>

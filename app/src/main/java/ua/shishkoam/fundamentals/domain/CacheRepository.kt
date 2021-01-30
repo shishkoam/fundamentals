@@ -9,6 +9,8 @@ interface CacheRepository {
 
     suspend fun addMovies(movies: List<Movie>): List<Movie>
 
+    suspend fun clearMovies()
+
     suspend fun addActors(id: Long, actors: List<Actor>)
 
     suspend fun getActors(id: Long): List<Actor>

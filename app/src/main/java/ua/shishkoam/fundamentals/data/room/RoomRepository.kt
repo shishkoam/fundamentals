@@ -27,6 +27,10 @@ class RoomRepository(applicationContext: Context) : CacheRepository {
             getAllMovies()
         }
 
+    override suspend fun clearMovies() {
+        db.dao.clearMovies()
+    }
+
     override suspend fun addActors(id: Long, actors: List<Actor>) = withContext(Dispatchers.IO) {
         val actorsIds = ArrayList<Long>()
         val actorsEntityList = ArrayList<ActorEntity>()

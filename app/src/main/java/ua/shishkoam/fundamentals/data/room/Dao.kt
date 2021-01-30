@@ -36,6 +36,9 @@ interface Dao {
     @Query("DELETE FROM movies WHERE _id == :id")
     suspend fun deleteById(id: Long)
 
+    @Query("DELETE FROM movies")
+    suspend fun clearMovies()
+
     @Query("SELECT COUNT(_id) FROM movies")
     fun getMoviesCount(): LiveData<Int>
 }
