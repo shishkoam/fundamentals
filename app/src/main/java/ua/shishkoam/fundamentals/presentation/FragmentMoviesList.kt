@@ -43,7 +43,7 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
     private val filmsListStateObserver = Observer<List<ListItem>> { movies ->
         movies ?: return@Observer
         listAdapter.updateValues(movies)
-        if (scrollListener == null) {
+        if (movies.size > 1 && scrollListener == null) {
             initScrollListener(movies.size)
         }
     }
