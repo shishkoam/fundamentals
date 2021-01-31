@@ -2,30 +2,41 @@ package ua.shishkoam.fundamentals.data.room
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ua.shishkoam.fundamentals.domain.CacheRepository
 import ua.shishkoam.fundamentals.domain.data.Actor
 import ua.shishkoam.fundamentals.domain.data.Movie
+import java.io.IOException
+import kotlinx.coroutines.flow.map
+import java.util.*
+import kotlin.collections.ArrayList
 
 class RoomRepository(applicationContext: Context) : CacheRepository {
 
     private val db = DataBase.create(applicationContext)
 
-    override suspend fun getAllMovies(): List<Movie> = withContext(Dispatchers.IO) {
-        db.dao.getAll().map {
-            toMovie(it)
-        }
-    }
-
-    override suspend fun addMovies(movies: List<Movie>): List<Movie> =
-        withContext(Dispatchers.IO) {
-            val movieEntityList = ArrayList<MovieEntity>()
+    override fun getAllMovies(): Flow<List<Movie>> =
+        db.dao.getAllMovies().map { movies ->
+            val list = LinkedList<Movie>()
             for (movie in movies) {
-                movieEntityList.add(toEntity(movie))
+                list.add(toMovie(movie))
             }
-            db.dao.insertMovies(movieEntityList)
-            getAllMovies()
+            list
         }
+
+    override fun addMovies(movies: List<Movie>) {
+        val movieEntityList = ArrayList<MovieEntity>()
+        for (movie in movies) {
+            movieEntityList.add(toEntity(movie))
+        }
+        GlobalScope.launch {
+            db.dao.insertMovies(movieEntityList)
+        }
+//        return getAllMovies().value!!
+    }
 
     override suspend fun clearMovies() {
         db.dao.clearMovies()

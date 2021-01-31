@@ -1,16 +1,16 @@
 package ua.shishkoam.fundamentals.data.room
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface Dao {
     @Query("SELECT * FROM movies")
 //    @Query("SELECT * FROM movies ORDER BY _id ASC")
-    suspend fun getAll(): List<MovieEntity>
+    fun getAllMovies(): Flow<List<MovieEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(actor: ActorEntity)
@@ -40,5 +40,5 @@ interface Dao {
     suspend fun clearMovies()
 
     @Query("SELECT COUNT(_id) FROM movies")
-    fun getMoviesCount(): LiveData<Int>
+    fun getMoviesCount(): Flow<Int>
 }
