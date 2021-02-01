@@ -4,13 +4,12 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ua.shishkoam.fundamentals.domain.CacheRepository
 import ua.shishkoam.fundamentals.domain.data.Actor
 import ua.shishkoam.fundamentals.domain.data.Movie
-import java.io.IOException
-import kotlinx.coroutines.flow.map
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -79,7 +78,8 @@ class RoomRepository(applicationContext: Context) : CacheRepository {
         backdropUrl = movie.backdropUrl ?: "",
         isFavorite = movie.isFavorite,
         genresNames = movie.genresNames,
-        actors = actors
+        actors = actors,
+        popularity = movie.popularity
     )
 
     private fun toEntity(actor: Actor) = ActorEntity(
@@ -101,7 +101,8 @@ class RoomRepository(applicationContext: Context) : CacheRepository {
         posterUrl = entity.posterUrl,
         backdropUrl = entity.backdropUrl,
         isFavorite = entity.isFavorite,
-        genresNames = entity.genresNames
+        genresNames = entity.genresNames,
+        popularity = entity.popularity
     )
 
     private fun toActor(entity: ActorEntity) = Actor(

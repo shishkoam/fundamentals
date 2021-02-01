@@ -16,6 +16,7 @@ data class Movie(
     var posterUrl: String? = null,
     var backdropUrl: String? = null,
     var isFavorite: Boolean = false,
+    var popularity: Float = 0.0f,
     var genresNames: HashSet<String> = HashSet()
 ) : Parcelable, ListItem {
 

@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface Dao {
-    @Query("SELECT * FROM movies")
-//    @Query("SELECT * FROM movies ORDER BY _id ASC")
+//    @Query("SELECT * FROM movies")
+    @Query("SELECT * FROM movies ORDER BY popularity ASC")
     fun getAllMovies(): Flow<List<MovieEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
