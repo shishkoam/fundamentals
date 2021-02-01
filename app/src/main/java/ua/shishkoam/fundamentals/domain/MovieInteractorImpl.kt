@@ -1,6 +1,5 @@
 package ua.shishkoam.fundamentals.domain
 
-import androidx.lifecycle.LiveData
 import by.kirich1409.result.RequestResult
 import by.kirich1409.result.asSuccess
 import by.kirich1409.result.isFailure
@@ -20,11 +19,12 @@ class MovieInteractorImpl(
     override suspend fun getMovies(): RequestResult<Flow<List<Movie>>> {
         currentPage = 1//save page number
         val result = loadMovies(currentPage)
-//        if (result.isFailure()) {
-            val roomResult = cacheRepository.getAllMovies()
+        val roomResult = cacheRepository.getAllMovies()
+        if (result.isFailure()) {
+            return result
+        } else {
             return RequestResult.Success.Value(roomResult)
-//        }
-//        return result
+        }
     }
 
     override suspend fun updateMoviesInDb() {

@@ -29,7 +29,7 @@ class FilmsListViewModel(
     val movies: LiveData<List<ListItem>> get() = moviesData
     val isLoading: LiveData<State> get() = isLoadingData
 
-    fun loadFilm(lifecycleOwner: LifecycleOwner? = null) {
+    fun loadFilm() {
         viewModelScope.launch(exceptionHandler) {
             setLoading(State.Loading)
             isLoadingData.value = State.None
@@ -37,13 +37,8 @@ class FilmsListViewModel(
 
             withContext(Dispatchers.Main) {
                 if (result.isSuccess()) {
-//                    (result.asSuccess().value as? LiveData<*>)?.observe(lifecycleOwner)
-//                    {
-//                        noteSize = it.size
-//                    }
-
                     result.asSuccess().value.collect{ movies ->
-                        moviesData.value    = movies
+                        moviesData.value = movies
                     }
                     setLoading(State.Loaded(1, movieInteractor.getTotalPageNumber()))
                 } else {

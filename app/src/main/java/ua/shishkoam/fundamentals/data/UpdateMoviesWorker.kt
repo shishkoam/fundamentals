@@ -19,7 +19,6 @@ class UpdateMoviesWorker (context: Context, params: WorkerParameters)
 
     override fun doWork(): Result {
         for (attempt in 0..10){
-            Thread.sleep(1000)
             Log.v("UpdateMoviesWorker", "attemp $attempt")
             if(ConnectionChecker.isOnline()){
                 GlobalScope.launch {
@@ -28,6 +27,7 @@ class UpdateMoviesWorker (context: Context, params: WorkerParameters)
                 }
                 return Result.success()
             }
+            Thread.sleep(1000)
         }
         return Result.failure()
     }
