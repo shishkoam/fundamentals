@@ -26,6 +26,11 @@ class RoomRepository(applicationContext: Context) : CacheRepository {
             list
         }
 
+    override fun getMovie(id: Int): Flow<Movie> =
+        db.dao.getById(id.toLong()).map { movie ->
+            toMovie(movie)
+        }
+
     override fun addMovies(movies: List<Movie>) {
         val movieEntityList = ArrayList<MovieEntity>()
         for (movie in movies) {
@@ -49,13 +54,13 @@ class RoomRepository(applicationContext: Context) : CacheRepository {
             actorsIds.add(actor.id.toLong())
         }
         db.dao.insertActors(actorsEntityList)
-        val movie = db.dao.getById(id)
+        val movie = db.dao.getMovie(id)
         movie.actors = actorsIds
         db.dao.insert(movie)
     }
 
     override suspend fun getActors(id: Long): List<Actor> = withContext(Dispatchers.IO) {
-        val movie = db.dao.getById(id)
+        val movie = db.dao.getMovie(id)
         val actorsIds = movie.actors
         val result = db.dao.getActorsByIds(actorsIds)
         val actors = ArrayList<Actor>()

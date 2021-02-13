@@ -115,11 +115,9 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
             textShader = textShader,
             onFilmLike = { item, likedState -> filmsListViewModel.setLike(item.id, likedState) },
             onFilmClick = { movie ->
-                findNavController().navigate(
-                    FragmentMoviesListDirections.openMovieDetails(
-                        movie
-                    )
-                )
+                val action = FragmentMoviesListDirections.openMovieDetails()
+                action.currentMovie = movie
+                findNavController().navigate(action)
             })
 
         binding.movieList.run {

@@ -27,6 +27,11 @@ class MovieInteractorImpl(
         }
     }
 
+    override suspend fun getMovie(id: Int): RequestResult<Flow<Movie>> {
+        val roomResult = cacheRepository.getMovie(id)
+        return RequestResult.Success.Value(roomResult)
+    }
+
     override suspend fun updateMoviesInDb() {
         val movies = ArrayList<Movie>()
         for (pageNumber in 1..currentPage) {

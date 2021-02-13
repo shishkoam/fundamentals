@@ -25,7 +25,10 @@ interface Dao {
     suspend fun insertActors(actors: ArrayList<ActorEntity>)
 
     @Query("SELECT * FROM movies WHERE _id == :id")
-    suspend fun getById(id: Long): MovieEntity
+    fun getById(id: Long): Flow<MovieEntity>
+
+    @Query("SELECT * FROM movies WHERE _id == :id")
+    suspend fun getMovie(id: Long): MovieEntity
 
     @Query("SELECT * FROM actors WHERE _id == :id")
     suspend fun getActorById(id: Long): ActorEntity

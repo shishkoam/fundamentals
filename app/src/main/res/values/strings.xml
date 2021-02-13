@@ -23,4 +23,7 @@
     <string name="cant_load_films">Can\'t load films!</string>
     <string name="cant_load_film_details">Can\'t load film details!</string>
 
+    <string name="channel_new_movie">New movie</string>
+    <string name="channel_new_movie_description">New best movies</string>
+
 </resources>

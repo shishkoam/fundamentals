@@ -21,6 +21,7 @@ import ua.shishkoam.fundamentals.domain.data.Actor
 import ua.shishkoam.fundamentals.domain.data.Movie
 import ua.shishkoam.fundamentals.presentation.recyclerview.ActorDelegateAdapter
 import ua.shishkoam.fundamentals.presentation.recyclerview.LandingAnimator
+import ua.shishkoam.fundamentals.presentation.viewmodels.MovieByIdViewModelFactory
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieDetailsViewModel
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieViewModelFactory
 import ua.shishkoam.fundamentals.utils.ImageLoader
@@ -55,10 +56,18 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
     private val listAdapter = ActorDelegateAdapter()
 
     private val movieDetails: MovieDetailsViewModel by lazy {
-        ViewModelProvider(
-            this@FragmentMoviesDetails,
-            MovieViewModelFactory(movieInteractor, args.currentMovie)
-        ).get(MovieDetailsViewModel::class.java)
+        if (args.currentMovieId != -1) {
+            ViewModelProvider(
+                this@FragmentMoviesDetails,
+                MovieByIdViewModelFactory(movieInteractor, args.currentMovieId)
+            ).get(MovieDetailsViewModel::class.java)
+        } else {
+            ViewModelProvider(
+                this@FragmentMoviesDetails,
+                MovieViewModelFactory(movieInteractor, args.currentMovie!!)
+            ).get(MovieDetailsViewModel::class.java)
+        }
+
     }
 
     private val movieStateObserver = Observer<Movie> { movie ->
@@ -79,7 +88,7 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
         super.onViewCreated(view, savedInstanceState)
         initCast()
         movieDetails.run {
-            movie.observe(viewLifecycleOwner, movieStateObserver)
+            movieLive.observe(viewLifecycleOwner, movieStateObserver)
             actors.observe(viewLifecycleOwner, actorListStateObserver)
             error.observe(viewLifecycleOwner, errorStateObserver)
         }

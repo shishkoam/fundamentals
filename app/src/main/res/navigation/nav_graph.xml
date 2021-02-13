@@ -19,8 +19,17 @@
         <argument
             android:name="currentMovie"
             app:argType="ua.shishkoam.fundamentals.domain.data.Movie"
+            android:defaultValue="@null"
+            app:nullable="true"
             />
-
+        <argument
+            android:name="currentMovieId"
+            app:argType="integer"
+            android:defaultValue="-1"
+            />
+        <action
+            android:id="@+id/openMovieDetails"
+            app:destination="@id/MovieDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/MovieListFragment"

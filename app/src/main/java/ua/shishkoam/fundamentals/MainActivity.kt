@@ -1,6 +1,7 @@
 package ua.shishkoam.fundamentals
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -8,9 +9,14 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.commitNow
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.redmadrobot.e2e.decorator.EdgeToEdgeDecorator
 import ua.shishkoam.fundamentals.databinding.ActivityMainBinding
+import ua.shishkoam.fundamentals.presentation.FragmentMoviesListDirections
 import java.util.*
 
 private const val PERMISSION_REQUESTS = 1
@@ -33,8 +39,38 @@ class MainActivity : AppCompatActivity() {
         if (!allPermissionsGranted()) {
             getRuntimePermissions()
         }
+//        if (savedInstanceState == null) {
+//            supportFragmentManager.commitNow {
+//                replace(R.id.container, MainFragment())
+//            }
+//            intent?.let(::handleIntent)
+//        }
+
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent != null) {
+            handleIntent(intent)
+        }
+    }
+
+    private fun handleIntent(intent: Intent) {
+        when (intent.action) {
+            Intent.ACTION_VIEW -> {
+                val id = intent.data?.lastPathSegment?.toLongOrNull()
+                if (id != null) {
+
+                    val navigationController = findNavController(R.id.nav_graph)
+//                    navigationController.navigate(
+//                        FragmentMoviesListDirections.openMovieDetails(
+//                            curreid =
+//                        )
+//                    openChat(id, null)
+                }
+            }
+        }
+    }
 
     private fun getRequiredPermissions(): Array<String?> {
         return try {
