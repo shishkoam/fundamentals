@@ -10,5 +10,5 @@ interface CalendarInteractor {
         day: Int,
         hourOfDay: Int,
         minute: Int
-    )
+    ) : Boolean
 }

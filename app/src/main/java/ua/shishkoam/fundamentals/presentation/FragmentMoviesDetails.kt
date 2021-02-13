@@ -1,15 +1,19 @@
 package ua.shishkoam.fundamentals.presentation
 
+import android.Manifest
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
-import android.content.ContentResolver
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.format.DateFormat.is24HourFormat
 import android.view.View
 import android.widget.DatePicker
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -96,6 +100,20 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
         }
     }
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            startDatePickDialog()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.movie_not_scheduled),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initCast()
@@ -110,16 +128,21 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
         }
 
         binding.scheduleButton.setOnClickListener {
-            val beginTime = Calendar.getInstance()
-            beginTime[2021, 1, 15, 3] = 0
+            if (ContextCompat.checkSelfPermission(requireActivity(),
+                    Manifest.permission.WRITE_CALENDAR
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                startDatePickDialog()
+            } else {
 
-            showDatePickerDialog()
-
-//            addToDeviceCalendar("2021-02-14 14:00",
-//                "2021-02-14 15:00", "Yo!", "uri")
+                requestPermissionLauncher.launch(
+                    Manifest.permission.WRITE_CALENDAR
+                )
+            }
         }
-
     }
+
+
 
     private fun initCast() {
         val landingItemAnimator: RecyclerView.ItemAnimator = LandingAnimator()
@@ -132,13 +155,14 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
 
     private fun showTimePickerDialog(year: Int, month: Int, day: Int) {
         val newFragment = TimePickerFragment() { hourOfDay, minute ->
-            val cr: ContentResolver = requireActivity().contentResolver
-            movieDetails.addMovieToCalendar(year, month, day, hourOfDay, minute)
+            val result = movieDetails.addMovieToCalendar(year, month, day, hourOfDay, minute)
+            val msg = if (result)  getString(R.string.movie_scheduled) else getString(R.string.movie_not_scheduled)
+            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
         }
         newFragment.show(requireActivity().supportFragmentManager, "timePicker")
     }
 
-    private fun showDatePickerDialog() {
+    private fun startDatePickDialog() {
         val newFragment = DatePickerFragment() { year, month, day ->
             showTimePickerDialog( year, month, day)
         }

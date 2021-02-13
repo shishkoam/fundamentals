@@ -57,9 +57,9 @@ class MovieDetailsViewModel() : ViewModel() {
     private val movieData: MutableLiveData<Movie> = MutableLiveData<Movie>()
     val movieLive : LiveData<Movie> get() = movieData
 
-    fun addMovieToCalendar(year: Int, month: Int, day: Int, hourOfDay: Int, minute: Int) {
-        movieData.value ?: return
-        calendarInteractor.addMovieToCalendar(movieData.value!!, year, month, day, hourOfDay, minute)
+    fun addMovieToCalendar(year: Int, month: Int, day: Int, hourOfDay: Int, minute: Int) : Boolean {
+        movieData.value ?: return false
+        return calendarInteractor.addMovieToCalendar(movieData.value!!, year, month, day, hourOfDay, minute)
     }
 
     fun loadActors(movie: Movie) {

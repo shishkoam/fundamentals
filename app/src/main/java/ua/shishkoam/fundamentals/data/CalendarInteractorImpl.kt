@@ -16,7 +16,7 @@ class CalendarInteractorImpl(val applicationContext: Context): CalendarInteracto
         day: Int,
         hourOfDay: Int,
         minute: Int
-    ) {
+    ) : Boolean {
         val cr = applicationContext.contentResolver
         val scheduleDate = Calendar.getInstance()
         scheduleDate.set(year, month, day, hourOfDay, minute)
@@ -36,6 +36,7 @@ class CalendarInteractorImpl(val applicationContext: Context): CalendarInteracto
         values.put(CalendarContract.Events.HAS_ALARM, 1)
         val uri: Uri? = cr.insert(CalendarContract.Events.CONTENT_URI, values)
         val eventID: Long = uri?.lastPathSegment?.toLong() ?: -1
+        return eventID.toInt() != -1
 
 //        send user to calendar
 //        val cal = Calendar.getInstance()

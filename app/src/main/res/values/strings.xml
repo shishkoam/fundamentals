@@ -26,5 +26,7 @@
     <string name="channel_new_movie">New movie</string>
     <string name="channel_new_movie_description">New best movies</string>
     <string name="schedule">Schedule</string>
+    <string name="movie_scheduled">Movie scheduled!</string>
+    <string name="movie_not_scheduled">Can not schedule movie!</string>
 
 </resources>

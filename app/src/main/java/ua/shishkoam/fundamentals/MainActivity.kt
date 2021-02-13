@@ -35,9 +35,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
-        if (!allPermissionsGranted()) {
-            getRuntimePermissions()
-        }
+//        if (!allPermissionsGranted()) {
+//            getRuntimePermissions()
+//        }
         if (savedInstanceState == null) {
             intent?.let(::handleIntent)
         }
