@@ -9,18 +9,16 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.commitNow
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.redmadrobot.e2e.decorator.EdgeToEdgeDecorator
 import ua.shishkoam.fundamentals.databinding.ActivityMainBinding
-import ua.shishkoam.fundamentals.presentation.FragmentMoviesListDirections
 import java.util.*
+
 
 private const val PERMISSION_REQUESTS = 1
 private const val TAG = "ChooserActivity"
+
 
 class MainActivity : AppCompatActivity() {
 

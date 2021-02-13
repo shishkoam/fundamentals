@@ -1,8 +1,16 @@
 package ua.shishkoam.fundamentals.presentation
 
+import android.app.DatePickerDialog
+import android.app.Dialog
+import android.app.TimePickerDialog
+import android.content.ContentResolver
 import android.os.Bundle
+import android.text.format.DateFormat.is24HourFormat
 import android.view.View
+import android.widget.DatePicker
+import android.widget.TimePicker
 import android.widget.Toast
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -15,6 +23,7 @@ import org.kodein.di.android.x.di
 import org.kodein.di.instance
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesDetailsBinding
+import ua.shishkoam.fundamentals.domain.CalendarInteractor
 import ua.shishkoam.fundamentals.domain.MovieInteractor
 import ua.shishkoam.fundamentals.domain.RepositoryError
 import ua.shishkoam.fundamentals.domain.data.Actor
@@ -25,6 +34,8 @@ import ua.shishkoam.fundamentals.presentation.viewmodels.MovieByIdViewModelFacto
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieDetailsViewModel
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieViewModelFactory
 import ua.shishkoam.fundamentals.utils.ImageLoader
+import java.util.*
+
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -34,6 +45,7 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
 
     private val args: FragmentMoviesDetailsArgs by navArgs()
     private val movieInteractor: MovieInteractor by instance()
+    private val calendarInteractor: CalendarInteractor by instance()
 
     private val binding by viewBinding(FragmentMoviesDetailsBinding::bind)
     private val actorListStateObserver = Observer<List<Actor>> { actors ->
@@ -59,12 +71,12 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
         if (args.currentMovieId != -1) {
             ViewModelProvider(
                 this@FragmentMoviesDetails,
-                MovieByIdViewModelFactory(movieInteractor, args.currentMovieId)
+                MovieByIdViewModelFactory(movieInteractor, calendarInteractor, args.currentMovieId)
             ).get(MovieDetailsViewModel::class.java)
         } else {
             ViewModelProvider(
                 this@FragmentMoviesDetails,
-                MovieViewModelFactory(movieInteractor, args.currentMovie!!)
+                MovieViewModelFactory(movieInteractor, calendarInteractor, args.currentMovie!!)
             ).get(MovieDetailsViewModel::class.java)
         }
 
@@ -96,6 +108,17 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
         }
+
+        binding.scheduleButton.setOnClickListener {
+            val beginTime = Calendar.getInstance()
+            beginTime[2021, 1, 15, 3] = 0
+
+            showDatePickerDialog()
+
+//            addToDeviceCalendar("2021-02-14 14:00",
+//                "2021-02-14 15:00", "Yo!", "uri")
+        }
+
     }
 
     private fun initCast() {
@@ -106,4 +129,55 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
             itemAnimator = landingItemAnimator
         }
     }
+
+    private fun showTimePickerDialog(year: Int, month: Int, day: Int) {
+        val newFragment = TimePickerFragment() { hourOfDay, minute ->
+            val cr: ContentResolver = requireActivity().contentResolver
+            movieDetails.addMovieToCalendar(year, month, day, hourOfDay, minute)
+        }
+        newFragment.show(requireActivity().supportFragmentManager, "timePicker")
+    }
+
+    private fun showDatePickerDialog() {
+        val newFragment = DatePickerFragment() { year, month, day ->
+            showTimePickerDialog( year, month, day)
+        }
+        newFragment.show(requireActivity().supportFragmentManager, "datePicker")
+    }
+
+    class DatePickerFragment(private val onDatePick: ((year: Int, month: Int, day: Int) -> Unit)) :
+        DialogFragment(), DatePickerDialog.OnDateSetListener {
+
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            val c = Calendar.getInstance()
+            val year = c.get(Calendar.YEAR)
+            val month = c.get(Calendar.MONTH)
+            val day = c.get(Calendar.DAY_OF_MONTH)
+            return DatePickerDialog(requireActivity(), this, year, month, day)
+        }
+
+        override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
+            onDatePick.invoke(year, month, day)
+        }
+    }
+
+
+    class TimePickerFragment(
+        private val onTimePick: ((hourOfDay: Int, minute: Int) -> Unit)) :
+        DialogFragment(), TimePickerDialog.OnTimeSetListener {
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            // Use the current time as the default values for the picker
+            val c = Calendar.getInstance()
+            val hour = c.get(Calendar.HOUR_OF_DAY)
+            val minute = c.get(Calendar.MINUTE)
+
+            // Create a new instance of TimePickerDialog and return it
+            return TimePickerDialog(activity, this, hour, minute, is24HourFormat(activity))
+        }
+
+        override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
+            onTimePick.invoke(hourOfDay, minute)
+        }
+    }
+
 }

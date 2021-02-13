@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ua.shishkoam.fundamentals.domain.CalendarInteractor
 import ua.shishkoam.fundamentals.domain.MovieInteractor
 import ua.shishkoam.fundamentals.domain.RepositoryError
 import ua.shishkoam.fundamentals.domain.data.Actor
@@ -18,20 +19,32 @@ import ua.shishkoam.fundamentals.domain.data.Movie
 class MovieDetailsViewModel() : ViewModel() {
     private var actorList: MutableLiveData<List<Actor>> = MutableLiveData<List<Actor>>()
     private var errorData: MutableLiveData<RepositoryError> = MutableLiveData<RepositoryError>()
-    private var movieInteractor: MovieInteractor? = null
-    private var movie: Movie? = null
+    private lateinit var movieInteractor: MovieInteractor
+    private lateinit var calendarInteractor: CalendarInteractor
 
-    constructor(movieInteractor: MovieInteractor, movie: Movie) : this() {
+    constructor(
+        movieInteractor: MovieInteractor,
+        calendarInteractor: CalendarInteractor,
+        movie: Movie
+    ) : this() {
         this.movieInteractor = movieInteractor
+        this.calendarInteractor = calendarInteractor
+        movieData.value = movie
         loadActors(movie)
     }
 
-    constructor(movieInteractor: MovieInteractor, movieId: Int) : this() {
+    constructor(
+        movieInteractor: MovieInteractor,
+        calendarInteractor: CalendarInteractor,
+        movieId: Int
+    ) : this() {
         this.movieInteractor = movieInteractor
+        this.calendarInteractor = calendarInteractor
         viewModelScope.launch() {
-            movieInteractor.getMovie(movieId).asSuccess().value.collect{ movie ->
+            movieInteractor.getMovie(movieId).asSuccess().value.collect { movie ->
                 withContext(Dispatchers.Main) {
                     loadActors(movie)
+                    movieData.value = movie
                 }
             }
         }
@@ -43,13 +56,13 @@ class MovieDetailsViewModel() : ViewModel() {
 
     private val movieData: MutableLiveData<Movie> = MutableLiveData<Movie>()
     val movieLive : LiveData<Movie> get() = movieData
-    init {
-        movieData.value = movie
+
+    fun addMovieToCalendar(year: Int, month: Int, day: Int, hourOfDay: Int, minute: Int) {
+        movieData.value ?: return
+        calendarInteractor.addMovieToCalendar(movieData.value!!, year, month, day, hourOfDay, minute)
     }
 
     fun loadActors(movie: Movie) {
-        movieInteractor ?: return
-        this.movie = movie
         viewModelScope.launch() {
             val result = movieInteractor!!.getActors(movie.id)
             withContext(Dispatchers.Main) {

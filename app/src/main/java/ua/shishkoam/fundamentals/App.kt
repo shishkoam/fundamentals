@@ -11,13 +11,12 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.kodein.di.*
 import org.kodein.di.android.x.androidXModule
 import retrofit2.Retrofit
-import ua.shishkoam.fundamentals.domain.MovieInteractorImpl
+import ua.shishkoam.fundamentals.data.CalendarInteractorImpl
 import ua.shishkoam.fundamentals.data.MovieRepositoryImpl
 import ua.shishkoam.fundamentals.data.MovieRetrofitInterface
+import ua.shishkoam.fundamentals.data.NotificationRepositoryImpl
 import ua.shishkoam.fundamentals.data.room.RoomRepository
-import ua.shishkoam.fundamentals.domain.CacheRepository
-import ua.shishkoam.fundamentals.domain.MovieInteractor
-import ua.shishkoam.fundamentals.domain.MovieRepository
+import ua.shishkoam.fundamentals.domain.*
 import ua.shishkoam.fundamentals.presentation.viewmodels.FilmsListViewModel
 
 class App : Application(), DIAware {
@@ -43,10 +42,12 @@ class App : Application(), DIAware {
         bind<MovieRetrofitInterface>() with singleton {
             instance<Retrofit>().create(MovieRetrofitInterface::class.java)
         }
+        bind<CalendarInteractor>() with provider { CalendarInteractorImpl(this@App) }
 
+        bind<NotificationRepository>() with singleton { NotificationRepositoryImpl(this@App) }
         bind<MovieRepository>() with singleton { MovieRepositoryImpl(instance()) }
         bind<CacheRepository>() with singleton { RoomRepository(instance()) }
-        bind<MovieInteractor>() with provider { MovieInteractorImpl(instance(), instance()) }
+        bind<MovieInteractor>() with provider { MovieInteractorImpl(instance(), instance(), instance()) }
 
         bind<ViewModel>(tag = FilmsListViewModel::class.java.simpleName) with provider {
             FilmsListViewModel(instance())

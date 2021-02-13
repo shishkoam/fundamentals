@@ -10,7 +10,8 @@ import ua.shishkoam.fundamentals.domain.data.Movie
 
 class MovieInteractorImpl(
     val movieRepository: MovieRepository,
-    val cacheRepository: CacheRepository
+    val cacheRepository: CacheRepository,
+    val notificationRepository: NotificationRepository,
 ) : MovieInteractor {
     private val favoriteFilms: HashMap<String, Boolean> = HashMap()
     private var currentPage: Int = 1
@@ -50,9 +51,25 @@ class MovieInteractorImpl(
         val result = movieRepository.getMovies(page)
         if (result.isSuccess()) {
             totalPages = movieRepository.getTotalPagesNumber()
-            cacheRepository.addMovies(result.asSuccess().value)
+            val movies = result.asSuccess().value
+            val bestMovie = findBestMovie(movies)
+            bestMovie?.run {
+                notificationRepository.updateBestMovie(bestMovie)
+            }
+            cacheRepository.addMovies(movies)
         }
         return result
+    }
+
+    private fun findBestMovie(movies: List<Movie>) : Movie? {
+        var bestMovie: Movie? = null
+        for (movie in movies) {
+            val currentBestRating = bestMovie?.getRatingIn5Stars() ?: -1.0f
+            if (currentBestRating < movie.getRatingIn5Stars()) {
+                bestMovie = movie.copy()
+            }
+        }
+        return bestMovie
     }
 
     override suspend fun getMoreMovies(): RequestResult<List<Movie>> {
