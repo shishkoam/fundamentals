@@ -2,30 +2,44 @@ package ua.shishkoam.fundamentals.data.room
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ua.shishkoam.fundamentals.domain.CacheRepository
 import ua.shishkoam.fundamentals.domain.data.Actor
 import ua.shishkoam.fundamentals.domain.data.Movie
+import java.util.*
+import kotlin.collections.ArrayList
 
 class RoomRepository(applicationContext: Context) : CacheRepository {
 
     private val db = DataBase.create(applicationContext)
 
-    override suspend fun getAllMovies(): List<Movie> = withContext(Dispatchers.IO) {
-        db.dao.getAll().map {
-            toMovie(it)
+    override fun getAllMovies(): Flow<List<Movie>> =
+        db.dao.getAllMovies().map { movies ->
+            val list = LinkedList<Movie>()
+            for (movie in movies) {
+                list.add(toMovie(movie))
+            }
+            list
         }
+
+    override fun addMovies(movies: List<Movie>) {
+        val movieEntityList = ArrayList<MovieEntity>()
+        for (movie in movies) {
+            movieEntityList.add(toEntity(movie))
+        }
+        GlobalScope.launch {
+            db.dao.insertMovies(movieEntityList)
+        }
+//        return getAllMovies().value!!
     }
 
-    override suspend fun addMovies(movies: List<Movie>): List<Movie> =
-        withContext(Dispatchers.IO) {
-            val movieEntityList = ArrayList<MovieEntity>()
-            for (movie in movies) {
-                movieEntityList.add(toEntity(movie))
-            }
-            db.dao.insertMovies(movieEntityList)
-            getAllMovies()
-        }
+    override suspend fun clearMovies() {
+        db.dao.clearMovies()
+    }
 
     override suspend fun addActors(id: Long, actors: List<Actor>) = withContext(Dispatchers.IO) {
         val actorsIds = ArrayList<Long>()
@@ -64,7 +78,8 @@ class RoomRepository(applicationContext: Context) : CacheRepository {
         backdropUrl = movie.backdropUrl ?: "",
         isFavorite = movie.isFavorite,
         genresNames = movie.genresNames,
-        actors = actors
+        actors = actors,
+        popularity = movie.popularity
     )
 
     private fun toEntity(actor: Actor) = ActorEntity(
@@ -86,7 +101,8 @@ class RoomRepository(applicationContext: Context) : CacheRepository {
         posterUrl = entity.posterUrl,
         backdropUrl = entity.backdropUrl,
         isFavorite = entity.isFavorite,
-        genresNames = entity.genresNames
+        genresNames = entity.genresNames,
+        popularity = entity.popularity
     )
 
     private fun toActor(entity: ActorEntity) = Actor(

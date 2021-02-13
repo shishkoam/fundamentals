@@ -22,6 +22,7 @@ object Contract {
         const val COLUMN_NAME_IS_FAVORITE = "isFavorite"
         const val COLUMN_NAME_GENRES_NAMES = "genresNames"
         const val COLUMN_NAME_ACTORS = "actors"
+        const val COLUMN_POPULARITY = "popularity"
     }
 
     object Actors {

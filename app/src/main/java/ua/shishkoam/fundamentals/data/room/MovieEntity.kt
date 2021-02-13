@@ -35,5 +35,8 @@ data class MovieEntity (
     @ColumnInfo(name = Contract.Movies.COLUMN_NAME_GENRES_NAMES)
     val genresNames: HashSet<String>,
     @ColumnInfo(name = Contract.Movies.COLUMN_NAME_ACTORS)
-    var actors: ArrayList<Long>
+    var actors: ArrayList<Long>,
+    @ColumnInfo(name = Contract.Movies.COLUMN_POPULARITY)
+    val popularity: Float
+
 )

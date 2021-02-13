@@ -4,6 +4,7 @@ import by.kirich1409.result.RequestResult
 import by.kirich1409.result.asSuccess
 import by.kirich1409.result.isFailure
 import by.kirich1409.result.isSuccess
+import kotlinx.coroutines.flow.Flow
 import ua.shishkoam.fundamentals.domain.data.Actor
 import ua.shishkoam.fundamentals.domain.data.Movie
 
@@ -15,19 +16,32 @@ class MovieInteractorImpl(
     private var currentPage: Int = 1
     private var totalPages: Int = 1
 
-    override suspend fun getMovies(): RequestResult<List<Movie>> {
+    override suspend fun getMovies(): RequestResult<Flow<List<Movie>>> {
         currentPage = 1//save page number
-        val result = getMovies(currentPage)
+        val result = loadMovies(currentPage)
+        val roomResult = cacheRepository.getAllMovies()
         if (result.isFailure()) {
-            val roomResult = cacheRepository.getAllMovies()
-            if (!roomResult.isNullOrEmpty()) {
-                return RequestResult.Success.Value(roomResult)
-            }
+            return result
+        } else {
+            return RequestResult.Success.Value(roomResult)
         }
-        return result
     }
 
-    private suspend fun getMovies(page: Int): RequestResult<List<Movie>> {
+    override suspend fun updateMoviesInDb() {
+        val movies = ArrayList<Movie>()
+        for (pageNumber in 1..currentPage) {
+            val result = loadMovies(pageNumber)
+            if (result.isSuccess()) {
+                movies.addAll(result.asSuccess().value)
+            }
+        }
+        if (movies.isNotEmpty()) {
+            cacheRepository.clearMovies()
+            cacheRepository.addMovies(movies)
+        }
+    }
+
+    private suspend fun loadMovies(page: Int): RequestResult<List<Movie>> {
         val result = movieRepository.getMovies(page)
         if (result.isSuccess()) {
             totalPages = movieRepository.getTotalPagesNumber()
@@ -38,7 +52,7 @@ class MovieInteractorImpl(
 
     override suspend fun getMoreMovies(): RequestResult<List<Movie>> {
         currentPage++
-        return getMovies(currentPage)
+        return loadMovies(currentPage)
     }
 
     override suspend fun getActors(id: Int): RequestResult<List<Actor>> {

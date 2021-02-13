@@ -1,9 +1,6 @@
 package ua.shishkoam.fundamentals.presentation.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import by.kirich1409.result.asSuccess
 import by.kirich1409.result.isSuccess
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -15,6 +12,7 @@ import ua.shishkoam.fundamentals.domain.RepositoryError
 import ua.shishkoam.fundamentals.domain.data.ListItem
 import ua.shishkoam.fundamentals.domain.data.Movie
 import ua.shishkoam.fundamentals.presentation.recyclerview.LoadItem
+import kotlinx.coroutines.flow.collect
 
 class FilmsListViewModel(
     private val movieInteractor: MovieInteractor
@@ -36,9 +34,12 @@ class FilmsListViewModel(
             setLoading(State.Loading)
             isLoadingData.value = State.None
             val result = movieInteractor.getMovies()
+
             withContext(Dispatchers.Main) {
                 if (result.isSuccess()) {
-                    moviesData.value = result.asSuccess().value
+                    result.asSuccess().value.collect{ movies ->
+                        moviesData.value = movies
+                    }
                     setLoading(State.Loaded(1, movieInteractor.getTotalPageNumber()))
                 } else {
                     setLoading(State.Error(RepositoryError.LOAD_ERROR))
@@ -67,8 +68,8 @@ class FilmsListViewModel(
             withContext(Dispatchers.Main) {
                 val list: ArrayList<ListItem> = ArrayList(moviesData.value!!)
                 if (result.isSuccess()) {
-                    val loaded = result.asSuccess().value
-                    list.addAll(loaded)
+//                    val loaded = result.asSuccess().value
+//                    list.addAll(loaded)
                     setLoading(
                         State.Loaded(
                             movieInteractor.getCurrentPageNumber(),

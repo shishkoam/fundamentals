@@ -1,6 +1,5 @@
 package ua.shishkoam.fundamentals.data
 
-import androidx.annotation.NonNull
 import ua.shishkoam.fundamentals.data.dto.Configuration
 import ua.shishkoam.fundamentals.data.dto.MovieDTO
 import ua.shishkoam.fundamentals.domain.data.Movie

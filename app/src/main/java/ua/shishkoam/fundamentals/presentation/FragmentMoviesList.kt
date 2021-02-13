@@ -14,12 +14,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.work.WorkManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.*
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.di
 import ua.shishkoam.fundamentals.R
+import ua.shishkoam.fundamentals.data.WorkRepository
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesListBinding
 import ua.shishkoam.fundamentals.domain.RepositoryError
 import ua.shishkoam.fundamentals.domain.data.ListItem
@@ -136,6 +138,8 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
             updateMoviesList()
             swipeRefreshLayout.isRefreshing = false
         }
+        val workRepository = WorkRepository()
+        WorkManager.getInstance(requireContext()).enqueue(workRepository.constrainedRequest)
     }
 
     private fun updateMoviesList() {
