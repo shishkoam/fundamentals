@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import com.redmadrobot.e2e.decorator.EdgeToEdgeDecorator
 import ua.shishkoam.fundamentals.databinding.ActivityMainBinding
+import ua.shishkoam.fundamentals.presentation.FragmentMoviesListDirections
 import java.util.*
 
 
@@ -37,13 +38,9 @@ class MainActivity : AppCompatActivity() {
         if (!allPermissionsGranted()) {
             getRuntimePermissions()
         }
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.commitNow {
-//                replace(R.id.container, MainFragment())
-//            }
-//            intent?.let(::handleIntent)
-//        }
-
+        if (savedInstanceState == null) {
+            intent?.let(::handleIntent)
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -58,13 +55,10 @@ class MainActivity : AppCompatActivity() {
             Intent.ACTION_VIEW -> {
                 val id = intent.data?.lastPathSegment?.toLongOrNull()
                 if (id != null) {
-
-                    val navigationController = findNavController(R.id.nav_graph)
-//                    navigationController.navigate(
-//                        FragmentMoviesListDirections.openMovieDetails(
-//                            curreid =
-//                        )
-//                    openChat(id, null)
+                    val navigationController = findNavController(R.id.nav_host_fragment)
+                    val action = FragmentMoviesListDirections.openMovieDetails()
+                    action.currentMovieId = id.toInt()
+                    navigationController.navigate(action)
                 }
             }
         }
