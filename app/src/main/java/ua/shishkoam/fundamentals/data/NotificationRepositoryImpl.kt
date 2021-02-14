@@ -67,6 +67,7 @@ class NotificationRepositoryImpl(private val context: Context) : NotificationRep
         private const val CHANNEL_NEW_MESSAGES = "new_movies"
 
         private const val REQUEST_CONTENT = 1
+        private const val MOVIE_TAG = "movie"
 
         private const val MOVIE_PREF_TAG = "movie_id"
         private const val MOVIE_BASE_URI = "https://ua.shishkoam.fundamentals/movie/"
@@ -120,5 +121,6 @@ class NotificationRepositoryImpl(private val context: Context) : NotificationRep
         val bitmap = futureTarget.get()
         builder.setLargeIcon(bitmap)
         Glide.with(context).clear(futureTarget)
+        notificationManagerCompat.notify(MOVIE_TAG, movie.id, builder.build())
     }
 }
