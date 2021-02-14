@@ -9,9 +9,9 @@ import ua.shishkoam.fundamentals.domain.data.Actor
 import ua.shishkoam.fundamentals.domain.data.Movie
 
 class MovieInteractorImpl(
-    val movieRepository: MovieRepository,
-    val cacheRepository: CacheRepository,
-    val notificationRepository: NotificationRepository,
+    private val movieRepository: MovieRepository,
+    private val cacheRepository: CacheRepository,
+    private val notificationRepository: NotificationRepository,
 ) : MovieInteractor {
     private val favoriteFilms: HashMap<String, Boolean> = HashMap()
     private var currentPage: Int = 1
@@ -21,10 +21,10 @@ class MovieInteractorImpl(
         currentPage = 1//save page number
         val result = loadMovies(currentPage)
         val roomResult = cacheRepository.getAllMovies()
-        if (result.isFailure()) {
-            return result
+        return if (result.isFailure()) {
+            result
         } else {
-            return RequestResult.Success.Value(roomResult)
+            RequestResult.Success.Value(roomResult)
         }
     }
 
@@ -79,12 +79,13 @@ class MovieInteractorImpl(
 
     override suspend fun getActors(id: Int): RequestResult<List<Actor>> {
         val result = movieRepository.getActors(id)
-        if (result.isSuccess()) {
+        return if (result.isSuccess()) {
             cacheRepository.addActors(id.toLong(), result.asSuccess().value)
+            result
         } else {
             val actors = cacheRepository.getActors(id.toLong())
+            RequestResult.Success.Value(actors)
         }
-        return result
     }
 
     override fun getFavoriteFilms(): HashMap<String, Boolean> {

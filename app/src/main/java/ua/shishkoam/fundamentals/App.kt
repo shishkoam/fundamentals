@@ -19,8 +19,9 @@ import ua.shishkoam.fundamentals.data.room.RoomRepository
 import ua.shishkoam.fundamentals.domain.*
 import ua.shishkoam.fundamentals.presentation.viewmodels.FilmsListViewModel
 
+private const val BASE_URL = "https://api.themoviedb.org/3/"
+
 class App : Application(), DIAware {
-    private final val BASE_URL = "https://api.themoviedb.org/3/"
 
     override val di = DI.lazy {
         import(androidXModule(this@App))
@@ -54,9 +55,6 @@ class App : Application(), DIAware {
         }
     }
 
-//    private final val API_KEY_HEADER = "api_key"
-//    private final val api = "869b66870caf75518f1b359b0a5da125"
-
     private val json = Json {
         ignoreUnknownKeys = true
     }
@@ -69,9 +67,8 @@ class App : Application(), DIAware {
             val originalRequest = chain.request()
             val originalHttpUrl = originalRequest.url
             val url = originalHttpUrl.newBuilder()
-                .addQueryParameter("api_key", api)
+                .addQueryParameter(API_KEY_HEADER, api)
                 .addQueryParameter("language", "en-US")
-//                .addQueryParameter("page", "1")
                 .build()
 
             val requestBuilder: Request.Builder = originalRequest.newBuilder()

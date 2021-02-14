@@ -24,7 +24,6 @@ import androidx.annotation.WorkerThread
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -69,7 +68,8 @@ class NotificationRepositoryImpl(private val context: Context) : NotificationRep
 
         private const val REQUEST_CONTENT = 1
 
-        private const val MOVIE_TAG = "movie"
+        private const val MOVIE_PREF_TAG = "movie_id"
+        private const val MOVIE_BASE_URI = "https://ua.shishkoam.fundamentals/movie/"
     }
 
     private val dataStore: DataStore<Preferences> =
@@ -88,12 +88,12 @@ class NotificationRepositoryImpl(private val context: Context) : NotificationRep
     }
 
     private object PreferencesKeys {
-        val MOVIE_ID = intPreferencesKey("movie_id")
+        val MOVIE_ID = intPreferencesKey(MOVIE_PREF_TAG)
     }
 
     @WorkerThread
     fun showNotification(movie: Movie) {
-        val contentUri = "https://ua.shishkoam.fundamentals/movie/${movie.id}".toUri()
+        val contentUri = "$MOVIE_BASE_URI${movie.id}".toUri()
 
         val builder = NotificationCompat.Builder(context, CHANNEL_NEW_MESSAGES)
             .setContentTitle(movie.title)
@@ -119,7 +119,6 @@ class NotificationRepositoryImpl(private val context: Context) : NotificationRep
 
         val bitmap = futureTarget.get()
         builder.setLargeIcon(bitmap)
-
         Glide.with(context).clear(futureTarget)
     }
 }

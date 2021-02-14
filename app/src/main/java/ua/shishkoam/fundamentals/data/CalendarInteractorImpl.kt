@@ -8,7 +8,11 @@ import ua.shishkoam.fundamentals.domain.CalendarInteractor
 import ua.shishkoam.fundamentals.domain.data.Movie
 import java.util.*
 
-class CalendarInteractorImpl(val applicationContext: Context): CalendarInteractor {
+class CalendarInteractorImpl(private val applicationContext: Context): CalendarInteractor {
+    companion object {
+        private const val TWO_HOURS = 2 * 60 * 60 * 1000
+    }
+
     override fun addMovieToCalendar(
         movie: Movie,
         year: Int,
@@ -21,10 +25,8 @@ class CalendarInteractorImpl(val applicationContext: Context): CalendarInteracto
         val scheduleDate = Calendar.getInstance()
         scheduleDate.set(year, month, day, hourOfDay, minute)
         val calID: Long = 3 // Make sure to which calender you want to add event
-        var startMillis: Long = 0
-        var endMillis: Long = 0
-        startMillis = scheduleDate.timeInMillis
-        endMillis = startMillis + 2 * 60 * 60 * 1000
+        val startMillis: Long = scheduleDate.timeInMillis
+        val endMillis: Long = startMillis + TWO_HOURS
 
         val values = ContentValues()
         values.put(CalendarContract.Events.DTSTART, startMillis)

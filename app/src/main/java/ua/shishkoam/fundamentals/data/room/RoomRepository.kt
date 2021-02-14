@@ -39,7 +39,6 @@ class RoomRepository(applicationContext: Context) : CacheRepository {
         GlobalScope.launch {
             db.dao.insertMovies(movieEntityList)
         }
-//        return getAllMovies().value!!
     }
 
     override suspend fun clearMovies() {

@@ -11,7 +11,6 @@ interface CacheRepository {
     fun getMovie(id: Int): Flow<Movie>
 
     fun addMovies(movies: List<Movie>)
-//    fun addMovies(movies: List<Movie>): List<Movie>
 
     suspend fun clearMovies()
 

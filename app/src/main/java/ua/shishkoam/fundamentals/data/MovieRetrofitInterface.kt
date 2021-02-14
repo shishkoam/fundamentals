@@ -10,7 +10,6 @@ import ua.shishkoam.fundamentals.data.dto.Configuration
 import ua.shishkoam.fundamentals.data.dto.GenreResponse
 import ua.shishkoam.fundamentals.data.dto.MoviePage
 
-//?size=small&order=RANDOM&limit=5&format=json
 interface MovieRetrofitInterface {
     @Headers("Content-Type: application/json")
     @GET("movie/now_playing?")
