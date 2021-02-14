@@ -16,7 +16,6 @@
 
 package ua.shishkoam.fundamentals.data
 
-import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -25,14 +24,14 @@ import androidx.annotation.WorkerThread
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.Person
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.net.toUri
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.createDataStore
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import com.bumptech.glide.Glide
 import ua.shishkoam.fundamentals.MainActivity
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.domain.NotificationRepository
@@ -77,16 +76,6 @@ class NotificationRepositoryImpl(private val context: Context) : NotificationRep
         context.createDataStore(
             name = USER_PREFERENCES_NAME
         )
-//
-//    fun init() {
-//        dataStore.data
-//            .map { preferences ->
-//                val id = preferences[PreferencesKeys.MOVIE_ID] ?: -1
-//                if (id != -1) {
-//                    showNotification()
-//                }
-//            }
-//    }
 
     override suspend fun updateBestMovie(movie: Movie) {
         dataStore.edit { preferences ->
@@ -104,12 +93,7 @@ class NotificationRepositoryImpl(private val context: Context) : NotificationRep
 
     @WorkerThread
     fun showNotification(movie: Movie) {
-        val icon = IconCompat.createWithContentUri(movie.posterUrl)
         val contentUri = "https://ua.shishkoam.fundamentals/movie/${movie.id}".toUri()
-        val person = Person.Builder()
-            .setName(movie.title)
-            .setIcon(icon)
-            .build()
 
         val builder = NotificationCompat.Builder(context, CHANNEL_NEW_MESSAGES)
             .setContentTitle(movie.title)
@@ -126,8 +110,16 @@ class NotificationRepositoryImpl(private val context: Context) : NotificationRep
                         .setData(contentUri),
                     PendingIntent.FLAG_UPDATE_CURRENT
                 )
-            )
 
-        notificationManagerCompat.notify(MOVIE_TAG, movie.id, builder.build())
+            )
+        val futureTarget = Glide.with(context)
+            .asBitmap()
+            .load(movie.posterUrl)
+            .submit()
+
+        val bitmap = futureTarget.get()
+        builder.setLargeIcon(bitmap)
+
+        Glide.with(context).clear(futureTarget)
     }
 }
