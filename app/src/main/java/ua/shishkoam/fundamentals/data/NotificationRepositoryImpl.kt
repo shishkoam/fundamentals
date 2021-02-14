@@ -123,4 +123,8 @@ class NotificationRepositoryImpl(private val context: Context) : NotificationRep
         Glide.with(context).clear(futureTarget)
         notificationManagerCompat.notify(MOVIE_TAG, movie.id, builder.build())
     }
+
+    fun dismissNotification(chatId: Long) {
+//        notificationManagerCompat.cancel(CHAT_TAG, chatId.toInt())
+    }
 }

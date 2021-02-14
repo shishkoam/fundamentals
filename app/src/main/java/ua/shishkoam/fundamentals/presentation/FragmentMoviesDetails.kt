@@ -99,9 +99,26 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
         }
     }
 
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
+    private val requestPermissionLauncher =
+//        registerForActivityResult(
+//        ActivityResultContracts.RequestMultiplePermissions()
+//    )
+//    { isGranted: Boolean ->
+//        if (isGranted) {
+//            startDatePickDialog()
+//        } else {
+//            Toast.makeText(
+//                requireContext(),
+//                getString(R.string.movie_not_scheduled),
+//                Toast.LENGTH_SHORT
+//            ).show()
+//        }
+//    }
+    registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+        var isGranted = true
+        permissions.entries.forEach {
+            isGranted = isGranted && it.value
+        }
         if (isGranted) {
             startDatePickDialog()
         } else {
@@ -133,10 +150,10 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
             ) {
                 startDatePickDialog()
             } else {
-
-                requestPermissionLauncher.launch(
-                    Manifest.permission.WRITE_CALENDAR
-                )
+                requestPermissionLauncher.launch(arrayOf(
+                    Manifest.permission.WRITE_CALENDAR,
+                    Manifest.permission.READ_CALENDAR
+                ))
             }
         }
     }

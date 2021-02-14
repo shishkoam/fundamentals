@@ -24,7 +24,7 @@ class CalendarRepositoryImpl(private val applicationContext: Context): CalendarR
         val cr = applicationContext.contentResolver
         val scheduleDate = Calendar.getInstance()
         scheduleDate.set(year, month, day, hourOfDay, minute)
-        val calID: Long = 3 // Make sure to which calender you want to add event
+        val calID = getCalendarId(applicationContext)
         val startMillis: Long = scheduleDate.timeInMillis
         val endMillis: Long = startMillis + TWO_HOURS
 
@@ -48,5 +48,42 @@ class CalendarRepositoryImpl(private val applicationContext: Context): CalendarR
 //        intent.putExtra("beginTime", cal.timeInMillis)
 //        intent.putExtra("title", "A Test Event from android app")
 //        startActivity(intent)
+    }
+
+    private fun getCalendarId(context: Context): Long? {
+        val projection = arrayOf(
+            CalendarContract.Calendars._ID,
+            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME
+        )
+
+        var calCursor = context.contentResolver.query(
+            CalendarContract.Calendars.CONTENT_URI,
+            projection,
+            CalendarContract.Calendars.VISIBLE + " = 1 AND " + CalendarContract.Calendars.IS_PRIMARY + " = 1",
+            null,
+            CalendarContract.Calendars._ID + " ASC"
+        )
+
+        if (calCursor != null && calCursor.count <= 0) {
+            calCursor = context.contentResolver.query(
+                CalendarContract.Calendars.CONTENT_URI,
+                projection,
+                CalendarContract.Calendars.VISIBLE + " =1",
+                null,
+                CalendarContract.Calendars._ID + " ASC"
+            )
+        }
+
+        if (calCursor != null && calCursor.moveToFirst()) {
+            val calID = calCursor.getString(calCursor.getColumnIndex(projection[0]))
+                .also {
+                    calCursor.close()
+                }
+
+            return calID.toLong()
+        }
+
+        calCursor?.close()
+        return null
     }
 }
