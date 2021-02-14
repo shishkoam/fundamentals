@@ -26,7 +26,7 @@ import org.kodein.di.android.x.di
 import org.kodein.di.instance
 import ua.shishkoam.fundamentals.R
 import ua.shishkoam.fundamentals.databinding.FragmentMoviesDetailsBinding
-import ua.shishkoam.fundamentals.domain.CalendarInteractor
+import ua.shishkoam.fundamentals.domain.CalendarRepository
 import ua.shishkoam.fundamentals.domain.MovieInteractor
 import ua.shishkoam.fundamentals.domain.RepositoryError
 import ua.shishkoam.fundamentals.domain.data.Actor
@@ -48,7 +48,7 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
 
     private val args: FragmentMoviesDetailsArgs by navArgs()
     private val movieInteractor: MovieInteractor by instance()
-    private val calendarInteractor: CalendarInteractor by instance()
+    private val calendarRepository: CalendarRepository by instance()
 
     private val binding by viewBinding(FragmentMoviesDetailsBinding::bind)
     private val actorListStateObserver = Observer<List<Actor>> { actors ->
@@ -74,12 +74,12 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
         if (args.currentMovieId != -1) {
             ViewModelProvider(
                 this@FragmentMoviesDetails,
-                MovieByIdViewModelFactory(movieInteractor, calendarInteractor, args.currentMovieId)
+                MovieByIdViewModelFactory(movieInteractor, calendarRepository, args.currentMovieId)
             ).get(MovieDetailsViewModel::class.java)
         } else {
             ViewModelProvider(
                 this@FragmentMoviesDetails,
-                MovieViewModelFactory(movieInteractor, calendarInteractor, args.currentMovie!!)
+                MovieViewModelFactory(movieInteractor, calendarRepository, args.currentMovie!!)
             ).get(MovieDetailsViewModel::class.java)
         }
 

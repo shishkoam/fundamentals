@@ -21,10 +21,10 @@ class MovieInteractorImpl(
         currentPage = 1//save page number
         val result = loadMovies(currentPage)
         val roomResult = cacheRepository.getAllMovies()
-        return if (result.isFailure()) {
-            result
+        if (result.isFailure()) {
+            return result
         } else {
-            RequestResult.Success.Value(roomResult)
+            return RequestResult.Success.Value(roomResult)
         }
     }
 
@@ -53,7 +53,7 @@ class MovieInteractorImpl(
             totalPages = movieRepository.getTotalPagesNumber()
             val movies = result.asSuccess().value
             val bestMovie = findBestMovie(movies)
-            bestMovie?.run {
+            bestMovie?.let {
                 notificationRepository.updateBestMovie(bestMovie)
             }
             cacheRepository.addMovies(movies)

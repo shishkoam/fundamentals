@@ -45,21 +45,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        if (intent != null) {
-            handleIntent(intent)
-        }
+        intent?.let(::handleIntent)
     }
 
     private fun handleIntent(intent: Intent) {
-        when (intent.action) {
-            Intent.ACTION_VIEW -> {
-                val id = intent.data?.lastPathSegment?.toLongOrNull()
-                if (id != null) {
-                    val navigationController = findNavController(R.id.nav_host_fragment)
-                    val action = FragmentMoviesListDirections.openMovieDetails()
-                    action.currentMovieId = id.toInt()
-                    navigationController.navigate(action)
-                }
+        if (intent.action == Intent.ACTION_VIEW) {
+            val id = intent.data?.lastPathSegment?.toLongOrNull()
+            if (id != null) {
+                val navigationController = findNavController(R.id.nav_host_fragment)
+                val action = FragmentMoviesListDirections.openMovieDetails()
+                action.currentMovieId = id.toInt()
+                navigationController.navigate(action)
             }
         }
     }

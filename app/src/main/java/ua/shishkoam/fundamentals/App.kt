@@ -11,7 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.kodein.di.*
 import org.kodein.di.android.x.androidXModule
 import retrofit2.Retrofit
-import ua.shishkoam.fundamentals.data.CalendarInteractorImpl
+import ua.shishkoam.fundamentals.data.CalendarRepositoryImpl
 import ua.shishkoam.fundamentals.data.MovieRepositoryImpl
 import ua.shishkoam.fundamentals.data.MovieRetrofitInterface
 import ua.shishkoam.fundamentals.data.NotificationRepositoryImpl
@@ -43,7 +43,7 @@ class App : Application(), DIAware {
         bind<MovieRetrofitInterface>() with singleton {
             instance<Retrofit>().create(MovieRetrofitInterface::class.java)
         }
-        bind<CalendarInteractor>() with provider { CalendarInteractorImpl(this@App) }
+        bind<CalendarRepository>() with provider { CalendarRepositoryImpl(this@App) }
 
         bind<NotificationRepository>() with singleton { NotificationRepositoryImpl(this@App) }
         bind<MovieRepository>() with singleton { MovieRepositoryImpl(instance()) }

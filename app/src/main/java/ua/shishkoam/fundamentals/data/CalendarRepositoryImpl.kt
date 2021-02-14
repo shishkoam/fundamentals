@@ -4,11 +4,11 @@ import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.provider.CalendarContract
-import ua.shishkoam.fundamentals.domain.CalendarInteractor
+import ua.shishkoam.fundamentals.domain.CalendarRepository
 import ua.shishkoam.fundamentals.domain.data.Movie
 import java.util.*
 
-class CalendarInteractorImpl(private val applicationContext: Context): CalendarInteractor {
+class CalendarRepositoryImpl(private val applicationContext: Context): CalendarRepository {
     companion object {
         private const val TWO_HOURS = 2 * 60 * 60 * 1000
     }
@@ -28,14 +28,15 @@ class CalendarInteractorImpl(private val applicationContext: Context): CalendarI
         val startMillis: Long = scheduleDate.timeInMillis
         val endMillis: Long = startMillis + TWO_HOURS
 
-        val values = ContentValues()
-        values.put(CalendarContract.Events.DTSTART, startMillis)
-        values.put(CalendarContract.Events.DTEND, endMillis)
-        values.put(CalendarContract.Events.TITLE, movie.title)
-        values.put(CalendarContract.Events.DESCRIPTION, movie.overview)
-        values.put(CalendarContract.Events.CALENDAR_ID, calID)
-        values.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
-        values.put(CalendarContract.Events.HAS_ALARM, 1)
+        val values = ContentValues().apply {
+            put(CalendarContract.Events.DTSTART, startMillis)
+            put(CalendarContract.Events.DTEND, endMillis)
+            put(CalendarContract.Events.TITLE, movie.title)
+            put(CalendarContract.Events.DESCRIPTION, movie.overview)
+            put(CalendarContract.Events.CALENDAR_ID, calID)
+            put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
+            put(CalendarContract.Events.HAS_ALARM, 1)
+        }
         val uri: Uri? = cr.insert(CalendarContract.Events.CONTENT_URI, values)
         val eventID: Long = uri?.lastPathSegment?.toLong() ?: -1
         return eventID.toInt() != -1

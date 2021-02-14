@@ -2,7 +2,7 @@ package ua.shishkoam.fundamentals.domain
 
 import ua.shishkoam.fundamentals.domain.data.Movie
 
-interface CalendarInteractor {
+interface CalendarRepository {
     fun addMovieToCalendar(
         movie: Movie,
         year: Int,

@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ua.shishkoam.fundamentals.domain.CalendarInteractor
+import ua.shishkoam.fundamentals.domain.CalendarRepository
 import ua.shishkoam.fundamentals.domain.MovieInteractor
 import ua.shishkoam.fundamentals.domain.RepositoryError
 import ua.shishkoam.fundamentals.domain.data.Actor
@@ -20,26 +20,26 @@ class MovieDetailsViewModel() : ViewModel() {
     private var actorList: MutableLiveData<List<Actor>> = MutableLiveData<List<Actor>>()
     private var errorData: MutableLiveData<RepositoryError> = MutableLiveData<RepositoryError>()
     private lateinit var movieInteractor: MovieInteractor
-    private lateinit var calendarInteractor: CalendarInteractor
+    private lateinit var calendarRepository: CalendarRepository
 
     constructor(
         movieInteractor: MovieInteractor,
-        calendarInteractor: CalendarInteractor,
+        calendarRepository: CalendarRepository,
         movie: Movie
     ) : this() {
         this.movieInteractor = movieInteractor
-        this.calendarInteractor = calendarInteractor
+        this.calendarRepository = calendarRepository
         movieData.value = movie
         loadActors(movie)
     }
 
     constructor(
         movieInteractor: MovieInteractor,
-        calendarInteractor: CalendarInteractor,
+        calendarRepository: CalendarRepository,
         movieId: Int
     ) : this() {
         this.movieInteractor = movieInteractor
-        this.calendarInteractor = calendarInteractor
+        this.calendarRepository = calendarRepository
         viewModelScope.launch() {
             movieInteractor.getMovie(movieId).asSuccess().value.collect { movie ->
                 withContext(Dispatchers.Main) {
@@ -59,7 +59,7 @@ class MovieDetailsViewModel() : ViewModel() {
 
     fun addMovieToCalendar(year: Int, month: Int, day: Int, hourOfDay: Int, minute: Int) : Boolean {
         movieData.value ?: return false
-        return calendarInteractor.addMovieToCalendar(movieData.value!!, year, month, day, hourOfDay, minute)
+        return calendarRepository.addMovieToCalendar(movieData.value!!, year, month, day, hourOfDay, minute)
     }
 
     fun loadActors(movie: Movie) {
