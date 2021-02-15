@@ -1,6 +1,7 @@
 package ua.shishkoam.fundamentals
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -9,12 +10,16 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import com.redmadrobot.e2e.decorator.EdgeToEdgeDecorator
 import ua.shishkoam.fundamentals.databinding.ActivityMainBinding
+import ua.shishkoam.fundamentals.presentation.FragmentMoviesListDirections
 import java.util.*
+
 
 private const val PERMISSION_REQUESTS = 1
 private const val TAG = "ChooserActivity"
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,11 +35,30 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
-        if (!allPermissionsGranted()) {
-            getRuntimePermissions()
+//        if (!allPermissionsGranted()) {
+//            getRuntimePermissions()
+//        }
+        if (savedInstanceState == null) {
+            intent?.let(::handleIntent)
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let(::handleIntent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        if (intent.action == Intent.ACTION_VIEW) {
+            val id = intent.data?.lastPathSegment?.toLongOrNull()
+            if (id != null) {
+                val navigationController = findNavController(R.id.nav_host_fragment)
+                val action = FragmentMoviesListDirections.openMovieDetails()
+                action.currentMovieId = id.toInt()
+                navigationController.navigate(action)
+            }
+        }
+    }
 
     private fun getRequiredPermissions(): Array<String?> {
         return try {

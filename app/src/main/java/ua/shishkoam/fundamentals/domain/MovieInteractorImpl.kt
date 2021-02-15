@@ -9,8 +9,9 @@ import ua.shishkoam.fundamentals.domain.data.Actor
 import ua.shishkoam.fundamentals.domain.data.Movie
 
 class MovieInteractorImpl(
-    val movieRepository: MovieRepository,
-    val cacheRepository: CacheRepository
+    private val movieRepository: MovieRepository,
+    private val cacheRepository: CacheRepository,
+    private val notificationRepository: NotificationRepository,
 ) : MovieInteractor {
     private val favoriteFilms: HashMap<String, Boolean> = HashMap()
     private var currentPage: Int = 1
@@ -25,6 +26,11 @@ class MovieInteractorImpl(
         } else {
             return RequestResult.Success.Value(roomResult)
         }
+    }
+
+    override suspend fun getMovie(id: Int): RequestResult<Flow<Movie>> {
+        val roomResult = cacheRepository.getMovie(id)
+        return RequestResult.Success.Value(roomResult)
     }
 
     override suspend fun updateMoviesInDb() {
@@ -45,9 +51,25 @@ class MovieInteractorImpl(
         val result = movieRepository.getMovies(page)
         if (result.isSuccess()) {
             totalPages = movieRepository.getTotalPagesNumber()
-            cacheRepository.addMovies(result.asSuccess().value)
+            val movies = result.asSuccess().value
+            val bestMovie = findBestMovie(movies)
+            bestMovie?.let {
+                notificationRepository.updateBestMovie(bestMovie)
+            }
+            cacheRepository.addMovies(movies)
         }
         return result
+    }
+
+    private fun findBestMovie(movies: List<Movie>) : Movie? {
+        var bestMovie: Movie? = null
+        for (movie in movies) {
+            val currentBestRating = bestMovie?.getRatingIn5Stars() ?: -1.0f
+            if (currentBestRating < movie.getRatingIn5Stars()) {
+                bestMovie = movie.copy()
+            }
+        }
+        return bestMovie
     }
 
     override suspend fun getMoreMovies(): RequestResult<List<Movie>> {
@@ -57,12 +79,13 @@ class MovieInteractorImpl(
 
     override suspend fun getActors(id: Int): RequestResult<List<Actor>> {
         val result = movieRepository.getActors(id)
-        if (result.isSuccess()) {
+        return if (result.isSuccess()) {
             cacheRepository.addActors(id.toLong(), result.asSuccess().value)
+            result
         } else {
             val actors = cacheRepository.getActors(id.toLong())
+            RequestResult.Success.Value(actors)
         }
-        return result
     }
 
     override fun getFavoriteFilms(): HashMap<String, Boolean> {

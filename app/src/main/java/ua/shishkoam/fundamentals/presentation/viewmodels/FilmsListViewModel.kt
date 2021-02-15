@@ -68,8 +68,6 @@ class FilmsListViewModel(
             withContext(Dispatchers.Main) {
                 val list: ArrayList<ListItem> = ArrayList(moviesData.value!!)
                 if (result.isSuccess()) {
-//                    val loaded = result.asSuccess().value
-//                    list.addAll(loaded)
                     setLoading(
                         State.Loaded(
                             movieInteractor.getCurrentPageNumber(),

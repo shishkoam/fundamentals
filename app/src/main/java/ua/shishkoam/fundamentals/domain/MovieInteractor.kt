@@ -7,6 +7,7 @@ import ua.shishkoam.fundamentals.domain.data.Movie
 
 interface MovieInteractor {
     suspend fun getMovies() : RequestResult<Flow<List<Movie>>>
+    suspend fun getMovie(id : Int) : RequestResult<Flow<Movie>>
     suspend fun updateMoviesInDb()
     suspend fun getMoreMovies() : RequestResult<List<Movie>>
     suspend fun getActors(id : Int): RequestResult<List<Actor>>

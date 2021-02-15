@@ -196,6 +196,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/main_margin"
+            android:layout_marginTop="@dimen/main_margin"
+            android:drawablePadding="@dimen/half_margin_medium"
+            android:background="@android:color/transparent"
+            android:gravity="center_vertical"
+            android:lineSpacingExtra="@dimen/line_spacing"
+            android:text="@string/schedule"
+            android:id="@+id/scheduleButton"
+            android:textAllCaps="false"
+            android:textColor="@color/text_secondary"
+            android:textSize="@dimen/text_secondary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/movie_list"
             android:layout_width="wrap_content"

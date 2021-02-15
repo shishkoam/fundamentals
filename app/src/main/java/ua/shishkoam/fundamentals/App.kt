@@ -11,17 +11,17 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.kodein.di.*
 import org.kodein.di.android.x.androidXModule
 import retrofit2.Retrofit
-import ua.shishkoam.fundamentals.domain.MovieInteractorImpl
+import ua.shishkoam.fundamentals.data.CalendarRepositoryImpl
 import ua.shishkoam.fundamentals.data.MovieRepositoryImpl
 import ua.shishkoam.fundamentals.data.MovieRetrofitInterface
+import ua.shishkoam.fundamentals.data.NotificationRepositoryImpl
 import ua.shishkoam.fundamentals.data.room.RoomRepository
-import ua.shishkoam.fundamentals.domain.CacheRepository
-import ua.shishkoam.fundamentals.domain.MovieInteractor
-import ua.shishkoam.fundamentals.domain.MovieRepository
+import ua.shishkoam.fundamentals.domain.*
 import ua.shishkoam.fundamentals.presentation.viewmodels.FilmsListViewModel
 
+private const val BASE_URL = "https://api.themoviedb.org/3/"
+
 class App : Application(), DIAware {
-    private final val BASE_URL = "https://api.themoviedb.org/3/"
 
     override val di = DI.lazy {
         import(androidXModule(this@App))
@@ -43,18 +43,17 @@ class App : Application(), DIAware {
         bind<MovieRetrofitInterface>() with singleton {
             instance<Retrofit>().create(MovieRetrofitInterface::class.java)
         }
+        bind<CalendarRepository>() with provider { CalendarRepositoryImpl(this@App) }
 
+        bind<NotificationRepository>() with singleton { NotificationRepositoryImpl(this@App) }
         bind<MovieRepository>() with singleton { MovieRepositoryImpl(instance()) }
         bind<CacheRepository>() with singleton { RoomRepository(instance()) }
-        bind<MovieInteractor>() with provider { MovieInteractorImpl(instance(), instance()) }
+        bind<MovieInteractor>() with provider { MovieInteractorImpl(instance(), instance(), instance()) }
 
         bind<ViewModel>(tag = FilmsListViewModel::class.java.simpleName) with provider {
             FilmsListViewModel(instance())
         }
     }
-
-//    private final val API_KEY_HEADER = "api_key"
-//    private final val api = "869b66870caf75518f1b359b0a5da125"
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -68,9 +67,8 @@ class App : Application(), DIAware {
             val originalRequest = chain.request()
             val originalHttpUrl = originalRequest.url
             val url = originalHttpUrl.newBuilder()
-                .addQueryParameter("api_key", api)
+                .addQueryParameter(API_KEY_HEADER, api)
                 .addQueryParameter("language", "en-US")
-//                .addQueryParameter("page", "1")
                 .build()
 
             val requestBuilder: Request.Builder = originalRequest.newBuilder()
