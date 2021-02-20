@@ -7,15 +7,19 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.WorkManager
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.transition.MaterialElevationScale
+import com.google.android.material.transition.MaterialFadeThrough
 import kotlinx.coroutines.*
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -78,6 +82,14 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        enterTransition = MaterialFadeThrough().apply {
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+        }
+    }
+
     private lateinit var listAdapter: FilmDelegateAdapter
     private var scrollListener: RecyclerViewOnScrollListener? = null
 
@@ -87,6 +99,9 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
 
         val orientation = this.resources.configuration.orientation
         val filmRecyclerViewManager = if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -114,10 +129,19 @@ class FragmentMoviesList : Fragment(R.layout.fragment_movies_list), DIAware {
         listAdapter = FilmDelegateAdapter(
             textShader = textShader,
             onFilmLike = { item, likedState -> filmsListViewModel.setLike(item.id, likedState) },
-            onFilmClick = { movie ->
+            onFilmClick = { view, movie ->
+                exitTransition = MaterialElevationScale(false).apply {
+                    duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+                }
+                reenterTransition = MaterialElevationScale(true).apply {
+                    duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+                }
+                val movieCardDetailTransitionName = getString(R.string.movie_card_detail_transition_name)
+                val extras = FragmentNavigatorExtras(view to movieCardDetailTransitionName)
+
                 val action = FragmentMoviesListDirections.openMovieDetails()
                 action.currentMovie = movie
-                findNavController().navigate(action)
+                findNavController().navigate(action, extras)
             })
 
         binding.movieList.run {

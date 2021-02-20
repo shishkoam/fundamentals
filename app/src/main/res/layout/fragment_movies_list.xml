@@ -61,6 +61,7 @@
             app:spanCount="2"
             tools:context=".ui.features.RecyclerViewFragment"
             tools:itemCount="4"
+            android:transitionGroup="true"
             tools:listitem="@layout/view_holder_movie" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

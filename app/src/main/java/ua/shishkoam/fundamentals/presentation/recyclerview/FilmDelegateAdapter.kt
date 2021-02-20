@@ -3,6 +3,7 @@ package ua.shishkoam.fundamentals.presentation.recyclerview
 import android.content.Context
 import android.graphics.LinearGradient
 import android.graphics.Shader
+import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -20,7 +21,7 @@ class FilmDelegateAdapter(
     films: List<Movie> = emptyList(),
     val textShader: LinearGradient?,
     onFilmLike: ((item: Movie, likedState: Boolean) -> Unit)? = null,
-    onFilmClick: ((movie: Movie) -> Unit)? = null
+    onFilmClick: ((view: View, movie: Movie) -> Unit)? = null
 ) : ListDelegationAdapter<List<ListItem>>(
     filmAdapterDelegate(textShader, onFilmLike, onFilmClick),
     loadAdapterDelegate()
@@ -57,7 +58,7 @@ fun setLikeColor(
 fun filmAdapterDelegate(
     textShader: LinearGradient?,
     onFilmLike: ((item: Movie, likedState: Boolean) -> Unit)? = null,
-    onFilmClick: ((movie: Movie) -> Unit)? = null
+    onFilmClick: ((view: View, movie: Movie) -> Unit)? = null
 ) =
     adapterDelegateViewBinding<Movie, ListItem, ViewHolderMovieBinding>(
         { layoutInflater, root -> ViewHolderMovieBinding.inflate(layoutInflater, root, false) }
@@ -67,9 +68,10 @@ fun filmAdapterDelegate(
         itemView.setOnClickListener { // Triggers click upwards to the adapter on click
             val position = bindingAdapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                onFilmClick?.invoke(item)
+                onFilmClick?.invoke(itemView, item)
             }
         }
+
         binding.like.setOnClickListener { // Triggers click upwards to the adapter on click
             likedState = !likedState
             onFilmLike?.invoke(item, likedState)
@@ -91,6 +93,8 @@ fun filmAdapterDelegate(
             ImageLoader.loadImage(binding.photoImage, item.posterUrl)
             likedState = item.isFavorite
             setLikeColor(likedState, binding.like, context)
+            itemView.transitionName = getString(R.string.movie_card_transition_name, item.id)
+
         }
     }
 
