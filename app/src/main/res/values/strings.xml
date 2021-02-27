@@ -29,4 +29,6 @@
     <string name="movie_scheduled">Movie scheduled!</string>
     <string name="movie_not_scheduled">Can not schedule movie!</string>
 
+    <string name="movie_card_transition_name">movie_card_%1$s</string>
+    <string name="movie_card_detail_transition_name">movie_card_detail</string>
 </resources>

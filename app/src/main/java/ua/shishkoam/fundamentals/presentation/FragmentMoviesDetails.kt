@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateFormat.is24HourFormat
 import android.view.View
@@ -20,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.transition.MaterialContainerTransform
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.di
@@ -37,6 +39,7 @@ import ua.shishkoam.fundamentals.presentation.viewmodels.MovieByIdViewModelFacto
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieDetailsViewModel
 import ua.shishkoam.fundamentals.presentation.viewmodels.MovieViewModelFactory
 import ua.shishkoam.fundamentals.utils.ImageLoader
+import ua.shishkoam.fundamentals.utils.themeColor
 import java.util.*
 
 
@@ -127,6 +130,19 @@ class FragmentMoviesDetails : Fragment(R.layout.fragment_movies_details), DIAwar
                 getString(R.string.movie_not_scheduled),
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            // Scope the transition to a view in the hierarchy so we know it will be added under
+            // the bottom app bar but over the elevation scale of the exiting HomeFragment.
+            drawingViewId = R.id.nav_host_fragment
+            duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            scrimColor = Color.TRANSPARENT
+            setAllContainerColors(requireContext().themeColor(R.attr.colorSurface))
         }
     }
 
